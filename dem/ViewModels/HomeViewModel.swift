@@ -53,6 +53,32 @@ final class HomeViewModel: ObservableObject {
         return Int(Double(saved) * profile.pricePerUnit)
     }
 
+    var hoursSinceLastLog: Double {
+        guard let lastLog = lastLogDate else { return 999 }
+        return Date().timeIntervalSince(lastLog) / 3600
+    }
+
+    var healthStatus: HealthStatus {
+        let hours = hoursSinceLastLog
+
+        switch hours {
+        case 0..<1: return .veryRecent
+        case 1..<2: return .recent
+        case 2..<8: return .recovering
+        case 8..<24: return .improving
+        case 24..<72: return .strong
+        default: return .excellent
+        }
+    }
+
+    var healthStatusText: String {
+        healthStatus.statusText
+    }
+
+    var healthStatusIcon: String {
+        healthStatus.statusIcon
+    }
+
     var healthPercentage: Int {
         guard let lastLog = lastLogDate else { return 100 }
         let hoursSince = Date().timeIntervalSince(lastLog) / 3600

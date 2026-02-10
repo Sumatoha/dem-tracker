@@ -545,23 +545,27 @@ struct ProfileView: View {
 
             Divider().padding(.horizontal, 16)
 
-            // Contact Support
+            // Contact Support - Telegram
             Button {
-                if let url = URL(string: "mailto:kakenov.tokmyrza@gmail.com?subject=dem%20-%20Поддержка") {
+                if let url = URL(string: "https://t.me/iddlemiddle") {
                     UIApplication.shared.open(url)
                 }
             } label: {
                 HStack {
-                    Image(systemName: "envelope.fill")
+                    Image(systemName: "paperplane.fill")
                         .font(.system(size: 16))
                         .foregroundColor(.textSecondary)
                         .frame(width: 24)
 
-                    Text("Написать в поддержку")
+                    Text("Написать в Telegram")
                         .font(.bodyText)
                         .foregroundColor(.textPrimary)
 
                     Spacer()
+
+                    Text("@iddlemiddle")
+                        .font(.system(size: 13))
+                        .foregroundColor(.textMuted)
 
                     Image(systemName: "arrow.up.right")
                         .font(.system(size: 12, weight: .medium))

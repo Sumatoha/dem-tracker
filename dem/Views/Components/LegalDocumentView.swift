@@ -82,7 +82,7 @@ enum LegalTexts {
     8. СВЯЗАТЬСЯ С НАМИ
 
     По вопросам конфиденциальности:
-    Email: kakenov.tokmyrza@gmail.com
+    Telegram: @iddlemiddle
     """
 
     static let termsOfService = """
@@ -145,7 +145,7 @@ enum LegalTexts {
     10. КОНТАКТЫ
 
     По вопросам использования:
-    Email: kakenov.tokmyrza@gmail.com
+    Telegram: @iddlemiddle
     """
 }
 
