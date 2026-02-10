@@ -245,6 +245,33 @@ final class StatsViewModel: ObservableObject {
         return ProgramCalculator.totalWeeks(durationMonths: durationMonths)
     }
 
+    var programStartValue: Int? {
+        profile?.programStartValue
+    }
+
+    var programTargetValue: Int? {
+        profile?.programTargetValue
+    }
+
+    var baseline: Int {
+        profile?.safeBaselinePerDay ?? 10
+    }
+
+    var pricePerUnit: Double {
+        profile?.pricePerUnit ?? 12.5
+    }
+
+    var dailyAverageSavings: Double {
+        let calendar = Calendar.current
+        let today = Date()
+        let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: today)) ?? today
+
+        let daysPassed = max(1, calendar.dateComponents([.day], from: startOfMonth, to: today).day ?? 1)
+        let logsThisMonth = logs.filter { $0.createdAt >= startOfMonth }
+
+        return Double(logsThisMonth.count) / Double(daysPassed)
+    }
+
     func loadData() async {
         // Fetch fresh data from server
         do {

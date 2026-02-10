@@ -235,41 +235,114 @@ struct HealthExplanationView: View {
 
     @Environment(\.dismiss) private var dismiss
 
+    var currentPercentage: Int {
+        switch hoursSinceLastLog {
+        case 0..<1: return 5
+        case 1..<2: return 15
+        case 2..<4: return 25
+        case 4..<8: return 40
+        case 8..<12: return 55
+        case 12..<24: return 70
+        case 24..<48: return 85
+        default: return 95
+        }
+    }
+
+    var timeSinceText: String {
+        if hoursSinceLastLog >= 999 {
+            return "давно"
+        } else if hoursSinceLastLog < 1 {
+            let minutes = Int(hoursSinceLastLog * 60)
+            return "\(max(1, minutes)) мин назад"
+        } else if hoursSinceLastLog < 24 {
+            return "\(Int(hoursSinceLastLog)) ч назад"
+        } else {
+            let days = Int(hoursSinceLastLog / 24)
+            return "\(days) дн назад"
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    // Current status
-                    VStack(spacing: 12) {
-                        Image(systemName: healthStatus.icon)
-                            .font(.system(size: 48))
-                            .foregroundColor(healthStatus.color)
-
-                        Text(healthStatus.title)
-                            .font(.system(size: 24, weight: .bold))
+                    // Что это значит
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Что значит +\(currentPercentage)%?")
+                            .font(.system(size: 22, weight: .bold))
                             .foregroundColor(.textPrimary)
 
-                        Text(healthStatus.description)
+                        Text("Это показатель восстановления твоего организма с момента последней сигареты.")
                             .font(.bodyText)
                             .foregroundColor(.textSecondary)
-                            .multilineTextAlignment(.center)
+
+                        // Текущий статус
+                        HStack(spacing: 16) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Последняя сигарета")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.textMuted)
+                                Text(timeSinceText)
+                                    .font(.system(size: 17, weight: .semibold))
+                                    .foregroundColor(.textPrimary)
+                            }
+
+                            Spacer()
+
+                            VStack(alignment: .trailing, spacing: 4) {
+                                Text("Восстановление")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.textMuted)
+                                Text("+\(currentPercentage)%")
+                                    .font(.system(size: 17, weight: .bold))
+                                    .foregroundColor(.primaryAccent)
+                            }
+                        }
+                        .padding(16)
+                        .background(Color.cardFill)
+                        .cornerRadius(12)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 20)
+
+                    // Как это работает
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Как это работает")
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundColor(.textPrimary)
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            explanationRow(icon: "flame.fill", color: .orange,
+                                text: "Сразу после сигареты — 5%. Организм начинает очищаться.")
+                            explanationRow(icon: "clock.fill", color: .blue,
+                                text: "Чем дольше не куришь — тем выше процент.")
+                            explanationRow(icon: "star.fill", color: .green,
+                                text: "Через 3 дня без сигарет — 95%. Дыхание легче, вкус ярче!")
+                        }
+                    }
+                    .padding(16)
+                    .background(Color.primaryAccent.opacity(0.1))
+                    .cornerRadius(12)
 
                     Divider()
 
                     // Timeline
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("Как восстанавливается организм")
+                        Text("Этапы восстановления")
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(.textPrimary)
 
                         ForEach(HealthMilestone.all, id: \.hours) { milestone in
                             HStack(spacing: 16) {
-                                Circle()
-                                    .fill(hoursSinceLastLog >= milestone.hours ? Color.primaryAccent : Color.cardFill)
-                                    .frame(width: 12, height: 12)
+                                ZStack {
+                                    Circle()
+                                        .fill(hoursSinceLastLog >= milestone.hours ? Color.primaryAccent : Color.cardFill)
+                                        .frame(width: 28, height: 28)
+
+                                    if hoursSinceLastLog >= milestone.hours {
+                                        Image(systemName: "checkmark")
+                                            .font(.system(size: 12, weight: .bold))
+                                            .foregroundColor(.white)
+                                    }
+                                }
 
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(milestone.timeLabel)
@@ -282,6 +355,10 @@ struct HealthExplanationView: View {
                                 }
 
                                 Spacer()
+
+                                Text("+\(milestone.percentage)%")
+                                    .font(.system(size: 13, weight: .medium))
+                                    .foregroundColor(hoursSinceLastLog >= milestone.hours ? .primaryAccent : .textMuted)
                             }
                         }
                     }
@@ -299,6 +376,19 @@ struct HealthExplanationView: View {
                     .foregroundColor(.primaryAccent)
                 }
             }
+        }
+    }
+
+    private func explanationRow(icon: String, color: Color, text: String) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 14))
+                .foregroundColor(color)
+                .frame(width: 20)
+
+            Text(text)
+                .font(.system(size: 14))
+                .foregroundColor(.textSecondary)
         }
     }
 }
@@ -509,14 +599,15 @@ struct HealthMilestone {
     let hours: Double
     let timeLabel: String
     let benefit: String
+    let percentage: Int
 
     static let all: [HealthMilestone] = [
-        HealthMilestone(hours: 0.33, timeLabel: "20 минут", benefit: "Пульс и давление начинают нормализоваться"),
-        HealthMilestone(hours: 2, timeLabel: "2 часа", benefit: "Никотин выводится из крови"),
-        HealthMilestone(hours: 8, timeLabel: "8 часов", benefit: "Уровень кислорода в норме"),
-        HealthMilestone(hours: 24, timeLabel: "24 часа", benefit: "Риск сердечного приступа снижается"),
-        HealthMilestone(hours: 48, timeLabel: "48 часов", benefit: "Нервные окончания восстанавливаются"),
-        HealthMilestone(hours: 72, timeLabel: "72 часа", benefit: "Дышать становится легче"),
+        HealthMilestone(hours: 0.33, timeLabel: "20 минут", benefit: "Пульс и давление начинают нормализоваться", percentage: 5),
+        HealthMilestone(hours: 2, timeLabel: "2 часа", benefit: "Никотин выводится из крови", percentage: 25),
+        HealthMilestone(hours: 8, timeLabel: "8 часов", benefit: "Уровень кислорода в норме", percentage: 40),
+        HealthMilestone(hours: 24, timeLabel: "24 часа", benefit: "Риск сердечного приступа снижается", percentage: 70),
+        HealthMilestone(hours: 48, timeLabel: "48 часов", benefit: "Нервные окончания восстанавливаются", percentage: 85),
+        HealthMilestone(hours: 72, timeLabel: "72 часа", benefit: "Дышать становится легче", percentage: 95),
     ]
 }
 

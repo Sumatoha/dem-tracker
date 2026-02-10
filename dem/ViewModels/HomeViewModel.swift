@@ -72,11 +72,11 @@ final class HomeViewModel: ObservableObject {
     }
 
     var healthStatusText: String {
-        healthStatus.statusText
+        "+\(healthPercentage)%"
     }
 
     var healthStatusIcon: String {
-        healthStatus.statusIcon
+        "arrow.up.right"
     }
 
     var healthPercentage: Int {
