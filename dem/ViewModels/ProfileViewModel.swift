@@ -226,22 +226,87 @@ final class ProfileViewModel: ObservableObject {
     func toggleNotifications() async {
         Haptics.selection()
 
-        // If enabling, request permission
         if notificationsEnabled {
+            // Включаем - запрашиваем разрешение и планируем
             let granted = await NotificationManager.shared.requestPermission()
             if !granted {
                 notificationsEnabled = false
                 return
             }
+            // Сохраняем и сразу планируем уведомления
+            await saveNotificationSettings()
+            await scheduleNotificationsNow()
         } else {
+            // Выключаем - отменяем все уведомления
             NotificationManager.shared.cancelAll()
+            await saveNotificationSettings()
         }
-
-        await saveNotificationSettings()
     }
 
     func updateNotificationTime() async {
         await saveNotificationSettings()
+        // Перепланируем с новым временем
+        if notificationsEnabled {
+            await scheduleNotificationsNow()
+        }
+    }
+
+    /// Планирует уведомления с текущими данными
+    private func scheduleNotificationsNow() async {
+        let timeComponents = NotificationManager.shared.parseTime(notificationTimeString)
+
+        // Получаем данные для уведомлений
+        let cache = CacheManager.shared
+        let todayLogs = cache.getCachedTodayLogs() ?? []
+        let weeklyLogs = cache.getCachedWeeklyLogs() ?? []
+
+        let todayCount = todayLogs.count
+
+        // Вчерашнее количество
+        let calendar = Calendar.current
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: Date()))!
+        let yesterdayCount = weeklyLogs.filter { log in
+            calendar.isDate(log.createdAt, inSameDayAs: yesterday)
+        }.count
+
+        // Текущий лимит программы
+        var dailyLimit: Int? = nil
+        if let profile = profile,
+           profile.hasProgramActive,
+           let startValue = profile.programStartValue,
+           let targetValue = profile.programTargetValue,
+           let durationMonths = profile.programDurationMonths,
+           let startDate = profile.programStartDate {
+            dailyLimit = ProgramCalculator.currentDailyLimit(
+                startValue: startValue,
+                targetValue: targetValue,
+                durationMonths: durationMonths,
+                startDate: startDate
+            )
+        }
+
+        // Планируем все уведомления
+        NotificationManager.shared.scheduleAllDailyNotifications(
+            morningHour: 10,
+            eveningHour: timeComponents.hour,
+            eveningMinute: timeComponents.minute,
+            todayCount: todayCount,
+            dailyLimit: dailyLimit,
+            yesterdayCount: yesterdayCount > 0 ? yesterdayCount : nil,
+            streakDays: 0
+        )
+
+        // Еженедельный отчёт
+        let weekTotal = weeklyLogs.count
+        let daysWithLogs = Set(weeklyLogs.map { calendar.startOfDay(for: $0.createdAt) }).count
+        let weekAverage = daysWithLogs > 0 ? Double(weekTotal) / Double(daysWithLogs) : 0
+
+        NotificationManager.shared.scheduleWeeklySummary(
+            weekTotal: weekTotal,
+            weekAverage: weekAverage,
+            previousWeekTotal: nil,
+            moneySaved: nil
+        )
     }
 
     private func saveNotificationSettings() async {

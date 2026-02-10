@@ -227,48 +227,104 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - Notifications
 
+    /// Вчерашнее количество для сравнения
+    var yesterdayCount: Int {
+        let calendar = Calendar.current
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: Date()))!
+        return weeklyLogs.filter { log in
+            calendar.isDate(log.createdAt, inSameDayAs: yesterday)
+        }.count
+    }
+
+    /// Количество дней подряд в рамках лимита
+    var streakDays: Int {
+        guard let limit = currentDailyLimit else { return 0 }
+
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        var streak = 0
+
+        // Проверяем предыдущие дни (не включая сегодня)
+        for dayOffset in 1...30 {
+            guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: today) else { break }
+
+            let dayCount = weeklyLogs.filter { log in
+                calendar.isDate(log.createdAt, inSameDayAs: date)
+            }.count
+
+            if dayCount <= limit {
+                streak += 1
+            } else {
+                break
+            }
+        }
+
+        return streak
+    }
+
+    /// Обновить все уведомления после каждого лога
     func updateNotifications() async {
         guard profile?.safeNotificationsEnabled == true else { return }
 
         let timeComponents = NotificationManager.shared.parseTime(profile?.safeNotificationTime ?? "22:00")
 
-        // Get yesterday's count for comparison
-        let calendar = Calendar.current
-        let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: Date()))!
-        let yesterdayCount = weeklyLogs.filter { log in
-            calendar.isDate(log.createdAt, inSameDayAs: yesterday)
-        }.count
-
-        // Schedule daily summary
-        NotificationManager.shared.scheduleDailySummary(
-            hour: timeComponents.hour,
-            minute: timeComponents.minute,
+        // Обновить все ежедневные уведомления с актуальными данными
+        NotificationManager.shared.scheduleAllDailyNotifications(
+            morningHour: 10,
+            eveningHour: timeComponents.hour,
+            eveningMinute: timeComponents.minute,
             todayCount: todayCount,
-            limit: currentDailyLimit,
-            yesterdayCount: yesterdayCount > 0 ? yesterdayCount : nil
+            dailyLimit: currentDailyLimit,
+            yesterdayCount: yesterdayCount > 0 ? yesterdayCount : nil,
+            streakDays: streakDays
         )
 
-        // Schedule health milestones based on last log
+        // Мгновенное уведомление при достижении/превышении лимита
+        NotificationManager.shared.sendInstantFeedback(
+            currentCount: todayCount,
+            dailyLimit: currentDailyLimit
+        )
+
+        // Health milestones
         if let lastLog = lastLogDate {
-            NotificationManager.shared.scheduleHealthMilestone(lastLogDate: lastLog)
+            NotificationManager.shared.scheduleHealthMilestones(lastLogDate: lastLog)
         }
     }
 
+    /// Начальная настройка уведомлений при запуске приложения
     func setupInitialNotifications() async {
         guard profile?.safeNotificationsEnabled == true else { return }
 
-        await updateNotifications()
+        let timeComponents = NotificationManager.shared.parseTime(profile?.safeNotificationTime ?? "22:00")
 
-        // Schedule weekly summary
+        // Все ежедневные уведомления
+        NotificationManager.shared.scheduleAllDailyNotifications(
+            morningHour: 10,
+            eveningHour: timeComponents.hour,
+            eveningMinute: timeComponents.minute,
+            todayCount: todayCount,
+            dailyLimit: currentDailyLimit,
+            yesterdayCount: yesterdayCount > 0 ? yesterdayCount : nil,
+            streakDays: streakDays
+        )
+
+        // Еженедельный отчёт (воскресенье)
         let weekTotal = weeklyLogs.count
-        let weekSpent = weeklyLogs.reduce(0) { $0 + ($1.price ?? 0) }
+        let moneySaved = profile.map { p in
+            let savedCount = max(0, p.safeBaselinePerDay * 7 - weekTotal)
+            return Int(Double(savedCount) * p.pricePerUnit)
+        }
 
         NotificationManager.shared.scheduleWeeklySummary(
-            weekAverage: averagePerDay,
             weekTotal: weekTotal,
-            weekSpent: weekSpent,
+            weekAverage: averagePerDay,
             previousWeekTotal: nil,
-            newLimit: currentDailyLimit
+            moneySaved: moneySaved
         )
+
+        // Health milestones
+        if let lastLog = lastLogDate {
+            NotificationManager.shared.scheduleHealthMilestones(lastLogDate: lastLog)
+        }
     }
 }

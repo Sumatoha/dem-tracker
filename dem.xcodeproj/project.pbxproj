@@ -385,6 +385,7 @@
 				A10000000000000000000037 /* ProgramCalculator.swift in Sources */,
 				A10000000000000000000038 /* ProgramTypeStep.swift in Sources */,
 				A10000000000000000000039 /* DurationStep.swift in Sources */,
+				A10000000000000000000040 /* LegalDocumentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
