@@ -1,0 +1,343 @@
+/* English Localization */
+
+// MARK: - Common
+"common.done" = "Done";
+"common.cancel" = "Cancel";
+"common.save" = "Save";
+"common.error" = "Error";
+"common.ok" = "OK";
+"common.loading" = "Loading...";
+"common.or" = "or";
+
+// MARK: - Tab Bar
+"tab.home" = "Home";
+"tab.history" = "History";
+"tab.stats" = "Reports";
+"tab.profile" = "Profile";
+
+// MARK: - Home
+"home.today" = "TODAY";
+"home.since_last_one" = "SINCE LAST ONE";
+"home.activity" = "ACTIVITY";
+"home.average" = "AVERAGE";
+"home.savings" = "SAVINGS";
+"home.health" = "HEALTH";
+"home.log_button" = "Log";
+
+// MARK: - Triggers
+"trigger.stress" = "Stress";
+"trigger.coffee" = "Coffee";
+"trigger.after_meal" = "After meal";
+"trigger.alcohol" = "Alcohol";
+"trigger.boredom" = "Boredom";
+"trigger.social" = "Social";
+"trigger.before_sleep" = "Before sleep";
+"trigger.after_sleep" = "After sleep";
+"trigger.select" = "SELECT TRIGGER";
+"trigger.why_now" = "Why now?";
+"trigger.confirm_choice" = "CONFIRM CHOICE";
+"trigger.skip" = "SKIP";
+"trigger.no_trigger" = "No trigger";
+
+// MARK: - History
+"history.title" = "History";
+"history.this_week" = "This week";
+"history.no_data" = "No entries yet";
+"history.clean_days" = "Clean days";
+"history.interval" = "Interval";
+"history.total_for_month" = "Total for %@";
+"history.trigger" = "Trigger";
+"history.today" = "TODAY";
+"history.yesterday" = "YESTERDAY";
+"history.no_data_hint" = "Log your first cigarette to see history";
+
+// MARK: - Stats
+"stats.title" = "Statistics";
+"stats.hourly_activity" = "HOURLY ACTIVITY";
+"stats.peak_hours" = "Peak at %@";
+"stats.most_frequent_trigger" = "MOST FREQUENT TRIGGER";
+"stats.longest_streak" = "BEST STREAK";
+"stats.hours" = "hours";
+"stats.without_breaks" = "WITHOUT BREAKS";
+"stats.monthly_forecast" = "MONTHLY SAVINGS FORECAST";
+"stats.program" = "PROGRAM";
+"stats.week" = "Week";
+"stats.limit" = "Limit";
+"stats.per_day" = "/day";
+"stats.days_in_plan" = "days on plan";
+"stats.this_week_label" = "This week";
+"stats.forecast" = "Forecast";
+"stats.no_data" = "No data";
+"stats.motivational_text" = "Statistics is the compass of your progress.\nEvery number brings you closer to complete freedom.";
+"stats.if_maintain_dynamics" = "If you maintain your current quitting dynamics.";
+"stats.start_marker" = "Start";
+"stats.goal_marker" = "Goal";
+"stats.week_of_total" = "Week %d of %d";
+"stats.limit_per_day" = "%d/day";
+"stats.peak_at" = "Peak at %02d:00 — %02d:00";
+"stats.weeks_ahead" = "Ahead by %d weeks";
+"stats.weeks_behind" = "Behind by %d weeks";
+"stats.reach_goal_by" = "You'll reach goal by %@";
+"stats.keep_going" = "Keep up the good work";
+
+// MARK: - Forecast
+"forecast.title" = "Forecast";
+"forecast.explanation" = "This is how much you'll save per month if you keep smoking at your current rate.";
+"forecast.current_average" = "Current average";
+"forecast.save_per_day" = "Save per day";
+"forecast.per_month" = "Per month (30 days)";
+"forecast.hint" = "The less you smoke, the more you save. Every unsmoked cigarette is money in your pocket!";
+
+// MARK: - Profile
+"profile.title" = "Profile";
+"profile.user" = "User";
+"profile.edit" = "Edit";
+"profile.product_type" = "Product type";
+"profile.cigarettes" = "Cigarettes";
+"profile.iqos" = "IQOS";
+"profile.vape" = "Vape";
+"profile.mix" = "Mixed";
+"profile.per_day" = "Per day";
+"profile.per_day_usually" = "Per day (usually)";
+"profile.pack_price" = "Pack price";
+"profile.sticks_in_pack" = "Sticks per pack";
+"profile.notifications" = "Notifications";
+"profile.evening_report_time" = "Evening report time";
+"profile.program_settings" = "Program";
+"profile.setup_program" = "Set up";
+"profile.current_limit" = "Current limit";
+"profile.today_limit" = "Today's limit: %d pcs";
+"profile.not_configured" = "Not configured";
+"profile.not_specified" = "Not specified";
+"profile.about" = "About";
+"profile.privacy_policy" = "Privacy Policy";
+"profile.terms_of_service" = "Terms of Service";
+"profile.support" = "Support";
+"profile.write_to_telegram" = "Contact via Telegram";
+"profile.version" = "Version";
+"profile.sign_out" = "Sign Out";
+"profile.language" = "Language";
+"profile.select_goal" = "SELECT GOAL";
+"profile.program_setup" = "Program Setup";
+"profile.target_per_day" = "TARGET PER DAY";
+"profile.program_duration" = "PROGRAM DURATION";
+"profile.quit_desc" = "Gradually reduce to 0";
+"profile.reduce_desc" = "Set target limit";
+"profile.observe_desc" = "No restrictions";
+"profile.months_format" = "%d mo";
+"profile.subscription" = "Subscription";
+"profile.subscription_active" = "Active";
+"profile.subscription_subscribe" = "Subscribe";
+"profile.manage_subscription" = "Manage subscription";
+"profile.trial_expired" = "Trial expired";
+"profile.discard_changes" = "Discard changes?";
+"profile.discard" = "Discard";
+"profile.discard_changes_message" = "You have unsaved changes. Are you sure you want to discard them?";
+"profile.support_email" = "Email us";
+"profile.support_description" = "Have questions or suggestions? Contact us through any convenient channel.";
+"profile.delete_account" = "Delete Account";
+"profile.delete_account_title" = "Delete Account?";
+"profile.delete_account_message" = "This will permanently delete your account and all data. This action cannot be undone.";
+"profile.delete" = "Delete";
+
+// MARK: - Onboarding
+"onboarding.welcome" = "Welcome";
+"onboarding.hello" = "Hello!";
+"onboarding.whats_your_name" = "What's your name?";
+"onboarding.name_description" = "What's your name? This name will be displayed in your profile.";
+"onboarding.name_placeholder" = "Name or nickname";
+"onboarding.enter_name" = "Enter name";
+"onboarding.continue" = "CONTINUE";
+"onboarding.next" = "Next";
+"onboarding.back" = "Back";
+"onboarding.my_choice" = "My choice";
+"onboarding.product_type_description" = "Choose your main nicotine source for accurate tracking.";
+"onboarding.type_label" = "TYPE";
+"onboarding.can_change_later" = "YOU CAN CHANGE THIS LATER";
+"onboarding.current_level" = "Current level";
+"onboarding.baseline_description" = "Specify your current consumption to personalize your plan.";
+"onboarding.how_many_per_day" = "HOW MANY PER DAY?";
+"onboarding.in_pack" = "IN PACK";
+"onboarding.what_do_you_smoke" = "What do you smoke?";
+"onboarding.how_much_per_day" = "How much per day?";
+"onboarding.pieces_per_day" = "pieces per day";
+"onboarding.pack_price_label" = "PACK PRICE";
+"onboarding.sticks_in_pack_label" = "Sticks per pack";
+"onboarding.what_is_your_goal" = "What's your goal?";
+"onboarding.goal_description" = "Choose the goal you want to achieve. Your personal plan depends on it.";
+"onboarding.goal_quit" = "Quit";
+"onboarding.goal_reduce" = "Reduce";
+"onboarding.goal_observe" = "Observe";
+"onboarding.goal_quit_desc" = "Completely quit smoking";
+"onboarding.goal_reduce_desc" = "Gradually reduce consumption";
+"onboarding.goal_observe_desc" = "Just track without a goal";
+"onboarding.target_amount" = "Reduce to how many?";
+"onboarding.duration" = "Over what period?";
+"onboarding.duration_description" = "Choose the timeframe to achieve your goal.";
+"onboarding.months" = "months";
+"onboarding.start" = "START";
+"onboarding.your_plan" = "Your plan";
+"onboarding.plan_description" = "Based on your data, we've created a personalized plan.";
+"onboarding.select_goal" = "SELECT GOAL";
+"onboarding.just_observing" = "Just observing";
+"onboarding.set_comfort_level" = "Set comfortable level";
+"onboarding.duration_1_month" = "1 month";
+"onboarding.duration_3_months" = "3 months";
+"onboarding.duration_6_months" = "6 months";
+"onboarding.duration_custom" = "Custom";
+"onboarding.intensive" = "Intensive";
+"onboarding.optimal" = "Optimal";
+"onboarding.gentle" = "Gentle";
+"onboarding.choose_duration" = "Choose duration";
+"onboarding.step_of" = "STEP %d OF %d";
+"onboarding.recommendation" = "With %d per day we recommend %@";
+"onboarding.save_error" = "Failed to save profile. Check your connection and try again.";
+
+// MARK: - Health Explanation
+"health.title" = "Health";
+"health.what_does_it_mean" = "What does +%d%% mean?";
+"health.explanation" = "This shows your body's recovery since your last cigarette.";
+"health.last_cigarette" = "Last cigarette";
+"health.recovery" = "Recovery";
+"health.how_it_works" = "How it works";
+"health.after_cigarette" = "Right after smoking — 5%%. Your body starts cleansing.";
+"health.longer_without" = "The longer without smoking — the higher the percentage.";
+"health.three_days" = "After 3 days without cigarettes — 95%%. Breathing easier, taste sharper!";
+"health.recovery_stages" = "Recovery stages";
+"health.minutes_20" = "20 minutes";
+"health.hours_2" = "2 hours";
+"health.hours_8" = "8 hours";
+"health.hours_24" = "24 hours";
+"health.hours_48" = "48 hours";
+"health.hours_72" = "72 hours";
+"health.benefit_20min" = "Heart rate and blood pressure start normalizing";
+"health.benefit_2h" = "Nicotine leaves your blood";
+"health.benefit_8h" = "Oxygen levels return to normal";
+"health.benefit_24h" = "Heart attack risk decreases";
+"health.benefit_48h" = "Nerve endings start recovering";
+"health.benefit_72h" = "Breathing becomes easier";
+
+// MARK: - Savings Explanation
+"savings.title" = "Savings";
+"savings.saved_today" = "saved today";
+"savings.how_calculated" = "How it's calculated";
+"savings.usually_smoke" = "Usually smoke";
+"savings.today_smoked" = "Smoked today";
+"savings.saved" = "Saved";
+"savings.price_per_unit" = "Price per piece";
+"savings.total" = "Total";
+"savings.hint" = "Savings grow when you smoke less than your norm. Fewer cigarettes means more money saved.";
+
+// MARK: - Program Explanation
+"program.title" = "Program";
+"program.what_is_program" = "What is the program?";
+"program.explanation" = "The program is your personal plan for gradually reducing cigarette consumption. Instead of quitting abruptly, you smoothly decrease the amount day by day.";
+"program.how_it_works" = "How it works";
+"program.starting_point" = "Starting point";
+"program.goal" = "Goal";
+"program.timeline" = "Timeline";
+"program.current" = "Current";
+"program.what_is_forecast" = "What does 'Forecast' mean?";
+"program.forecast_explanation" = "The forecast shows when you'll reach your goal if you stick to the plan. It's calculated based on your current progress.";
+"program.what_is_days_in_plan" = "What does 'days on plan' mean?";
+"program.days_in_plan_explanation" = "This is the number of days this week when you didn't exceed your daily limit. More days on plan means you're doing great!";
+"program.quit" = "Quit";
+"program.reduce" = "Reduce";
+"program.observe" = "Observe";
+"program.full_quit" = "Completely quit smoking";
+"program.reduce_to" = "Reduce to %d cigarettes per day";
+"program.started_with" = "You started with %d cigarettes per day";
+"program.weeks_format" = "Over %d weeks (%d mo.)";
+"program.week_limit" = "Week %d: limit %d cigarettes/day";
+
+// MARK: - Auth
+"auth.sign_in_with_apple" = "Sign in with Apple";
+"auth.welcome_title" = "dem";
+"auth.welcome_subtitle" = "Your path to nicotine freedom";
+"auth.terms_agreement" = "By continuing, you agree to the terms of service";
+
+// MARK: - Notifications
+// Evening summary
+"notifications.evening_title" = "Your day";
+"notifications.evening_zero" = "0 today — amazing! 🎉";
+"notifications.evening_under_limit" = "Today %d of %d. Great job!";
+"notifications.evening_at_limit" = "Today %d of %d. Right on plan 👍";
+"notifications.evening_over_limit" = "Today %d of %d. Tomorrow is a new day!";
+"notifications.evening_no_limit" = "Today: %d. Logged!";
+
+// Limit exceeded (sent 1 min after)
+"notifications.limit_exceeded_title" = "Daily plan complete";
+"notifications.limit_exceeded_body" = "You've reached your limit of %d. Try to stop for today 💪";
+
+// Health milestones
+"notifications.milestone_2h" = "2 hours ✨";
+"notifications.milestone_2h_body" = "Nicotine is starting to leave your blood. Keep going!";
+"notifications.milestone_6h" = "6 hours 🌟";
+"notifications.milestone_6h_body" = "Your heart rate is returning to normal. You're on track!";
+"notifications.milestone_12h" = "12 hours 💫";
+"notifications.milestone_12h_body" = "Blood oxygen levels are rising. Great job!";
+"notifications.milestone_24h" = "24 hours! 🎯";
+"notifications.milestone_24h_body" = "One day smoke-free — heart risk is already decreasing!";
+"notifications.milestone_72h" = "72 hours! 🏆";
+"notifications.milestone_72h_body" = "3 days! Breathing is easier now. You're doing great!";
+
+// MARK: - Time
+"time.minutes_ago" = "%d min ago";
+"time.hours_ago" = "%d h ago";
+"time.days_ago" = "%d d ago";
+"time.long_ago" = "long ago";
+
+// MARK: - Units
+"units.pieces" = "pcs";
+"units.pieces_per_day" = "pcs/day";
+"units.tenge" = "₸";
+
+// MARK: - Quotes
+"quotes.quote1" = "Every day without a cigarette is a victory over yourself";
+"quotes.quote2" = "You are stronger than you think";
+"quotes.quote3" = "Small steps lead to big changes";
+"quotes.quote4" = "Your health is your greatest investment";
+"quotes.quote5" = "Today is the best day to become better";
+
+// MARK: - Health Status
+"health_status.very_recent_title" = "Just started";
+"health_status.recent_title" = "First steps";
+"health_status.recovering_title" = "Recovering";
+"health_status.improving_title" = "Improving";
+"health_status.strong_title" = "Great!";
+"health_status.excellent_title" = "Excellent!";
+"health_status.very_recent_desc" = "Your body is just starting to cleanse. Every hour without a cigarette is a victory.";
+"health_status.recent_desc" = "Nicotine is starting to leave your blood. Keep going!";
+"health_status.recovering_desc" = "Carbon monoxide levels are dropping, oxygen is reaching your organs better.";
+"health_status.improving_desc" = "Blood circulation is improving, lungs are starting to cleanse.";
+"health_status.strong_desc" = "Nerve endings are recovering. Taste and smell are getting sharper!";
+"health_status.excellent_desc" = "Breathing is easier, more energy. You're on the right track!";
+
+// MARK: - Paywall
+"paywall.days" = "days";
+"paywall.dont_lose_progress" = "Don't lose your progress";
+"paywall.subtitle" = "Keep tracking your journey to nicotine freedom";
+"paywall.feature_stats" = "Detailed statistics and analytics";
+"paywall.feature_notifications" = "Smart reminders and motivation";
+"paywall.feature_goals" = "Personal programs and goals";
+"paywall.feature_health" = "Health tracking";
+"paywall.plan_1_month" = "1 month";
+"paywall.plan_6_months" = "6 months";
+"paywall.plan_6_months_subtitle" = "We believe 6 months is enough";
+"paywall.plan_1_year" = "1 year";
+"paywall.best_choice" = "Best choice";
+"paywall.month" = "mo";
+"paywall.start_trial" = "Start 14-day free trial";
+"paywall.price_disclaimer" = "Then %@ · Cancel anytime";
+"paywall.restore" = "Restore purchases";
+"paywall.terms" = "Terms of Service";
+"paywall.privacy" = "Privacy Policy";
+"paywall.error" = "Error";
+"paywall.subscription_active" = "Subscription active";
+"paywall.trial_days_left" = "%d days left in trial";
+"paywall.cigarettes_reduced" = "less cigarettes";
+"paywall.money_saved" = "saved";
+"paywall.no_purchases_to_restore" = "No purchases found to restore";
+"paywall.subscribe" = "Subscribe";
+"paywall.subscribe_now" = "Subscribe now";
+"paywall.products_not_loaded" = "Subscription plans are not available. Please try again later.";

@@ -8,11 +8,11 @@ struct DurationStep: View {
         VStack(alignment: .leading, spacing: 0) {
             // Title section
             VStack(alignment: .leading, spacing: 12) {
-                Text("За какой срок?")
+                Text(L.Onboarding.duration)
                     .font(.screenTitle)
                     .foregroundColor(.textPrimary)
 
-                Text("Выберите комфортный темп снижения")
+                Text(L.Onboarding.durationDescription)
                     .font(.bodyText)
                     .foregroundColor(.textSecondary)
                     .lineSpacing(4)
@@ -40,7 +40,7 @@ struct DurationStep: View {
             // Custom duration picker
             if viewModel.selectedDuration == .custom {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("СРОК В МЕСЯЦАХ")
+                    Text(L.Profile.programDuration)
                         .font(.sectionLabel)
                         .kerning(1)
                         .foregroundColor(.textMuted)
@@ -69,7 +69,7 @@ struct DurationStep: View {
                             .foregroundColor(.primaryAccent)
                             .contentTransition(.numericText())
 
-                        Text("мес.")
+                        Text(L.Onboarding.months)
                             .font(.bodyText)
                             .foregroundColor(.textSecondary)
 
@@ -104,7 +104,7 @@ struct DurationStep: View {
             // Recommendation hint
             VStack(alignment: .leading, spacing: 8) {
                 let recommendation = recommendedDuration()
-                Text("При \(viewModel.baselinePerDay) в день мы рекомендуем \(recommendation)")
+                Text(L.Onboarding.recommendationText(viewModel.baselinePerDay, recommendation))
                     .font(.caption)
                     .foregroundColor(.textMuted)
                     .multilineTextAlignment(.leading)
@@ -119,7 +119,7 @@ struct DurationStep: View {
                 Button {
                     onComplete()
                 } label: {
-                    Text("НАЧАТЬ")
+                    Text(L.Onboarding.start)
                 }
                 .buttonStyle(PrimaryButtonStyle(isEnabled: viewModel.canProceedStep6))
                 .disabled(!viewModel.canProceedStep6)

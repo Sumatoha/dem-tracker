@@ -6,6 +6,7 @@ iOS приложение для отслеживания потребления 
 ## Технологии
 - **SwiftUI** (iOS 17+)
 - **Supabase** (бэкенд, авторизация, база данных)
+- **StoreKit 2** (подписки, In-App Purchases)
 - **Swift Package Manager** (зависимости)
 - **MVVM архитектура**
 
@@ -13,9 +14,9 @@ iOS приложение для отслеживания потребления 
 
 ```
 dem/
-├── demApp.swift              # Точка входа, роутинг авторизации
+├── demApp.swift              # Точка входа, роутинг авторизации, показ paywall
 ├── Models/
-│   ├── Profile.swift         # Профиль пользователя
+│   ├── Profile.swift         # Профиль пользователя + поля подписки
 │   ├── SmokingLog.swift      # Запись о курении + TriggerType enum
 │   ├── Craving.swift         # Тяга (не реализовано)
 │   └── Achievement.swift     # Достижения (не реализовано)
@@ -28,7 +29,7 @@ dem/
 │   └── ProfileViewModel.swift
 ├── Views/
 │   ├── Auth/
-│   │   └── AuthView.swift    # Sign in with Apple
+│   │   └── AuthView.swift    # Sign in with Apple + логотип DemLogo
 │   ├── Onboarding/
 │   │   ├── OnboardingContainerView.swift
 │   │   ├── NameStep.swift        # Шаг 1: Имя
@@ -38,7 +39,7 @@ dem/
 │   │   ├── ProgramTypeStep.swift # Шаг 5: Целевое количество (reduce)
 │   │   └── DurationStep.swift    # Шаг 6: Длительность программы
 │   ├── Home/
-│   │   ├── HomeView.swift
+│   │   ├── HomeView.swift        # Хедер с логотипом DemLogo
 │   │   ├── TimerPillView.swift
 │   │   ├── BigLogButton.swift
 │   │   └── TriggerSelectionView.swift
@@ -47,27 +48,111 @@ dem/
 │   ├── Stats/
 │   │   └── StatsView.swift
 │   ├── Profile/
-│   │   └── ProfileView.swift
+│   │   └── ProfileView.swift     # + секция подписки с управлением
+│   ├── Paywall/
+│   │   ├── PaywallView.swift     # Экран подписки с планами
+│   │   ├── TermsView.swift       # Условия использования
+│   │   └── PrivacyPolicyView.swift # Политика конфиденциальности
 │   └── Components/
 │       ├── MainTabView.swift
 │       ├── DesignSystem.swift    # Цвета, шрифты, Layout
 │       ├── StatCard.swift
 │       ├── ActivityChart.swift
 │       ├── PressEffectModifier.swift
-│       └── LegalDocumentView.swift # Показ политик внутри приложения
+│       └── LegalDocumentView.swift
 ├── Services/
-│   ├── SupabaseManager.swift # Singleton для работы с Supabase
-│   ├── CacheManager.swift    # Локальный кеш (UserDefaults)
-│   ├── HapticManager.swift   # Вибрация
-│   ├── NotificationManager.swift # Push-уведомления (вечерние отчёты)
+│   ├── SupabaseManager.swift     # Singleton для работы с Supabase
+│   ├── CacheManager.swift        # Локальный кеш (UserDefaults)
+│   ├── HapticManager.swift       # Вибрация
+│   ├── NotificationManager.swift # Push-уведомления
+│   ├── LanguageManager.swift     # Локализация (ru/en/kk)
+│   ├── SubscriptionManager.swift # StoreKit 2, подписки
 │   └── ProgramCalculator.swift   # Расчёт лимитов программы снижения
+├── Resources/
+│   ├── ru.lproj/Localizable.strings  # Русский
+│   ├── en.lproj/Localizable.strings  # English
+│   └── kk.lproj/Localizable.strings  # Қазақша
+├── Assets.xcassets/
+│   ├── AppIcon.appiconset/       # Иконка приложения (dem_breath_v3.png)
+│   ├── DemLogo.imageset/         # Логотип для использования в UI
+│   └── AccentColor.colorset/
 └── Config/
-    └── Supabase.swift        # URL, ключи, названия таблиц/колонок
+    └── Supabase.swift            # URL, ключи, названия таблиц/колонок
 
-docs/                         # Документация для App Store
-├── privacy-policy.html       # Политика конфиденциальности (для хостинга)
-├── terms-of-service.html     # Условия использования (для хостинга)
-└── app-store-metadata.md     # Метаданные для App Store Connect
+docs/                             # Документация для App Store
+├── privacy-policy.html           # Политика конфиденциальности
+├── terms-of-service.html         # Условия использования
+└── app-store-metadata.md         # Метаданные для App Store Connect
+```
+
+## Подписки (StoreKit 2)
+
+### Product IDs (App Store Connect)
+```swift
+enum ProductID: String, CaseIterable {
+    case monthly = "com.dem.monthly"       // $4.99/мес
+    case semiannual = "com.dem.halfyear"   // $24.99/6 мес (-17%)
+    case annual = "com.dem.yearly"         // $49.99/год
+}
+```
+
+### SubscriptionManager.swift
+- Загрузка продуктов из App Store
+- Покупка подписки
+- Восстановление покупок
+- Проверка статуса подписки
+- 14-дневный триал (локальный, через UserDefaults)
+
+### PaywallView.swift
+- Показывается при первом запуске после онбординга
+- Прогресс-кольцо с днями использования
+- Виджет статистики (сигарет меньше, сэкономлено)
+- 3 плана подписки (рекомендуемый - 6 месяцев)
+- Кнопка "Восстановить покупки"
+- Ссылки на Terms и Privacy
+
+### Где показывается Paywall
+1. `demApp.swift` - после онбординга, если нет подписки/триала
+2. `ProfileView.swift` - секция "Подписка" с кнопкой управления
+
+## Локализация
+
+### Поддерживаемые языки
+- Русский (ru) - основной
+- English (en)
+- Қазақша (kk)
+
+### Как работает
+- `LanguageManager.swift` - синглтон с текущим языком
+- `L.Section.key` - доступ к локализованным строкам
+- `"key".localized` - extension для String
+- Язык меняется в ProfileView → languageSection
+
+### Структура L (LanguageManager)
+```swift
+L.Common.ok, L.Common.cancel, L.Common.save...
+L.Auth.welcomeTitle, L.Auth.welcomeSubtitle...
+L.Home.today, L.Home.yesterday...
+L.Profile.subscription, L.Profile.manageSubscription...
+L.Paywall.startTrial, L.Paywall.bestChoice...
+L.Notifications.eveningTitle...
+```
+
+## Ассеты
+
+### Логотип (dem_breath_v3.png)
+- Концентрические круги с оранжевым центром
+- Размер: 1024x1024
+- Используется как:
+  - `AppIcon` - иконка приложения и уведомлений
+  - `DemLogo` - в UI (AuthView 120x120, HomeView header 32x32)
+
+### Использование в коде
+```swift
+Image("DemLogo")
+    .resizable()
+    .scaledToFit()
+    .frame(width: 32, height: 32)
 ```
 
 ## База данных Supabase
@@ -84,6 +169,10 @@ docs/                         # Документация для App Store
 - goal_per_day (int, nullable)
 - goal_date (date, nullable)
 - onboarding_done (bool, default false)
+- subscription_status (text, nullable)      # active/expired/none
+- subscription_product_id (text, nullable)  # com.dem.monthly etc
+- subscription_expires_at (timestamptz, nullable)
+- trial_started_at (timestamptz, nullable)
 - created_at (timestamptz)
 - updated_at (timestamptz)
 ```
@@ -141,42 +230,20 @@ var safeBaselinePerDay: Int { baselinePerDay ?? 10 }
 - Отчёты (stats)
 - Профиль (profile)
 
-Кнопка настроек (шестерёнка) на главной переключает на профиль.
-
 ### 6. Программа снижения
 - `ProgramCalculator.swift` рассчитывает текущий дневной лимит
 - Лимит постепенно снижается от baseline до target за N месяцев
-- Формула: `startValue - (startValue - targetValue) * weekNumber / totalWeeks`
 - На главном экране показывается счётчик "X/Y" где Y - текущий лимит
-- Красный цвет счётчика при превышении лимита
 
 ### 7. Push-уведомления (NotificationManager.swift)
-
 **Типы уведомлений:**
-1. **Утреннее (10:00)** - мотивация, лимит на день, серия дней
-2. **Дневное (14:00)** - проверка прогресса к лимиту
-3. **Вечернее (настраиваемое)** - итоги дня, сравнение с лимитом
-4. **Мгновенное** - при достижении/превышении лимита
-5. **Еженедельное (воскресенье 21:00)** - итоги недели, экономия
-6. **Health milestones** - 2ч, 8ч, 24ч, 48ч, 72ч без курения
-
-**Когда планируются:**
-- При запуске приложения (`HomeView.task → setupInitialNotifications`)
-- После каждого лога (`submitLog → updateNotifications`)
-- При включении уведомлений (`ProfileViewModel.toggleNotifications`)
-- При изменении времени (`ProfileViewModel.updateNotificationTime`)
+- Вечернее (настраиваемое время) - итоги дня
+- При превышении лимита
+- Health milestones - 2ч, 6ч, 12ч, 24ч, 72ч без курения
 
 ### 8. Защита данных профиля (КРИТИЧНО!)
 - `fetchOrCreateProfile()` ТОЛЬКО читает данные, НИКОГДА не создаёт/перезаписывает
 - Профиль создаётся ТОЛЬКО при первом онбординге
-- `ProfileViewModel.saveChanges()` имеет guard против сохранения если profile == nil
-- Это предотвращает баг когда дефолтные данные перезаписывают реальные
-
-### 9. Юридические документы
-- Политика конфиденциальности и Условия использования
-- Встроены в приложение через `LegalDocumentView` + `LegalTexts` enum
-- HTML версии в `docs/` для хостинга (GitHub Pages)
-- Раздел "О приложении" в ProfileView с ссылками
 
 ## Дизайн система
 
@@ -184,9 +251,9 @@ var safeBaselinePerDay: Int { baselinePerDay ?? 10 }
 - `appBackground` - фон приложения
 - `cardBackground` - фон карточек
 - `cardFill` - заливка элементов
-- `primaryAccent` - оранжевый акцент
+- `primaryAccent` - оранжевый акцент (#E86F45)
 - `textPrimary`, `textSecondary`, `textMuted`
-- `buttonBlack` - тёмные кнопки
+- `success` - зелёный для позитивных значений
 
 ### Шрифты
 - `screenTitle` - заголовок экрана
@@ -199,72 +266,50 @@ var safeBaselinePerDay: Int { baselinePerDay ?? 10 }
 - `horizontalPadding = 20`
 - `cardCornerRadius = 16`
 
-## Известные особенности
+## Xcode конфигурация
 
-1. **Sheets в ProfileView** - используют `.presentationBackground(.white)` для светлого фона
+### Capabilities (dem.entitlements)
+- Sign in with Apple
+- In-App Purchase (для подписок)
 
-2. **Редактирование профиля** - текстовые поля используют `String` binding, не `Int`, для плавного ввода
+### Info.plist ключи
+- Privacy - Photo Library Usage (если нужно)
 
-3. **При сохранении профиля** - всегда отправляется `onboarding_done: true` чтобы не сбросить на онбординг
+## Тестирование подписок
 
-4. **История** - compact карточки статистики сверху, логи снизу
+### Sandbox Testing
+1. Создать Sandbox Tester в App Store Connect
+2. На устройстве: Settings → App Store → Sandbox Account
+3. В приложении покупки будут через Sandbox
 
-## Supabase конфиг
-
-В `Config/Supabase.swift`:
-```swift
-enum SupabaseConfig {
-    static let url = URL(string: "YOUR_SUPABASE_URL")!
-    static let anonKey = "YOUR_ANON_KEY"
-}
-
-enum TableName {
-    static let profiles = "profiles"
-    static let logs = "smoking_logs"
-    static let cravings = "cravings"
-    static let achievements = "achievements"
-}
-
-enum ColumnName {
-    enum Profile {
-        static let id = "id"
-        static let name = "name"
-        static let productType = "product_type"
-        // ... и т.д.
-    }
-    enum Log {
-        static let id = "id"
-        static let userId = "user_id"
-        // ... и т.д.
-    }
-}
+### Ошибки в симуляторе
 ```
-
-## Как добавить новый файл в проект
-
-1. Создать .swift файл в нужной папке
-2. Добавить в `project.pbxproj`:
-   - PBXBuildFile section: `ID /* File.swift in Sources */`
-   - PBXFileReference section: `ID /* File.swift */`
-   - PBXGroup section: добавить ID в children нужной группы
-   - PBXSourcesBuildPhase: добавить ID в files
+Error Domain=ASDErrorDomain Code=509 "No active account"
+```
+Это нормально - в симуляторе нет App Store аккаунта. Тестировать на реальном устройстве.
 
 ## Типичные баги и решения
 
 | Баг | Причина | Решение |
 |-----|---------|---------|
 | "data couldn't be read" | NULL в БД для non-optional поля | Сделать поле optional + safe accessor |
-| Онбординг каждый раз | profile не загружен или onboarding_done = false | Проверить fetchOrCreateProfile, добавить onboarding_done в updates |
+| Онбординг каждый раз | profile не загружен или onboarding_done = false | Проверить fetchOrCreateProfile |
 | Sheet тёмный | Наследует тему приложения | `.presentationBackground(.white)` |
-| Layout jump | Контент меняет размер при загрузке | GeometryReader + minHeight |
-| Профиль сбрасывается на дефолт | createNewProfile вызывался при каждом fetch | fetchOrCreateProfile должен ТОЛЬКО читать |
-| Cannot find 'X' in scope | Файл не добавлен в project.pbxproj | Добавить в PBXBuildFile, PBXFileReference, PBXGroup, PBXSourcesBuildPhase |
-| Программа не снижает с 1 недели | Формула использовала weeksElapsed | Использовать weekNumber в формуле |
+| Иконка не обновляется | iOS кеширует иконки | Clean Build + удалить app + rebuild |
+| StoreKit products пустые | Нет продуктов в App Store Connect | Создать продукты, проверить Bundle ID |
+| Подписка не работает | Agreements не подписаны | App Store Connect → Agreements |
 
-## GitHub Pages для хостинга политик
+## App Store Connect
 
-1. Создать репозиторий на GitHub
-2. Загрузить файлы из `docs/` в корень или папку
-3. В Settings → Pages включить GitHub Pages
-4. URL будет: `https://username.github.io/repo-name/privacy-policy.html`
-5. Использовать эти URL в App Store Connect
+### Product IDs
+- `com.dem.monthly` - Monthly ($4.99)
+- `com.dem.halfyear` - 6 Months ($24.99)
+- `com.dem.yearly` - Annual ($49.99)
+
+### Subscription Group
+- Название: "dem Premium"
+- Все три продукта в одной группе
+
+### URLs для Review
+- Privacy Policy: https://[github-pages-url]/privacy-policy.html
+- Terms of Service: https://[github-pages-url]/terms-of-service.html

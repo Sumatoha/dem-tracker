@@ -49,7 +49,7 @@ struct StatsView: View {
                         .buttonStyle(.plain)
 
                         // Motivational text
-                        Text("Статистика — это компас вашего прогресса.\nКаждая цифра приближает вас к полной свободе.")
+                        Text(L.Stats.motivationalText)
                             .font(.system(size: 14, weight: .regular))
                             .foregroundColor(.textSecondary)
                             .multilineTextAlignment(.center)
@@ -66,10 +66,10 @@ struct StatsView: View {
         .task {
             await viewModel.loadData()
         }
-        .alert("Ошибка", isPresented: $viewModel.showError) {
-            Button("OK", role: .cancel) {}
+        .alert(L.Common.error, isPresented: $viewModel.showError) {
+            Button(L.Common.ok, role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage ?? "Произошла ошибка")
+            Text(viewModel.errorMessage ?? L.Common.error)
         }
         .sheet(isPresented: $showProgramExplanation) {
             ProgramExplanationView(
@@ -99,7 +99,7 @@ struct StatsView: View {
 
     private var headerSection: some View {
         HStack {
-            Text("Статистика")
+            Text(L.Stats.title)
                 .font(.screenTitle)
                 .foregroundColor(.textPrimary)
 
@@ -114,7 +114,7 @@ struct StatsView: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("АКТИВНОСТЬ ПО ЧАСАМ")
+                    Text(L.Stats.hourlyActivity)
                         .font(.sectionLabel)
                         .kerning(2)
                         .foregroundColor(.textSecondary)
@@ -143,7 +143,7 @@ struct StatsView: View {
 
     private var triggerCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("САМЫЙ ЧАСТЫЙ\nТРИГГЕР")
+            Text(L.Stats.mostFrequentTrigger)
                 .font(.sectionLabel)
                 .kerning(1)
                 .foregroundColor(.textSecondary)
@@ -161,7 +161,7 @@ struct StatsView: View {
                         .foregroundColor(.primaryAccent)
                 }
             } else {
-                Text("Нет данных")
+                Text(L.Stats.noData)
                     .font(.cardValue)
                     .foregroundColor(.textSecondary)
             }
@@ -177,7 +177,7 @@ struct StatsView: View {
 
     private var streakCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("ЛУЧШИЙ\nРЕЗУЛЬТАТ")
+            Text(L.Stats.longestStreak)
                 .font(.sectionLabel)
                 .kerning(1)
                 .foregroundColor(.textSecondary)
@@ -190,12 +190,12 @@ struct StatsView: View {
                         .font(.cardTitle)
                         .foregroundColor(.textPrimary)
 
-                    Text("часов")
+                    Text(L.Stats.hours)
                         .font(.bodyText)
                         .foregroundColor(.textSecondary)
                 }
 
-                Text("БЕЗ СРЫВОВ")
+                Text(L.Stats.withoutBreaks)
                     .font(.sectionLabel)
                     .kerning(1)
                     .foregroundColor(.textSecondary)
@@ -212,7 +212,7 @@ struct StatsView: View {
 
     private var forecastCard: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("ПРОГНОЗ ЭКОНОМИИ ЗА МЕСЯЦ")
+            Text(L.Stats.monthlyForecast)
                 .font(.sectionLabel)
                 .kerning(2)
                 .foregroundColor(.textSecondary)
@@ -222,12 +222,12 @@ struct StatsView: View {
                     .font(.system(size: 48, weight: .bold))
                     .foregroundColor(.primaryAccent)
 
-                Text("₸")
+                Text(L.Units.tenge)
                     .font(.system(size: 32, weight: .bold))
                     .foregroundColor(.primaryAccent)
             }
 
-            Text("При сохранении текущей динамики отказа от курения.")
+            Text(L.Stats.ifMaintainDynamics)
                 .font(.system(size: 13, weight: .regular))
                 .foregroundColor(.textSecondary)
                 .lineSpacing(4)
@@ -252,12 +252,12 @@ struct StatsView: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("ПРОГРАММА")
+                    Text(L.Stats.program)
                         .font(.sectionLabel)
                         .kerning(2)
                         .foregroundColor(.textSecondary)
 
-                    Text("Неделя \(viewModel.currentWeekNumber) из \(viewModel.totalWeeksInProgram)")
+                    Text(L.Stats.weekOfTotal(viewModel.currentWeekNumber, viewModel.totalWeeksInProgram))
                         .font(.system(size: 13, weight: .medium))
                         .foregroundColor(.textMuted)
                 }
@@ -267,10 +267,10 @@ struct StatsView: View {
                 // Current limit badge
                 if let limit = viewModel.currentDailyLimit {
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text("Лимит")
+                        Text(L.Stats.limit)
                             .font(.system(size: 10, weight: .medium))
                             .foregroundColor(.textSecondary)
-                        Text("\(limit)/день")
+                        Text(L.Stats.limitPerDay(limit))
                             .font(.system(size: 16, weight: .bold))
                             .foregroundColor(.primaryAccent)
                     }
@@ -288,7 +288,7 @@ struct StatsView: View {
             HStack(spacing: 20) {
                 VStack(alignment: .leading, spacing: 4) {
                     let (inPlan, total) = viewModel.daysInPlanThisWeek
-                    Text("На этой неделе")
+                    Text(L.Stats.thisWeekLabel)
                         .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.textSecondary)
 
@@ -297,12 +297,12 @@ struct StatsView: View {
                             Text("\(inPlan)/\(total)")
                                 .font(.system(size: 18, weight: .bold))
                                 .foregroundColor(inPlan == total ? .green : .textPrimary)
-                            Text("дней в плане")
+                            Text(L.Stats.daysInPlan)
                                 .font(.system(size: 13, weight: .medium))
                                 .foregroundColor(.textSecondary)
                         }
                     } else {
-                        Text("Нет данных")
+                        Text(L.Stats.noData)
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(.textMuted)
                     }
@@ -311,7 +311,7 @@ struct StatsView: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
-                    Text("Прогноз")
+                    Text(L.Stats.forecast)
                         .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.textSecondary)
                     Text(viewModel.projectionText)
@@ -366,13 +366,13 @@ struct ProgramProgressView: View {
 
             // Week markers
             HStack {
-                Text("Старт")
+                Text(L.Stats.startMarker)
                     .font(.system(size: 10, weight: .medium))
                     .foregroundColor(.textMuted)
 
                 Spacer()
 
-                Text("Цель")
+                Text(L.Stats.goalMarker)
                     .font(.system(size: 10, weight: .medium))
                     .foregroundColor(.textMuted)
             }
@@ -398,18 +398,18 @@ struct ProgramExplanationView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     // Что это
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Что такое программа?")
+                        Text(L.Program.whatIsProgram)
                             .font(.system(size: 22, weight: .bold))
                             .foregroundColor(.textPrimary)
 
-                        Text("Программа — это твой личный план постепенного снижения потребления сигарет. Вместо резкого отказа, ты плавно уменьшаешь количество день за днём.")
+                        Text(L.Program.programExplanation)
                             .font(.bodyText)
                             .foregroundColor(.textSecondary)
                     }
 
                     // Как работает
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("Как это работает")
+                        Text(L.Program.howItWorks)
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(.textPrimary)
 
@@ -417,28 +417,28 @@ struct ProgramExplanationView: View {
                             if let start = startValue, let target = targetValue {
                                 explanationRow(
                                     number: "1",
-                                    title: "Стартовая точка",
-                                    text: "Ты начал с \(start) сигарет в день"
+                                    title: L.Program.startingPoint,
+                                    text: String(format: L.Program.startedWith, start)
                                 )
 
                                 explanationRow(
                                     number: "2",
-                                    title: "Цель",
-                                    text: target == 0 ? "Полный отказ от курения" : "Снизить до \(target) сигарет в день"
+                                    title: L.Program.goal,
+                                    text: target == 0 ? L.Program.fullQuit : String(format: L.Program.reduceTo, target)
                                 )
 
                                 explanationRow(
                                     number: "3",
-                                    title: "Срок",
-                                    text: "За \(totalWeeks) недель (\(totalWeeks / 4) мес.)"
+                                    title: L.Program.timeline,
+                                    text: String(format: L.Program.weeksFormat, totalWeeks, totalWeeks / 4)
                                 )
                             }
 
                             if let limit = currentLimit {
                                 explanationRow(
                                     number: "4",
-                                    title: "Сейчас",
-                                    text: "Неделя \(currentWeek): лимит \(limit) сигарет/день"
+                                    title: L.Program.current,
+                                    text: String(format: L.Program.weekLimit, currentWeek, limit)
                                 )
                             }
                         }
@@ -449,11 +449,11 @@ struct ProgramExplanationView: View {
 
                     // Что значит прогноз
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Что значит «Прогноз»?")
+                        Text(L.Program.whatIsForecast)
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(.textPrimary)
 
-                        Text("Прогноз показывает, когда ты достигнешь цели, если будешь придерживаться плана. Он считается на основе твоего текущего прогресса.")
+                        Text(L.Program.forecastExplanation)
                             .font(.system(size: 14))
                             .foregroundColor(.textSecondary)
 
@@ -474,11 +474,11 @@ struct ProgramExplanationView: View {
 
                     // Что значит дни в плане
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Что значит «дней в плане»?")
+                        Text(L.Program.whatIsDaysInPlan)
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(.textPrimary)
 
-                        Text("Это количество дней на этой неделе, когда ты не превысил свой дневной лимит. Чем больше дней в плане — тем лучше ты справляешься!")
+                        Text(L.Program.daysInPlanExplanation)
                             .font(.system(size: 14))
                             .foregroundColor(.textSecondary)
                     }
@@ -486,11 +486,14 @@ struct ProgramExplanationView: View {
                 .padding(20)
             }
             .background(Color.appBackground)
-            .navigationTitle("Программа")
+            .navigationTitle(L.Program.title)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.appBackground, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarColorScheme(.light, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Готово") {
+                    Button(L.Common.done) {
                         dismiss()
                     }
                     .foregroundColor(.primaryAccent)
@@ -540,52 +543,52 @@ struct ForecastExplanationView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     // Что это
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Прогноз экономии")
+                        Text(L.Forecast.title)
                             .font(.system(size: 22, weight: .bold))
                             .foregroundColor(.textPrimary)
 
-                        Text("Это сумма, которую ты сэкономишь за месяц, если будешь курить так же, как сейчас.")
+                        Text(L.Forecast.explanation)
                             .font(.bodyText)
                             .foregroundColor(.textSecondary)
                     }
 
                     // Расчёт
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("Как считается")
+                        Text(L.Savings.howCalculated)
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(.textPrimary)
 
                         VStack(spacing: 12) {
                             calculationRow(
-                                label: "Обычно куришь",
-                                value: "\(baseline) шт/день"
+                                label: L.Savings.usuallySmoke,
+                                value: "\(baseline) \(L.Units.piecesPerDay)"
                             )
 
                             calculationRow(
-                                label: "Сейчас в среднем",
-                                value: String(format: "%.1f шт/день", dailyAverage)
+                                label: L.Forecast.currentAverage,
+                                value: String(format: "%.1f \(L.Units.piecesPerDay)", dailyAverage)
                             )
 
                             calculationRow(
-                                label: "Экономишь в день",
-                                value: String(format: "%.1f шт", savedPerDay)
+                                label: L.Forecast.savePerDay,
+                                value: String(format: "%.1f \(L.Units.pieces)", savedPerDay)
                             )
 
                             calculationRow(
-                                label: "Цена за штуку",
-                                value: String(format: "%.0f ₸", pricePerUnit)
+                                label: L.Savings.pricePerUnit,
+                                value: String(format: "%.0f \(L.Units.tenge)", pricePerUnit)
                             )
 
                             Divider()
 
                             HStack {
-                                Text("За месяц (30 дней)")
+                                Text(L.Forecast.perMonth)
                                     .font(.system(size: 14, weight: .medium))
                                     .foregroundColor(.textPrimary)
 
                                 Spacer()
 
-                                Text("\(monthlyForecast) ₸")
+                                Text("\(monthlyForecast) \(L.Units.tenge)")
                                     .font(.system(size: 18, weight: .bold))
                                     .foregroundColor(.primaryAccent)
                             }
@@ -601,7 +604,7 @@ struct ForecastExplanationView: View {
                             .font(.system(size: 16))
                             .foregroundColor(.yellow)
 
-                        Text("Чем меньше куришь — тем больше экономишь. Каждая не выкуренная сигарета — это деньги в твоём кармане!")
+                        Text(L.Forecast.hint)
                             .font(.system(size: 14))
                             .foregroundColor(.textSecondary)
                     }
@@ -612,11 +615,14 @@ struct ForecastExplanationView: View {
                 .padding(20)
             }
             .background(Color.appBackground)
-            .navigationTitle("Прогноз")
+            .navigationTitle(L.Stats.forecast)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.appBackground, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarColorScheme(.light, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Готово") {
+                    Button(L.Common.done) {
                         dismiss()
                     }
                     .foregroundColor(.primaryAccent)

@@ -8,11 +8,11 @@ struct NameStep: View {
         VStack(alignment: .leading, spacing: 0) {
             // Title section
             VStack(alignment: .leading, spacing: 12) {
-                Text("Привет!")
+                Text(L.Onboarding.hello)
                     .font(.screenTitle)
                     .foregroundColor(.textPrimary)
 
-                Text("Как тебя зовут? Это имя будет отображаться в твоём профиле.")
+                Text(L.Onboarding.nameDescription)
                     .font(.bodyText)
                     .foregroundColor(.textSecondary)
                     .lineSpacing(4)
@@ -22,12 +22,12 @@ struct NameStep: View {
 
             // Name input
             VStack(alignment: .leading, spacing: 8) {
-                Text("ИМЯ ИЛИ НИКНЕЙМ")
+                Text(L.Onboarding.namePlaceholder.uppercased())
                     .font(.sectionLabel)
                     .kerning(1)
                     .foregroundColor(.textMuted)
 
-                TextField("Введите имя", text: $viewModel.userName)
+                TextField(L.Onboarding.enterName, text: $viewModel.userName)
                     .font(.system(size: 20, weight: .medium))
                     .foregroundColor(.textPrimary)
                     .padding(16)
@@ -53,7 +53,7 @@ struct NameStep: View {
                     Haptics.selection()
                     viewModel.nextStep()
                 } label: {
-                    Text("ПРОДОЛЖИТЬ")
+                    Text(L.Onboarding.continueButton)
                 }
                 .buttonStyle(PrimaryButtonStyle(isEnabled: viewModel.canProceedStep1))
                 .disabled(!viewModel.canProceedStep1)

@@ -7,11 +7,11 @@ struct GoalStep: View {
         VStack(alignment: .leading, spacing: 0) {
             // Title section
             VStack(alignment: .leading, spacing: 12) {
-                Text("Какая цель?")
+                Text(L.Onboarding.whatIsYourGoal)
                     .font(.screenTitle)
                     .foregroundColor(.textPrimary)
 
-                Text("Выберите цель, которая наиболее точно описывает ваши намерения.")
+                Text(L.Onboarding.goalDescription)
                     .font(.bodyText)
                     .foregroundColor(.textSecondary)
                     .lineSpacing(4)
@@ -36,7 +36,7 @@ struct GoalStep: View {
             // Goal per day picker (for reduce)
             if viewModel.selectedGoalType == .reduce {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("ДНЕВНОЙ ЛИМИТ")
+                    Text(L.Profile.targetPerDay)
                         .font(.sectionLabel)
                         .kerning(1)
                         .foregroundColor(.textMuted)
@@ -65,7 +65,7 @@ struct GoalStep: View {
                             .foregroundColor(.primaryAccent)
                             .contentTransition(.numericText())
 
-                        Text("шт./день")
+                        Text(L.Units.piecesPerDay)
                             .font(.bodyText)
                             .foregroundColor(.textSecondary)
 
@@ -104,7 +104,7 @@ struct GoalStep: View {
                 Button {
                     viewModel.nextStep()
                 } label: {
-                    Text("ПРОДОЛЖИТЬ")
+                    Text(L.Onboarding.continueButton)
                 }
                 .buttonStyle(PrimaryButtonStyle(isEnabled: viewModel.canProceedStep4))
                 .disabled(!viewModel.canProceedStep4)

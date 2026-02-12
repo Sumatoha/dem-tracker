@@ -53,11 +53,11 @@ struct TriggerSelectionView: View {
 
                 // Title section
                 VStack(alignment: .center, spacing: 12) {
-                    Text("Почему сейчас?")
+                    Text(L.Trigger.whyNow)
                         .font(.screenTitle)
                         .foregroundColor(.textPrimary)
 
-                    Text("ВЫБЕРИТЕ ТРИГГЕР")
+                    Text(L.Trigger.selectTrigger)
                         .font(.sectionLabel)
                         .kerning(3)
                         .foregroundColor(.textSecondary)
@@ -94,7 +94,7 @@ struct TriggerSelectionView: View {
                         onConfirm(selectedTrigger)
                         dismiss()
                     } label: {
-                        Text("ПОДТВЕРДИТЬ ВЫБОР")
+                        Text(L.Trigger.confirmChoice)
                     }
                     .buttonStyle(PrimaryButtonStyle())
 
@@ -103,7 +103,7 @@ struct TriggerSelectionView: View {
                         onConfirm(nil)
                         dismiss()
                     } label: {
-                        Text("ПРОПУСТИТЬ")
+                        Text(L.Trigger.skip)
                     }
                     .buttonStyle(SecondaryButtonStyle())
                 }

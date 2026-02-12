@@ -23,6 +23,12 @@ struct Profile: Codable, Identifiable, Equatable {
     var notificationTime: String?
     var notificationsEnabled: Bool?
 
+    // Subscription fields
+    var subscriptionStatus: String? // active, expired, trial, none
+    var subscriptionProductId: String?
+    var subscriptionExpiresAt: Date?
+    var trialStartedAt: Date?
+
     enum CodingKeys: String, CodingKey {
         case id
         case name
@@ -43,6 +49,10 @@ struct Profile: Codable, Identifiable, Equatable {
         case programStartDate = "program_start_date"
         case notificationTime = "notification_time"
         case notificationsEnabled = "notifications_enabled"
+        case subscriptionStatus = "subscription_status"
+        case subscriptionProductId = "subscription_product_id"
+        case subscriptionExpiresAt = "subscription_expires_at"
+        case trialStartedAt = "trial_started_at"
     }
 
     init(
@@ -64,7 +74,11 @@ struct Profile: Codable, Identifiable, Equatable {
         programDurationMonths: Int? = nil,
         programStartDate: Date? = nil,
         notificationTime: String? = nil,
-        notificationsEnabled: Bool? = nil
+        notificationsEnabled: Bool? = nil,
+        subscriptionStatus: String? = nil,
+        subscriptionProductId: String? = nil,
+        subscriptionExpiresAt: Date? = nil,
+        trialStartedAt: Date? = nil
     ) {
         self.id = id
         self.name = name
@@ -85,6 +99,10 @@ struct Profile: Codable, Identifiable, Equatable {
         self.programStartDate = programStartDate
         self.notificationTime = notificationTime
         self.notificationsEnabled = notificationsEnabled
+        self.subscriptionStatus = subscriptionStatus
+        self.subscriptionProductId = subscriptionProductId
+        self.subscriptionExpiresAt = subscriptionExpiresAt
+        self.trialStartedAt = trialStartedAt
     }
 
     init(from decoder: Decoder) throws {
@@ -132,6 +150,22 @@ struct Profile: Codable, Identifiable, Equatable {
         } else {
             programStartDate = nil
         }
+
+        // Subscription fields
+        subscriptionStatus = try container.decodeIfPresent(String.self, forKey: .subscriptionStatus)
+        subscriptionProductId = try container.decodeIfPresent(String.self, forKey: .subscriptionProductId)
+
+        if let dateString = try container.decodeIfPresent(String.self, forKey: .subscriptionExpiresAt) {
+            subscriptionExpiresAt = Self.parseDate(dateString)
+        } else {
+            subscriptionExpiresAt = nil
+        }
+
+        if let dateString = try container.decodeIfPresent(String.self, forKey: .trialStartedAt) {
+            trialStartedAt = Self.parseDate(dateString)
+        } else {
+            trialStartedAt = nil
+        }
     }
 
     private static func parseDate(_ string: String) -> Date? {
@@ -161,6 +195,27 @@ struct Profile: Codable, Identifiable, Equatable {
     var safeOnboardingDone: Bool { onboardingDone ?? false }
     var safeNotificationsEnabled: Bool { notificationsEnabled ?? true }
     var safeNotificationTime: String { notificationTime ?? "22:00" }
+    var safeSubscriptionStatus: String { subscriptionStatus ?? "none" }
+
+    /// Check if user has active subscription or trial
+    var hasActiveSubscription: Bool {
+        let status = safeSubscriptionStatus
+        if status == "active" {
+            // Check if not expired
+            if let expiresAt = subscriptionExpiresAt {
+                return expiresAt > Date()
+            }
+            return true
+        }
+        if status == "trial" {
+            // Check if trial not expired (14 days from start)
+            if let trialStart = trialStartedAt {
+                let trialEnd = Calendar.current.date(byAdding: .day, value: 14, to: trialStart) ?? trialStart
+                return Date() < trialEnd
+            }
+        }
+        return false
+    }
 
     /// Проверка активной программы (quit или reduce)
     var hasProgramActive: Bool {
@@ -192,10 +247,10 @@ enum ProductType: String, Codable, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .cigarette: return "Сигареты"
-        case .iqos: return "Стики / IQOS"
-        case .vape: return "Вейп"
-        case .mix: return "Разное"
+        case .cigarette: return L.Profile.cigarettes
+        case .iqos: return L.Profile.iqos
+        case .vape: return L.Profile.vape
+        case .mix: return L.Profile.mix
         }
     }
 
@@ -216,17 +271,17 @@ enum GoalType: String, Codable, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .quit: return "Бросить совсем"
-        case .reduce: return "Снизить потребление"
-        case .observe: return "Пока наблюдаю"
+        case .quit: return L.Onboarding.goalQuit
+        case .reduce: return L.Onboarding.goalReduce
+        case .observe: return L.Onboarding.goalObserve
         }
     }
 
     var subtitle: String {
         switch self {
-        case .quit: return "Полный отказ от никотина"
-        case .reduce: return "Установите дневной лимит"
-        case .observe: return "Отслеживать без ограничений"
+        case .quit: return L.Onboarding.goalQuitDesc
+        case .reduce: return L.Onboarding.goalReduceDesc
+        case .observe: return L.Onboarding.goalObserveDesc
         }
     }
 }

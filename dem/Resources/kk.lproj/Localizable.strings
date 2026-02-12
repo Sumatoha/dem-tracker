@@ -1,0 +1,343 @@
+/* Kazakh Localization */
+
+// MARK: - Common
+"common.done" = "Дайын";
+"common.cancel" = "Бас тарту";
+"common.save" = "Сақтау";
+"common.error" = "Қате";
+"common.ok" = "OK";
+"common.loading" = "Жүктелуде...";
+"common.or" = "немесе";
+
+// MARK: - Tab Bar
+"tab.home" = "Басты бет";
+"tab.history" = "Тарих";
+"tab.stats" = "Есептер";
+"tab.profile" = "Профиль";
+
+// MARK: - Home
+"home.today" = "БҮГІН";
+"home.since_last_one" = "СОҢҒЫСЫНАН БЕРІ";
+"home.activity" = "БЕЛСЕНДІЛІК";
+"home.average" = "ОРТАША";
+"home.savings" = "ҮНЕМДЕУ";
+"home.health" = "ДЕНСАУЛЫҚ";
+"home.log_button" = "Жазу";
+
+// MARK: - Triggers
+"trigger.stress" = "Стресс";
+"trigger.coffee" = "Кофе";
+"trigger.after_meal" = "Тамақтан кейін";
+"trigger.alcohol" = "Алкоголь";
+"trigger.boredom" = "Зерігу";
+"trigger.social" = "Достармен";
+"trigger.before_sleep" = "Ұйықтар алдында";
+"trigger.after_sleep" = "Ұйқыдан кейін";
+"trigger.select" = "СЕБЕПТІ ТАҢДАҢЫЗ";
+"trigger.why_now" = "Неге қазір?";
+"trigger.confirm_choice" = "ТАҢДАУДЫ РАСТАУ";
+"trigger.skip" = "ӨТКІЗУ";
+"trigger.no_trigger" = "Себепсіз";
+
+// MARK: - History
+"history.title" = "Тарих";
+"history.this_week" = "Осы аптада";
+"history.no_data" = "Жазбалар әзірше жоқ";
+"history.clean_days" = "Таза күндер";
+"history.interval" = "Аралық";
+"history.total_for_month" = "%@ үшін барлығы";
+"history.trigger" = "Себеп";
+"history.today" = "БҮГІН";
+"history.yesterday" = "КЕШЕ";
+"history.no_data_hint" = "Тарихты көру үшін бірінші темекіні жазыңыз";
+
+// MARK: - Stats
+"stats.title" = "Статистика";
+"stats.hourly_activity" = "САҒАТТЫҚ БЕЛСЕНДІЛІК";
+"stats.peak_hours" = "Шыңы %@";
+"stats.most_frequent_trigger" = "ЕҢ ЖИІ СЕБЕП";
+"stats.longest_streak" = "ҮЗДІК НӘТИЖЕ";
+"stats.hours" = "сағат";
+"stats.without_breaks" = "ҮЗІЛІССІЗ";
+"stats.monthly_forecast" = "АЙЛЫҚ ҮНЕМДЕУ БОЛЖАМЫ";
+"stats.program" = "БАҒДАРЛАМА";
+"stats.week" = "Апта";
+"stats.limit" = "Лимит";
+"stats.per_day" = "/күн";
+"stats.days_in_plan" = "күн жоспарда";
+"stats.this_week_label" = "Осы аптада";
+"stats.forecast" = "Болжам";
+"stats.no_data" = "Деректер жоқ";
+"stats.motivational_text" = "Статистика — прогресіңіздің компасы.\nӘр сан сізді толық еркіндікке жақындатады.";
+"stats.if_maintain_dynamics" = "Ағымдағы темекіден бас тарту динамикасын сақтасаңыз.";
+"stats.start_marker" = "Старт";
+"stats.goal_marker" = "Мақсат";
+"stats.week_of_total" = "%d-апта, барлығы %d";
+"stats.limit_per_day" = "%d/күн";
+"stats.peak_at" = "Шыңы %02d:00 — %02d:00";
+"stats.weeks_ahead" = "%d апта алда";
+"stats.weeks_behind" = "%d апта артта";
+"stats.reach_goal_by" = "Мақсатқа %@ дейін жетесіз";
+"stats.keep_going" = "Осылай жалғастырыңыз";
+
+// MARK: - Forecast
+"forecast.title" = "Болжам";
+"forecast.explanation" = "Бұл қазіргідей шексеңіз, бір айда үнемдейтін сома.";
+"forecast.current_average" = "Қазір орташа";
+"forecast.save_per_day" = "Күніне үнемдеу";
+"forecast.per_month" = "Айына (30 күн)";
+"forecast.hint" = "Неғұрлым аз шексеңіз — соғұрлым көп үнемдейсіз. Әр шегілмеген сигарет — қалтаңыздағы ақша!";
+
+// MARK: - Profile
+"profile.title" = "Профиль";
+"profile.user" = "Пайдаланушы";
+"profile.edit" = "Өзгерту";
+"profile.product_type" = "Өнім түрі";
+"profile.cigarettes" = "Сигарет";
+"profile.iqos" = "IQOS";
+"profile.vape" = "Вейп";
+"profile.mix" = "Аралас";
+"profile.per_day" = "Күніне";
+"profile.per_day_usually" = "Күніне (әдетте)";
+"profile.pack_price" = "Қораптың бағасы";
+"profile.sticks_in_pack" = "Қораптағы саны";
+"profile.notifications" = "Хабарламалар";
+"profile.evening_report_time" = "Кешкі есеп уақыты";
+"profile.program_settings" = "Бағдарлама";
+"profile.setup_program" = "Баптау";
+"profile.current_limit" = "Ағымдағы лимит";
+"profile.today_limit" = "Бүгінгі лимит: %d дана";
+"profile.not_configured" = "Баптаалмаған";
+"profile.not_specified" = "Көрсетілмеген";
+"profile.about" = "Қосымша туралы";
+"profile.privacy_policy" = "Құпиялылық саясаты";
+"profile.terms_of_service" = "Пайдалану шарттары";
+"profile.support" = "Қолдау";
+"profile.write_to_telegram" = "Telegram-ға жазу";
+"profile.version" = "Нұсқа";
+"profile.sign_out" = "Шығу";
+"profile.language" = "Тіл";
+"profile.select_goal" = "МАҚСАТТЫ ТАҢДАҢЫЗ";
+"profile.program_setup" = "Бағдарламаны баптау";
+"profile.target_per_day" = "КҮНДІК МАҚСАТТЫ САН";
+"profile.program_duration" = "БАҒДАРЛАМА МЕРЗІМІ";
+"profile.quit_desc" = "Біртіндеп 0-ге дейін азайту";
+"profile.reduce_desc" = "Мақсатты лимит орнату";
+"profile.observe_desc" = "Шектеусіз";
+"profile.months_format" = "%d ай";
+"profile.subscription" = "Жазылым";
+"profile.subscription_active" = "Белсенді";
+"profile.subscription_subscribe" = "Жазылу";
+"profile.manage_subscription" = "Жазылымды басқару";
+"profile.trial_expired" = "Сынақ мерзімі аяқталды";
+"profile.discard_changes" = "Өзгерістерді болдырмау?";
+"profile.discard" = "Болдырмау";
+"profile.discard_changes_message" = "Сақталмаған өзгерістер бар. Оларды болдырмағыңыз келетініне сенімдісіз бе?";
+"profile.support_email" = "Поштаға жазу";
+"profile.support_description" = "Сұрақтарыңыз немесе ұсыныстарыңыз бар ма? Кез келген ыңғайлы арна арқылы хабарласыңыз.";
+"profile.delete_account" = "Аккаунтты жою";
+"profile.delete_account_title" = "Аккаунтты жою керек пе?";
+"profile.delete_account_message" = "Бұл сіздің аккаунтыңызды және барлық деректерді біржола жояды. Бұл әрекетті болдырмау мүмкін емес.";
+"profile.delete" = "Жою";
+
+// MARK: - Onboarding
+"onboarding.welcome" = "Қош келдіңіз";
+"onboarding.hello" = "Сәлем!";
+"onboarding.whats_your_name" = "Сіздің атыңыз кім?";
+"onboarding.name_description" = "Сіздің атыңыз кім? Бұл ат профиліңізде көрсетіледі.";
+"onboarding.name_placeholder" = "Аты немесе лақап ат";
+"onboarding.enter_name" = "Атыңызды енгізіңіз";
+"onboarding.continue" = "ЖАЛҒАСТЫРУ";
+"onboarding.next" = "Келесі";
+"onboarding.back" = "Артқа";
+"onboarding.my_choice" = "Менің таңдауым";
+"onboarding.product_type_description" = "Дәл бақылау үшін негізгі никотин көзін таңдаңыз.";
+"onboarding.type_label" = "ТҮР";
+"onboarding.can_change_later" = "КЕЙІН ӨЗГЕРТЕ АЛАСЫЗ";
+"onboarding.current_level" = "Ағымдағы деңгей";
+"onboarding.baseline_description" = "Жоспарыңызды дербестендіру үшін ағымдағы тұтынуды көрсетіңіз.";
+"onboarding.how_many_per_day" = "КҮНІНЕ ҚАНША?";
+"onboarding.in_pack" = "ҚОРАПТА";
+"onboarding.what_do_you_smoke" = "Не шегесіз?";
+"onboarding.how_much_per_day" = "Күніне қанша?";
+"onboarding.pieces_per_day" = "дана күніне";
+"onboarding.pack_price_label" = "ҚОРАП БАҒАСЫ";
+"onboarding.sticks_in_pack_label" = "Қораптағы саны";
+"onboarding.what_is_your_goal" = "Сіздің мақсатыңыз не?";
+"onboarding.goal_description" = "Жетпеқ болған мақсатыңызды таңдаңыз. Жеке жоспарыңыз соған байланысты.";
+"onboarding.goal_quit" = "Тастау";
+"onboarding.goal_reduce" = "Азайту";
+"onboarding.goal_observe" = "Бақылау";
+"onboarding.goal_quit_desc" = "Темекіні толық тастау";
+"onboarding.goal_reduce_desc" = "Біртіндеп азайту";
+"onboarding.goal_observe_desc" = "Мақсатсыз бақылау";
+"onboarding.target_amount" = "Қаншаға дейін азайту?";
+"onboarding.duration" = "Қандай мерзімде?";
+"onboarding.duration_description" = "Мақсатқа жету мерзімін таңдаңыз.";
+"onboarding.months" = "ай";
+"onboarding.start" = "БАСТАУ";
+"onboarding.your_plan" = "Сіздің жоспарыңыз";
+"onboarding.plan_description" = "Деректеріңіз негізінде дербес жоспар жасадық.";
+"onboarding.select_goal" = "МАҚСАТТЫ ТАҢДАҢЫЗ";
+"onboarding.just_observing" = "Жай бақылаймын";
+"onboarding.set_comfort_level" = "Қолайлы деңгейді орнатыңыз";
+"onboarding.duration_1_month" = "1 ай";
+"onboarding.duration_3_months" = "3 ай";
+"onboarding.duration_6_months" = "6 ай";
+"onboarding.duration_custom" = "Өз мерзімім";
+"onboarding.intensive" = "Қарқынды";
+"onboarding.optimal" = "Оптималды";
+"onboarding.gentle" = "Жұмсақ";
+"onboarding.choose_duration" = "Мерзімді таңдаңыз";
+"onboarding.step_of" = "%d-ҚАДАМ, БАРЛЫҒЫ %d";
+"onboarding.recommendation" = "Күніне %d кезінде %@ ұсынамыз";
+"onboarding.save_error" = "Профильді сақтау мүмкін болмады. Қосылымды тексеріп, қайта көріңіз.";
+
+// MARK: - Health Explanation
+"health.title" = "Денсаулық";
+"health.what_does_it_mean" = "+%d%% нені білдіреді?";
+"health.explanation" = "Бұл соңғы сигареттен бері организмнің қалпына келу көрсеткіші.";
+"health.last_cigarette" = "Соңғы сигарет";
+"health.recovery" = "Қалпына келу";
+"health.how_it_works" = "Бұл қалай жұмыс істейді";
+"health.after_cigarette" = "Сигареттен кейін бірден — 5%%. Организм тазара бастайды.";
+"health.longer_without" = "Неғұрлым көп шекпесең — соғұрлым пайыз жоғары.";
+"health.three_days" = "3 күн сигаретсіз — 95%%. Тыныс алу жеңілдейді, дәм күшейеді!";
+"health.recovery_stages" = "Қалпына келу кезеңдері";
+"health.minutes_20" = "20 минут";
+"health.hours_2" = "2 сағат";
+"health.hours_8" = "8 сағат";
+"health.hours_24" = "24 сағат";
+"health.hours_48" = "48 сағат";
+"health.hours_72" = "72 сағат";
+"health.benefit_20min" = "Жүрек соғысы мен қан қысымы қалыпқа келе бастайды";
+"health.benefit_2h" = "Никотин қаннан шығарылады";
+"health.benefit_8h" = "Оттегі деңгейі қалыпқа келеді";
+"health.benefit_24h" = "Жүрек ауруы қаупі азаяды";
+"health.benefit_48h" = "Жүйке ұштары қалпына келе бастайды";
+"health.benefit_72h" = "Тыныс алу жеңілдейді";
+
+// MARK: - Savings Explanation
+"savings.title" = "Үнемдеу";
+"savings.saved_today" = "бүгін үнемделді";
+"savings.how_calculated" = "Қалай есептеледі";
+"savings.usually_smoke" = "Әдетте шегесіз";
+"savings.today_smoked" = "Бүгін шектіңіз";
+"savings.saved" = "Үнемделді";
+"savings.price_per_unit" = "Бір данасының бағасы";
+"savings.total" = "Барлығы";
+"savings.hint" = "Үнемдеу артады, егер нормадан аз шексеңіз. Сигарет неғұрлым аз — ақша соғұрлым көп.";
+
+// MARK: - Program Explanation
+"program.title" = "Бағдарлама";
+"program.what_is_program" = "Бағдарлама дегеніміз не?";
+"program.explanation" = "Бағдарлама — сигарет тұтынуды біртіндеп азайту бойынша жеке жоспарыңыз. Кенеттен тастаудың орнына, күн сайын саныңызды біртіндеп азайтасыз.";
+"program.how_it_works" = "Бұл қалай жұмыс істейді";
+"program.starting_point" = "Бастапқы нүкте";
+"program.goal" = "Мақсат";
+"program.timeline" = "Мерзім";
+"program.current" = "Қазір";
+"program.what_is_forecast" = "«Болжам» нені білдіреді?";
+"program.forecast_explanation" = "Болжам жоспарды ұстансаңыз, мақсатқа қашан жететініңізді көрсетеді. Ол ағымдағы прогресіңізге негізделген.";
+"program.what_is_days_in_plan" = "«Жоспардағы күндер» нені білдіреді?";
+"program.days_in_plan_explanation" = "Бұл осы аптада күнделікті лимиттен аспаған күндер саны. Жоспардағы күндер неғұрлым көп — соғұрлым жақсы!";
+"program.quit" = "Тастау";
+"program.reduce" = "Азайту";
+"program.observe" = "Бақылау";
+"program.full_quit" = "Темекіні толық тастау";
+"program.reduce_to" = "Күніне %d сигаретке дейін азайту";
+"program.started_with" = "Сіз күніне %d сигареттен бастадыңыз";
+"program.weeks_format" = "%d апта ішінде (%d ай)";
+"program.week_limit" = "%d-апта: лимит %d сигарет/күн";
+
+// MARK: - Auth
+"auth.sign_in_with_apple" = "Apple арқылы кіру";
+"auth.welcome_title" = "dem";
+"auth.welcome_subtitle" = "Никотинсіз еркіндікке жолыңыз";
+"auth.terms_agreement" = "Жалғастыру арқылы сіз пайдалану шарттарымен келісесіз";
+
+// MARK: - Notifications
+// Evening summary
+"notifications.evening_title" = "Сенің күнің";
+"notifications.evening_zero" = "Бүгін 0 — тамаша! 🎉";
+"notifications.evening_under_limit" = "Бүгін %d/%d. Жақсы нәтиже!";
+"notifications.evening_at_limit" = "Бүгін %d/%d. Жоспар бойынша 👍";
+"notifications.evening_over_limit" = "Бүгін %d/%d. Ертең жаңа күн!";
+"notifications.evening_no_limit" = "Бүгін: %d. Жазылды!";
+
+// Limit exceeded (sent 1 min after)
+"notifications.limit_exceeded_title" = "Бүгінгі жоспар орындалды";
+"notifications.limit_exceeded_body" = "Сен %d лимитіне жеттің. Бүгін тоқтауға тырыс 💪";
+
+// Health milestones
+"notifications.milestone_2h" = "2 сағат ✨";
+"notifications.milestone_2h_body" = "Никотин қаннан шығарыла бастады. Осылай жалғастыр!";
+"notifications.milestone_6h" = "6 сағат 🌟";
+"notifications.milestone_6h_body" = "Жүрек соғысы қалыпқа келуде. Сен дұрыс жолдасың!";
+"notifications.milestone_12h" = "12 сағат 💫";
+"notifications.milestone_12h_body" = "Қандағы оттегі деңгейі көтерілуде. Тамаша!";
+"notifications.milestone_24h" = "24 сағат! 🎯";
+"notifications.milestone_24h_body" = "Бір күн сигаретсіз — жүрек қаупі төмендеуде!";
+"notifications.milestone_72h" = "72 сағат! 🏆";
+"notifications.milestone_72h_body" = "3 күн! Тыныс алу жеңілдеді. Сен молодец!";
+
+// MARK: - Time
+"time.minutes_ago" = "%d мин бұрын";
+"time.hours_ago" = "%d сағ бұрын";
+"time.days_ago" = "%d күн бұрын";
+"time.long_ago" = "ертеде";
+
+// MARK: - Units
+"units.pieces" = "дана";
+"units.pieces_per_day" = "дана/күн";
+"units.tenge" = "₸";
+
+// MARK: - Quotes
+"quotes.quote1" = "Сигаретсіз әр күн — өзіңе жеңіс";
+"quotes.quote2" = "Сен ойлағаннан да күштісің";
+"quotes.quote3" = "Кішкентай қадамдар үлкен өзгерістерге апарады";
+"quotes.quote4" = "Денсаулығың — ең басты байлығың";
+"quotes.quote5" = "Бүгін — жақсы болудың ең жақсы күні";
+
+// MARK: - Health Status
+"health_status.very_recent_title" = "Жолдың басы";
+"health_status.recent_title" = "Алғашқы қадамдар";
+"health_status.recovering_title" = "Қалпына келу";
+"health_status.improving_title" = "Жақсару";
+"health_status.strong_title" = "Тамаша!";
+"health_status.excellent_title" = "Керемет!";
+"health_status.very_recent_desc" = "Организм жаңа ғана тазара бастады. Сигаретсіз әр сағат — бұл жеңіс.";
+"health_status.recent_desc" = "Никотин қаннан шығарыла бастады. Жалғастыр!";
+"health_status.recovering_desc" = "Көміртегі тотығы деңгейі төмендеуде, оттегі мүшелерге жақсы жетуде.";
+"health_status.improving_desc" = "Қан айналымы жақсаруда, өкпе тазара бастады.";
+"health_status.strong_desc" = "Жүйке ұштары қалпына келуде. Дәм мен иіс айқындала бастады!";
+"health_status.excellent_desc" = "Тыныс алу жеңілдеді, күш-қуат көбейді. Сен дұрыс жолдасың!";
+
+// MARK: - Paywall
+"paywall.days" = "күн";
+"paywall.dont_lose_progress" = "Прогресіңді жоғалтпа";
+"paywall.subtitle" = "Никотинсіз еркіндікке жолыңызды бақылауды жалғастырыңыз";
+"paywall.feature_stats" = "Толық статистика мен аналитика";
+"paywall.feature_notifications" = "Ақылды еске салулар мен мотивация";
+"paywall.feature_goals" = "Жеке бағдарламалар мен мақсаттар";
+"paywall.feature_health" = "Денсаулықты бақылау";
+"paywall.plan_1_month" = "1 ай";
+"paywall.plan_6_months" = "6 ай";
+"paywall.plan_6_months_subtitle" = "6 ай жеткілікті деп сенеміз";
+"paywall.plan_1_year" = "1 жыл";
+"paywall.best_choice" = "Үздік таңдау";
+"paywall.month" = "ай";
+"paywall.start_trial" = "14 күн тегін бастау";
+"paywall.price_disclaimer" = "Содан кейін %@ · Кез келген уақытта бас тарту";
+"paywall.restore" = "Сатып алуларды қалпына келтіру";
+"paywall.terms" = "Пайдалану шарттары";
+"paywall.privacy" = "Құпиялылық саясаты";
+"paywall.error" = "Қате";
+"paywall.subscription_active" = "Жазылым белсенді";
+"paywall.trial_days_left" = "Сынақ кезеңінде %d күн қалды";
+"paywall.cigarettes_reduced" = "темекі азайды";
+"paywall.money_saved" = "үнемделді";
+"paywall.no_purchases_to_restore" = "Қалпына келтіретін сатып алулар табылмады";
+"paywall.subscribe" = "Жазылу";
+"paywall.subscribe_now" = "Қазір жазылу";
+"paywall.products_not_loaded" = "Жазылым жоспарлары қол жетімді емес. Кейінірек қайталап көріңіз.";

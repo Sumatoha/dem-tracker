@@ -36,13 +36,13 @@ final class StatsViewModel: ObservableObject {
     var peakHours: String {
         let sorted = hourlyDistribution.sorted { $0.count > $1.count }
         guard let peak = sorted.first, peak.count > 0 else {
-            return "Нет данных"
+            return L.Stats.noData
         }
 
         let startHour = peak.hour
         let endHour = (peak.hour + 1) % 24
 
-        return String(format: "Пик в %02d:00 — %02d:00", startHour, endHour)
+        return L.Stats.peakAt(startHour, endHour)
     }
 
     var mostFrequentTrigger: (trigger: TriggerType, percentage: Int)? {
@@ -221,18 +221,18 @@ final class StatsViewModel: ObservableObject {
             let weeksAhead = calendar.dateComponents([.weekOfYear], from: projectedDate, to: plannedEndDate).weekOfYear ?? 0
 
             if weeksAhead > 0 {
-                return "С опережением на \(weeksAhead) нед."
+                return L.Stats.weeksAhead(weeksAhead)
             } else if weeksAhead < 0 {
-                return "Отставание — \(abs(weeksAhead)) нед."
+                return L.Stats.weeksBehind(abs(weeksAhead))
             } else {
                 let formatter = DateFormatter()
-                formatter.locale = Locale(identifier: "ru_RU")
+                formatter.locale = Locale.current
                 formatter.dateFormat = "d MMMM"
-                return "Достигнете цели к \(formatter.string(from: projectedDate))"
+                return String(format: L.Stats.reachGoalBy, formatter.string(from: projectedDate))
             }
         }
 
-        return "Продолжайте в том же духе"
+        return L.Stats.keepGoing
     }
 
     var currentWeekNumber: Int {

@@ -34,15 +34,19 @@ enum TriggerType: String, Codable, CaseIterable {
     case alcohol = "alcohol"
     case boredom = "boredom"
     case social = "social"
+    case beforeSleep = "before_sleep"
+    case afterSleep = "after_sleep"
 
     var displayName: String {
         switch self {
-        case .stress: return "СТРЕСС"
-        case .coffee: return "КОФЕ"
-        case .afterMeal: return "ПОСЛЕ ЕДЫ"
-        case .alcohol: return "АЛКОГОЛЬ"
-        case .boredom: return "СКУКА"
-        case .social: return "ЗА КОМПАНИЮ"
+        case .stress: return L.Trigger.stress
+        case .coffee: return L.Trigger.coffee
+        case .afterMeal: return L.Trigger.afterMeal
+        case .alcohol: return L.Trigger.alcohol
+        case .boredom: return L.Trigger.boredom
+        case .social: return L.Trigger.social
+        case .beforeSleep: return L.Trigger.beforeSleep
+        case .afterSleep: return L.Trigger.afterSleep
         }
     }
 
@@ -54,6 +58,8 @@ enum TriggerType: String, Codable, CaseIterable {
         case .alcohol: return "wineglass.fill"
         case .boredom: return "face.dashed"
         case .social: return "person.2.fill"
+        case .beforeSleep: return "moon.fill"
+        case .afterSleep: return "sun.horizon.fill"
         }
     }
 }

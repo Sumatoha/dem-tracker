@@ -1,13 +1,17 @@
 import SwiftUI
+import UserNotifications
+import StoreKit
 
 @main
 struct demApp: App {
     @StateObject private var supabaseManager = SupabaseManager.shared
+    @StateObject private var subscriptionManager = SubscriptionManager.shared
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(supabaseManager)
+                .environmentObject(subscriptionManager)
         }
     }
 }
@@ -16,8 +20,11 @@ struct demApp: App {
 
 struct RootView: View {
     @EnvironmentObject private var supabaseManager: SupabaseManager
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
 
     @State private var isCheckingAuth = true
+    @State private var showPaywall = false
+    @State private var hasCheckedPaywallThisSession = false
 
     /// Computed property - показывать онбординг только если профиль загружен и onboarding_done = false
     private var shouldShowOnboarding: Bool {
@@ -32,12 +39,22 @@ struct RootView: View {
         supabaseManager.currentUser != nil && supabaseManager.currentProfile == nil
     }
 
+    /// Ждём пока SubscriptionManager проверит подписку
+    private var isWaitingForSubscription: Bool {
+        !subscriptionManager.isReady
+    }
+
+    /// Проверяет нужно ли показывать paywall
+    private var needsPaywall: Bool {
+        subscriptionManager.isReady && !subscriptionManager.hasAccess
+    }
+
     var body: some View {
         ZStack {
             Color.appBackground
                 .ignoresSafeArea()
 
-            if isCheckingAuth || isLoadingProfile {
+            if isCheckingAuth || isLoadingProfile || isWaitingForSubscription {
                 splashView
                     .transition(.opacity)
             } else if supabaseManager.currentUser == nil {
@@ -45,12 +62,20 @@ struct RootView: View {
                     .transition(.opacity.animation(.easeInOut(duration: 0.25)))
             } else if shouldShowOnboarding {
                 OnboardingContainerView {
-                    // После онбординга профиль обновится автоматически
+                    // После онбординга проверяем подписку
+                    checkAndShowPaywallOnce()
                 }
                 .transition(.opacity.animation(.easeInOut(duration: 0.25)))
             } else {
                 MainTabView()
                     .transition(.opacity.animation(.easeInOut(duration: 0.25)))
+                    .task {
+                        await requestNotificationPermission()
+                    }
+                    .onAppear {
+                        // Показываем paywall ОДИН РАЗ при входе если нет доступа
+                        checkAndShowPaywallOnce()
+                    }
             }
         }
         .animation(.easeInOut(duration: 0.25), value: isCheckingAuth)
@@ -58,6 +83,27 @@ struct RootView: View {
         .animation(.easeInOut(duration: 0.25), value: supabaseManager.currentProfile?.safeOnboardingDone)
         .task {
             await checkAuthState()
+        }
+        .fullScreenCover(isPresented: $showPaywall) {
+            PaywallView(
+                onSubscribed: {
+                    showPaywall = false
+                },
+                onStartTrial: {
+                    subscriptionManager.startTrial()
+                    showPaywall = false
+                }
+            )
+        }
+    }
+
+    /// Показывает paywall только один раз за сессию
+    private func checkAndShowPaywallOnce() {
+        guard !hasCheckedPaywallThisSession else { return }
+        hasCheckedPaywallThisSession = true
+
+        if needsPaywall {
+            showPaywall = true
         }
     }
 
@@ -91,6 +137,16 @@ struct RootView: View {
 
         withAnimation(.easeOut(duration: 0.3)) {
             isCheckingAuth = false
+        }
+    }
+
+    private func requestNotificationPermission() async {
+        let center = UNUserNotificationCenter.current()
+        let settings = await center.notificationSettings()
+
+        // Only request if not determined yet
+        if settings.authorizationStatus == .notDetermined {
+            _ = try? await center.requestAuthorization(options: [.alert, .sound, .badge])
         }
     }
 }

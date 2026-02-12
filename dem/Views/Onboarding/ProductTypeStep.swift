@@ -7,11 +7,11 @@ struct ProductTypeStep: View {
         VStack(alignment: .leading, spacing: 0) {
             // Title section
             VStack(alignment: .leading, spacing: 12) {
-                Text("Мой выбор")
+                Text(L.Onboarding.myChoice)
                     .font(.screenTitle)
                     .foregroundColor(.textPrimary)
 
-                Text("Выберите основной источник никотина для точной настройки алгоритмов трекинга.")
+                Text(L.Onboarding.productTypeDescription)
                     .font(.bodyText)
                     .foregroundColor(.textSecondary)
                     .lineSpacing(4)
@@ -41,12 +41,12 @@ struct ProductTypeStep: View {
                     Haptics.selection()
                     viewModel.nextStep()
                 } label: {
-                    Text("ПРОДОЛЖИТЬ")
+                    Text(L.Onboarding.continueButton)
                 }
                 .buttonStyle(PrimaryButtonStyle(isEnabled: viewModel.canProceedStep2))
                 .disabled(!viewModel.canProceedStep2)
 
-                Text("ВЫ СМОЖЕТЕ ИЗМЕНИТЬ ЭТО ПОЗЖЕ")
+                Text(L.Onboarding.canChangeLater)
                     .font(.system(size: 11, weight: .medium))
                     .kerning(1)
                     .foregroundColor(.textMuted)
@@ -82,7 +82,7 @@ struct ProductTypeCard: View {
         Button(action: action) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("ТИП")
+                    Text(L.Onboarding.typeLabel)
                         .font(.sectionLabel)
                         .kerning(1)
                         .foregroundColor(.textMuted)

@@ -13,21 +13,22 @@ struct AuthView: View {
                 Spacer()
 
                 // Logo
-                VStack(spacing: 16) {
-                    HStack(spacing: 8) {
-                        Circle()
-                            .fill(Color.primaryAccent)
-                            .frame(width: 16, height: 16)
+                VStack(spacing: 24) {
+                    Image("DemLogo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 120, height: 120)
 
-                        Text("dem")
+                    VStack(spacing: 8) {
+                        Text(L.Auth.welcomeTitle)
                             .font(.system(size: 32, weight: .bold))
                             .foregroundColor(.textPrimary)
-                    }
 
-                    Text("Ваш путь к свободе от никотина")
-                        .font(.bodyText)
-                        .foregroundColor(.textSecondary)
-                        .multilineTextAlignment(.center)
+                        Text(L.Auth.welcomeSubtitle)
+                            .font(.bodyText)
+                            .foregroundColor(.textSecondary)
+                            .multilineTextAlignment(.center)
+                    }
                 }
 
                 Spacer()
@@ -43,7 +44,7 @@ struct AuthView: View {
                     .frame(height: 56)
                     .cornerRadius(16)
 
-                    Text("Продолжая, вы соглашаетесь с условиями использования")
+                    Text(L.Auth.termsAgreement)
                         .font(.system(size: 12, weight: .regular))
                         .foregroundColor(.textMuted)
                         .multilineTextAlignment(.center)
@@ -61,10 +62,10 @@ struct AuthView: View {
                     .scaleEffect(1.2)
             }
         }
-        .alert("Ошибка", isPresented: $viewModel.showError) {
-            Button("OK", role: .cancel) {}
+        .alert(L.Common.error, isPresented: $viewModel.showError) {
+            Button(L.Common.ok, role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage ?? "Произошла ошибка")
+            Text(viewModel.errorMessage ?? L.Common.error)
         }
     }
 }

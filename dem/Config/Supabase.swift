@@ -35,6 +35,10 @@ enum ColumnName {
         static let programStartDate = "program_start_date"
         static let notificationTime = "notification_time"
         static let notificationsEnabled = "notifications_enabled"
+        static let subscriptionStatus = "subscription_status"
+        static let subscriptionProductId = "subscription_product_id"
+        static let subscriptionExpiresAt = "subscription_expires_at"
+        static let trialStartedAt = "trial_started_at"
     }
 
     enum Log {

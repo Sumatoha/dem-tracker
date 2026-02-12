@@ -13,41 +13,52 @@ struct HomeView: View {
             Color.appBackground
                 .ignoresSafeArea()
 
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 0) {
-                    // Header
-                    headerSection
-                        .padding(.top, 16)
-
-                    // Counter Section
-                    counterSection
-                        .padding(.top, 24)
-
-                    // Big Log Button
-                    BigLogButton {
-                        viewModel.onLogButtonTapped()
-                    }
-                    .padding(.top, 32)
-                    .padding(.bottom, 40)
-
-                    // Activity Section
-                    activitySection
-                        .padding(.horizontal, Layout.horizontalPadding)
-
-                    // Stats Cards
-                    statsCardsSection
-                        .padding(.horizontal, Layout.horizontalPadding)
-                        .padding(.top, 20)
-
-                    // Motivational Quote
-                    quoteSection
-                        .padding(.horizontal, Layout.horizontalPadding)
-                        .padding(.top, 32)
-                        .padding(.bottom, 120)
+            if viewModel.isLoading && viewModel.profile == nil {
+                // Initial loading state
+                VStack(spacing: 16) {
+                    ProgressView()
+                        .scaleEffect(1.2)
+                    Text(L.Common.loading)
+                        .font(.bodyText)
+                        .foregroundColor(.textSecondary)
                 }
-            }
-            .refreshable {
-                await viewModel.loadData()
+            } else {
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        // Header
+                        headerSection
+                            .padding(.top, 16)
+
+                        // Counter Section
+                        counterSection
+                            .padding(.top, 24)
+
+                        // Big Log Button
+                        BigLogButton {
+                            viewModel.onLogButtonTapped()
+                        }
+                        .padding(.top, 32)
+                        .padding(.bottom, 40)
+
+                        // Activity Section
+                        activitySection
+                            .padding(.horizontal, Layout.horizontalPadding)
+
+                        // Stats Cards
+                        statsCardsSection
+                            .padding(.horizontal, Layout.horizontalPadding)
+                            .padding(.top, 20)
+
+                        // Motivational Quote
+                        quoteSection
+                            .padding(.horizontal, Layout.horizontalPadding)
+                            .padding(.top, 32)
+                            .padding(.bottom, 120)
+                    }
+                }
+                .refreshable {
+                    await viewModel.loadData()
+                }
             }
         }
         .task {
@@ -61,10 +72,10 @@ struct HomeView: View {
                 }
             }
         }
-        .alert("Ошибка", isPresented: $viewModel.showError) {
-            Button("OK", role: .cancel) {}
+        .alert(L.Common.error, isPresented: $viewModel.showError) {
+            Button(L.Common.ok, role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage ?? "Произошла ошибка")
+            Text(viewModel.errorMessage ?? L.Common.error)
         }
         .sheet(isPresented: $showHealthExplanation) {
             HealthExplanationView(
@@ -90,10 +101,11 @@ struct HomeView: View {
 
     private var headerSection: some View {
         HStack {
-            HStack(spacing: 8) {
-                Circle()
-                    .fill(Color.primaryAccent)
-                    .frame(width: 12, height: 12)
+            HStack(spacing: 10) {
+                Image("DemLogo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 32, height: 32)
 
                 Text("dem")
                     .font(.system(size: 20, weight: .bold))
@@ -118,7 +130,7 @@ struct HomeView: View {
 
     private var counterSection: some View {
         VStack(spacing: 8) {
-            Text("СЕГОДНЯ")
+            Text(L.Home.today)
                 .font(.sectionLabel)
                 .kerning(3)
                 .foregroundColor(.textSecondary)
@@ -145,7 +157,7 @@ struct HomeView: View {
             TimerPillView(lastLogDate: viewModel.lastLogDate)
                 .padding(.top, 4)
 
-            Text("С ПОСЛЕДНЕЙ")
+            Text(L.Home.sinceLastOne)
                 .font(.system(size: 13, weight: .medium))
                 .kerning(2)
                 .foregroundColor(.textSecondary)
@@ -158,14 +170,14 @@ struct HomeView: View {
     private var activitySection: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text("АКТИВНОСТЬ")
+                Text(L.Home.activity)
                     .font(.sectionLabel)
                     .kerning(2)
                     .foregroundColor(.textSecondary)
 
                 Spacer()
 
-                Text("СРЕДНЕЕ: \(String(format: "%.1f", viewModel.averagePerDay))")
+                Text("\(L.Home.average): \(String(format: "%.1f", viewModel.averagePerDay))")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(.primaryAccent)
             }
@@ -191,7 +203,7 @@ struct HomeView: View {
                 showSavingsExplanation = true
             } label: {
                 StatCard(
-                    title: "ЭКОНОМИЯ",
+                    title: L.Home.savings,
                     value: "\(viewModel.todaySavings)",
                     suffix: "₸",
                     style: .light
@@ -204,7 +216,7 @@ struct HomeView: View {
                 showHealthExplanation = true
             } label: {
                 StatCard(
-                    title: "ЗДОРОВЬЕ",
+                    title: L.Home.health,
                     value: viewModel.healthStatusText,
                     icon: viewModel.healthStatusIcon,
                     style: .light
@@ -250,15 +262,15 @@ struct HealthExplanationView: View {
 
     var timeSinceText: String {
         if hoursSinceLastLog >= 999 {
-            return "давно"
+            return L.Time.longAgo
         } else if hoursSinceLastLog < 1 {
             let minutes = Int(hoursSinceLastLog * 60)
-            return "\(max(1, minutes)) мин назад"
+            return L.Time.minutesAgo(max(1, minutes))
         } else if hoursSinceLastLog < 24 {
-            return "\(Int(hoursSinceLastLog)) ч назад"
+            return L.Time.hoursAgo(Int(hoursSinceLastLog))
         } else {
             let days = Int(hoursSinceLastLog / 24)
-            return "\(days) дн назад"
+            return L.Time.daysAgo(days)
         }
     }
 
@@ -268,18 +280,18 @@ struct HealthExplanationView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     // Что это значит
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("Что значит +\(currentPercentage)%?")
+                        Text(L.Health.whatDoesItMean(currentPercentage))
                             .font(.system(size: 22, weight: .bold))
                             .foregroundColor(.textPrimary)
 
-                        Text("Это показатель восстановления твоего организма с момента последней сигареты.")
+                        Text(L.Health.explanation)
                             .font(.bodyText)
                             .foregroundColor(.textSecondary)
 
                         // Текущий статус
                         HStack(spacing: 16) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Последняя сигарета")
+                                Text(L.Health.lastCigarette)
                                     .font(.system(size: 13))
                                     .foregroundColor(.textMuted)
                                 Text(timeSinceText)
@@ -290,7 +302,7 @@ struct HealthExplanationView: View {
                             Spacer()
 
                             VStack(alignment: .trailing, spacing: 4) {
-                                Text("Восстановление")
+                                Text(L.Health.recovery)
                                     .font(.system(size: 13))
                                     .foregroundColor(.textMuted)
                                 Text("+\(currentPercentage)%")
@@ -305,17 +317,17 @@ struct HealthExplanationView: View {
 
                     // Как это работает
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Как это работает")
+                        Text(L.Health.howItWorks)
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(.textPrimary)
 
                         VStack(alignment: .leading, spacing: 8) {
                             explanationRow(icon: "flame.fill", color: .orange,
-                                text: "Сразу после сигареты — 5%. Организм начинает очищаться.")
+                                text: L.Health.afterCigarette)
                             explanationRow(icon: "clock.fill", color: .blue,
-                                text: "Чем дольше не куришь — тем выше процент.")
+                                text: L.Health.longerWithout)
                             explanationRow(icon: "star.fill", color: .green,
-                                text: "Через 3 дня без сигарет — 95%. Дыхание легче, вкус ярче!")
+                                text: L.Health.threeDays)
                         }
                     }
                     .padding(16)
@@ -326,7 +338,7 @@ struct HealthExplanationView: View {
 
                     // Timeline
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("Этапы восстановления")
+                        Text(L.Health.recoveryStages)
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(.textPrimary)
 
@@ -366,11 +378,14 @@ struct HealthExplanationView: View {
                 .padding(20)
             }
             .background(Color.appBackground)
-            .navigationTitle("Здоровье")
+            .navigationTitle(L.Health.title)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.appBackground, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarColorScheme(.light, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Готово") {
+                    Button(L.Common.done) {
                         dismiss()
                     }
                     .foregroundColor(.primaryAccent)
@@ -421,7 +436,7 @@ struct SavingsExplanationView: View {
                             .font(.system(size: 36, weight: .bold))
                             .foregroundColor(.textPrimary)
 
-                        Text("сэкономлено сегодня")
+                        Text(L.Savings.savedToday)
                             .font(.bodyText)
                             .foregroundColor(.textSecondary)
                     }
@@ -432,41 +447,41 @@ struct SavingsExplanationView: View {
 
                     // Calculation
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("Как считается")
+                        Text(L.Savings.howCalculated)
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(.textPrimary)
 
                         VStack(alignment: .leading, spacing: 12) {
                             calculationRow(
-                                label: "Обычно выкуриваешь",
-                                value: "\(baseline) шт/день"
+                                label: L.Savings.usuallySmoke,
+                                value: "\(baseline) \(L.Units.piecesPerDay)"
                             )
 
                             calculationRow(
-                                label: "Сегодня выкурил",
-                                value: "\(todayCount) шт"
+                                label: L.Savings.todaySmoked,
+                                value: "\(todayCount) \(L.Units.pieces)"
                             )
 
                             calculationRow(
-                                label: "Сэкономил",
-                                value: "\(savedCount) шт"
+                                label: L.Savings.saved,
+                                value: "\(savedCount) \(L.Units.pieces)"
                             )
 
                             calculationRow(
-                                label: "Цена за штуку",
-                                value: "\(String(format: "%.0f", pricePerUnit)) ₸"
+                                label: L.Savings.pricePerUnit,
+                                value: "\(String(format: "%.0f", pricePerUnit)) \(L.Units.tenge)"
                             )
 
                             Divider()
 
                             HStack {
-                                Text("Итого")
+                                Text(L.Savings.total)
                                     .font(.system(size: 15, weight: .semibold))
                                     .foregroundColor(.textPrimary)
 
                                 Spacer()
 
-                                Text("\(savedCount) × \(String(format: "%.0f", pricePerUnit)) = \(todaySavings) ₸")
+                                Text("\(savedCount) × \(String(format: "%.0f", pricePerUnit)) = \(todaySavings) \(L.Units.tenge)")
                                     .font(.system(size: 15, weight: .bold))
                                     .foregroundColor(.primaryAccent)
                             }
@@ -477,7 +492,7 @@ struct SavingsExplanationView: View {
                     }
 
                     // Note
-                    Text("Экономия растёт, когда ты куришь меньше своей нормы. Чем меньше сигарет — тем больше денег остаётся.")
+                    Text(L.Savings.hint)
                         .font(.system(size: 14))
                         .foregroundColor(.textSecondary)
                         .padding(16)
@@ -487,11 +502,14 @@ struct SavingsExplanationView: View {
                 .padding(20)
             }
             .background(Color.appBackground)
-            .navigationTitle("Экономия")
+            .navigationTitle(L.Savings.title)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.appBackground, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarColorScheme(.light, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Готово") {
+                    Button(L.Common.done) {
                         dismiss()
                     }
                     .foregroundColor(.primaryAccent)
@@ -527,29 +545,29 @@ enum HealthStatus {
 
     var title: String {
         switch self {
-        case .veryRecent: return "Начало пути"
-        case .recent: return "Первые шаги"
-        case .recovering: return "Восстановление"
-        case .improving: return "Улучшение"
-        case .strong: return "Отлично!"
-        case .excellent: return "Превосходно!"
+        case .veryRecent: return L.HealthStatus.veryRecentTitle
+        case .recent: return L.HealthStatus.recentTitle
+        case .recovering: return L.HealthStatus.recoveringTitle
+        case .improving: return L.HealthStatus.improvingTitle
+        case .strong: return L.HealthStatus.strongTitle
+        case .excellent: return L.HealthStatus.excellentTitle
         }
     }
 
     var description: String {
         switch self {
         case .veryRecent:
-            return "Организм только начинает очищаться. Каждый час без сигареты — это победа."
+            return L.HealthStatus.veryRecentDesc
         case .recent:
-            return "Никотин начинает выводиться из крови. Продолжай!"
+            return L.HealthStatus.recentDesc
         case .recovering:
-            return "Уровень угарного газа снижается, кислород лучше поступает к органам."
+            return L.HealthStatus.recoveringDesc
         case .improving:
-            return "Кровообращение улучшается, лёгкие начинают очищаться."
+            return L.HealthStatus.improvingDesc
         case .strong:
-            return "Нервные окончания восстанавливаются. Вкус и запах становятся ярче!"
+            return L.HealthStatus.strongDesc
         case .excellent:
-            return "Дыхание стало легче, энергии больше. Ты на правильном пути!"
+            return L.HealthStatus.excellentDesc
         }
     }
 
@@ -597,17 +615,20 @@ enum HealthStatus {
 
 struct HealthMilestone {
     let hours: Double
-    let timeLabel: String
-    let benefit: String
+    let timeLabelKey: () -> String
+    let benefitKey: () -> String
     let percentage: Int
 
+    var timeLabel: String { timeLabelKey() }
+    var benefit: String { benefitKey() }
+
     static let all: [HealthMilestone] = [
-        HealthMilestone(hours: 0.33, timeLabel: "20 минут", benefit: "Пульс и давление начинают нормализоваться", percentage: 5),
-        HealthMilestone(hours: 2, timeLabel: "2 часа", benefit: "Никотин выводится из крови", percentage: 25),
-        HealthMilestone(hours: 8, timeLabel: "8 часов", benefit: "Уровень кислорода в норме", percentage: 40),
-        HealthMilestone(hours: 24, timeLabel: "24 часа", benefit: "Риск сердечного приступа снижается", percentage: 70),
-        HealthMilestone(hours: 48, timeLabel: "48 часов", benefit: "Нервные окончания восстанавливаются", percentage: 85),
-        HealthMilestone(hours: 72, timeLabel: "72 часа", benefit: "Дышать становится легче", percentage: 95),
+        HealthMilestone(hours: 0.33, timeLabelKey: { L.Health.minutes20 }, benefitKey: { L.Health.benefit20min }, percentage: 5),
+        HealthMilestone(hours: 2, timeLabelKey: { L.Health.hours2 }, benefitKey: { L.Health.benefit2h }, percentage: 25),
+        HealthMilestone(hours: 8, timeLabelKey: { L.Health.hours8 }, benefitKey: { L.Health.benefit8h }, percentage: 40),
+        HealthMilestone(hours: 24, timeLabelKey: { L.Health.hours24 }, benefitKey: { L.Health.benefit24h }, percentage: 70),
+        HealthMilestone(hours: 48, timeLabelKey: { L.Health.hours48 }, benefitKey: { L.Health.benefit48h }, percentage: 85),
+        HealthMilestone(hours: 72, timeLabelKey: { L.Health.hours72 }, benefitKey: { L.Health.benefit72h }, percentage: 95),
     ]
 }
 

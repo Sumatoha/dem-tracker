@@ -7,11 +7,11 @@ struct ProgramTypeStep: View {
         VStack(alignment: .leading, spacing: 0) {
             // Title section
             VStack(alignment: .leading, spacing: 12) {
-                Text("Ваш план")
+                Text(L.Onboarding.yourPlan)
                     .font(.screenTitle)
                     .foregroundColor(.textPrimary)
 
-                Text("Выберите стратегию — вы сможете изменить её позже")
+                Text(L.Onboarding.planDescription)
                     .font(.bodyText)
                     .foregroundColor(.textSecondary)
                     .lineSpacing(4)
@@ -36,7 +36,7 @@ struct ProgramTypeStep: View {
             // Target value picker (for reduce only)
             if viewModel.selectedProgramType == .reduce {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("ЦЕЛЕВОЕ КОЛИЧЕСТВО")
+                    Text(L.Profile.targetPerDay)
                         .font(.sectionLabel)
                         .kerning(1)
                         .foregroundColor(.textMuted)
@@ -65,7 +65,7 @@ struct ProgramTypeStep: View {
                             .foregroundColor(.primaryAccent)
                             .contentTransition(.numericText())
 
-                        Text("шт./день")
+                        Text(L.Units.piecesPerDay)
                             .font(.bodyText)
                             .foregroundColor(.textSecondary)
 
@@ -88,7 +88,7 @@ struct ProgramTypeStep: View {
                         }
                     }
 
-                    Text("Сейчас: \(viewModel.baselinePerDay) шт./день")
+                    Text("\(L.Program.current): \(viewModel.baselinePerDay) \(L.Units.piecesPerDay)")
                         .font(.caption)
                         .foregroundColor(.textMuted)
                 }
@@ -108,7 +108,7 @@ struct ProgramTypeStep: View {
                 Button {
                     viewModel.nextStep()
                 } label: {
-                    Text("ПРОДОЛЖИТЬ")
+                    Text(L.Onboarding.continueButton)
                 }
                 .buttonStyle(PrimaryButtonStyle(isEnabled: viewModel.canProceedStep5))
                 .disabled(!viewModel.canProceedStep5)

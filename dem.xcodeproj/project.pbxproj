@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		63C5A4642F3BAD75005F01F9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C5A4632F3BAD75005F01F9 /* StoreKit.framework */; };
 		A10000000000000000000001 /* demApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000101 /* demApp.swift */; };
 		A10000000000000000000002 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000102 /* Profile.swift */; };
 		A10000000000000000000003 /* SmokingLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000103 /* SmokingLog.swift */; };
@@ -14,12 +15,6 @@
 		A10000000000000000000005 /* Achievement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000105 /* Achievement.swift */; };
 		A10000000000000000000006 /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000106 /* SupabaseManager.swift */; };
 		A10000000000000000000007 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000107 /* HapticManager.swift */; };
-		A10000000000000000000034 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000134 /* CacheManager.swift */; };
-		A10000000000000000000036 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000136 /* NotificationManager.swift */; };
-		A10000000000000000000037 /* ProgramCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000137 /* ProgramCalculator.swift */; };
-		A10000000000000000000038 /* ProgramTypeStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000138 /* ProgramTypeStep.swift */; };
-		A10000000000000000000039 /* DurationStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000139 /* DurationStep.swift */; };
-		A10000000000000000000040 /* LegalDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000140 /* LegalDocumentView.swift */; };
 		A10000000000000000000008 /* Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000108 /* Supabase.swift */; };
 		A10000000000000000000009 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000109 /* AuthViewModel.swift */; };
 		A10000000000000000000010 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000110 /* OnboardingViewModel.swift */; };
@@ -32,7 +27,6 @@
 		A10000000000000000000017 /* ProductTypeStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000117 /* ProductTypeStep.swift */; };
 		A10000000000000000000018 /* BaselineStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000118 /* BaselineStep.swift */; };
 		A10000000000000000000019 /* GoalStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000119 /* GoalStep.swift */; };
-		A10000000000000000000035 /* NameStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000135 /* NameStep.swift */; };
 		A10000000000000000000020 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000120 /* HomeView.swift */; };
 		A10000000000000000000021 /* TimerPillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000121 /* TimerPillView.swift */; };
 		A10000000000000000000022 /* BigLogButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000122 /* BigLogButton.swift */; };
@@ -47,9 +41,23 @@
 		A10000000000000000000031 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000131 /* MainTabView.swift */; };
 		A10000000000000000000032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000132 /* Assets.xcassets */; };
 		A10000000000000000000033 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000200 /* Supabase */; };
+		A10000000000000000000034 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000134 /* CacheManager.swift */; };
+		A10000000000000000000035 /* NameStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000135 /* NameStep.swift */; };
+		A10000000000000000000036 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000136 /* NotificationManager.swift */; };
+		A10000000000000000000037 /* ProgramCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000137 /* ProgramCalculator.swift */; };
+		A10000000000000000000038 /* ProgramTypeStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000138 /* ProgramTypeStep.swift */; };
+		A10000000000000000000039 /* DurationStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000139 /* DurationStep.swift */; };
+		A10000000000000000000040 /* LegalDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000140 /* LegalDocumentView.swift */; };
+		A10000000000000000000041 /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000141 /* LanguageManager.swift */; };
+		A10000000000000000000042 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000142 /* Localizable.strings */; };
+		A10000000000000000000043 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000146 /* SubscriptionManager.swift */; };
+		A10000000000000000000044 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000147 /* PaywallView.swift */; };
+		A10000000000000000000045 /* TermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000148 /* TermsView.swift */; };
+		A10000000000000000000046 /* PrivacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000149 /* PrivacyPolicyView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		63C5A4632F3BAD75005F01F9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A10000000000000000000100 /* dem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000000000000000000101 /* demApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = demApp.swift; sourceTree = "<group>"; };
 		A10000000000000000000102 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
@@ -59,7 +67,6 @@
 		A10000000000000000000106 /* SupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseManager.swift; sourceTree = "<group>"; };
 		A10000000000000000000107 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		A10000000000000000000108 /* Supabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Supabase.swift; sourceTree = "<group>"; };
-		A10000000000000000000134 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		A10000000000000000000109 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		A10000000000000000000110 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		A10000000000000000000111 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -71,7 +78,6 @@
 		A10000000000000000000117 /* ProductTypeStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTypeStep.swift; sourceTree = "<group>"; };
 		A10000000000000000000118 /* BaselineStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaselineStep.swift; sourceTree = "<group>"; };
 		A10000000000000000000119 /* GoalStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalStep.swift; sourceTree = "<group>"; };
-		A10000000000000000000135 /* NameStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameStep.swift; sourceTree = "<group>"; };
 		A10000000000000000000120 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		A10000000000000000000121 /* TimerPillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerPillView.swift; sourceTree = "<group>"; };
 		A10000000000000000000122 /* BigLogButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigLogButton.swift; sourceTree = "<group>"; };
@@ -86,11 +92,21 @@
 		A10000000000000000000131 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		A10000000000000000000132 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A10000000000000000000133 /* dem.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = dem.entitlements; sourceTree = "<group>"; };
+		A10000000000000000000134 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
+		A10000000000000000000135 /* NameStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameStep.swift; sourceTree = "<group>"; };
 		A10000000000000000000136 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		A10000000000000000000137 /* ProgramCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramCalculator.swift; sourceTree = "<group>"; };
 		A10000000000000000000138 /* ProgramTypeStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramTypeStep.swift; sourceTree = "<group>"; };
 		A10000000000000000000139 /* DurationStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationStep.swift; sourceTree = "<group>"; };
 		A10000000000000000000140 /* LegalDocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalDocumentView.swift; sourceTree = "<group>"; };
+		A10000000000000000000141 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
+		A10000000000000000000143 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A10000000000000000000144 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A10000000000000000000145 /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A10000000000000000000146 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
+		A10000000000000000000147 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
+		A10000000000000000000148 /* TermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsView.swift; sourceTree = "<group>"; };
+		A10000000000000000000149 /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,16 +115,26 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000000000000000000033 /* Supabase in Frameworks */,
+				63C5A4642F3BAD75005F01F9 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		63C5A4622F3BAD75005F01F9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				63C5A4632F3BAD75005F01F9 /* StoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		A10000000000000000000400 = {
 			isa = PBXGroup;
 			children = (
 				A10000000000000000000401 /* dem */,
+				63C5A4622F3BAD75005F01F9 /* Frameworks */,
 				A10000000000000000000402 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -123,6 +149,7 @@
 				A10000000000000000000405 /* Config */,
 				A10000000000000000000406 /* ViewModels */,
 				A10000000000000000000407 /* Views */,
+				A10000000000000000000416 /* Resources */,
 				A10000000000000000000132 /* Assets.xcassets */,
 			);
 			path = dem;
@@ -155,6 +182,8 @@
 				A10000000000000000000134 /* CacheManager.swift */,
 				A10000000000000000000136 /* NotificationManager.swift */,
 				A10000000000000000000137 /* ProgramCalculator.swift */,
+				A10000000000000000000141 /* LanguageManager.swift */,
+				A10000000000000000000146 /* SubscriptionManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -190,6 +219,7 @@
 				A10000000000000000000412 /* History */,
 				A10000000000000000000413 /* Stats */,
 				A10000000000000000000414 /* Profile */,
+				A10000000000000000000417 /* Paywall */,
 				A10000000000000000000415 /* Components */,
 			);
 			path = Views;
@@ -272,6 +302,24 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		A10000000000000000000416 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000142 /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000417 /* Paywall */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000147 /* PaywallView.swift */,
+				A10000000000000000000148 /* TermsView.swift */,
+				A10000000000000000000149 /* PrivacyPolicyView.swift */,
+			);
+			path = Paywall;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -318,6 +366,7 @@
 				en,
 				Base,
 				ru,
+				kk,
 			);
 			mainGroup = A10000000000000000000400;
 			packageReferences = (
@@ -338,6 +387,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000000000000000000032 /* Assets.xcassets in Resources */,
+				A10000000000000000000042 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,10 +436,28 @@
 				A10000000000000000000038 /* ProgramTypeStep.swift in Sources */,
 				A10000000000000000000039 /* DurationStep.swift in Sources */,
 				A10000000000000000000040 /* LegalDocumentView.swift in Sources */,
+				A10000000000000000000041 /* LanguageManager.swift in Sources */,
+				A10000000000000000000043 /* SubscriptionManager.swift in Sources */,
+				A10000000000000000000044 /* PaywallView.swift in Sources */,
+				A10000000000000000000045 /* TermsView.swift in Sources */,
+				A10000000000000000000046 /* PrivacyPolicyView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		A10000000000000000000142 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A10000000000000000000143 /* ru */,
+				A10000000000000000000144 /* en */,
+				A10000000000000000000145 /* kk */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		A10000000000000000000701 /* Debug */ = {
@@ -398,6 +466,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = dem/dem.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W87H555UKB;
@@ -418,6 +487,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dem-tracker.dem";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -434,6 +504,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = dem/dem.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W87H555UKB;
@@ -454,6 +525,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dem-tracker.dem";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;

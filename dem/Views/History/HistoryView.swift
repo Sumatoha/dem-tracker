@@ -21,16 +21,32 @@ struct HistoryView: View {
                         summaryCards
 
                         // Day groups
-                        if viewModel.groupedLogs.isEmpty {
+                        if viewModel.isLoading && viewModel.groupedLogs.isEmpty {
+                            // Loading state
+                            VStack(spacing: 16) {
+                                ProgressView()
+                                    .scaleEffect(1.2)
+                                Text(L.Common.loading)
+                                    .font(.bodyText)
+                                    .foregroundColor(.textSecondary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.top, 60)
+                        } else if viewModel.groupedLogs.isEmpty {
                             // Empty state
                             VStack(spacing: 16) {
                                 Image(systemName: "clock")
                                     .font(.system(size: 48))
                                     .foregroundColor(.textMuted.opacity(0.5))
 
-                                Text("Записей пока нет")
+                                Text(L.History.noData)
                                     .font(.bodyText)
                                     .foregroundColor(.textSecondary)
+
+                                Text(L.History.noDataHint)
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.textMuted)
+                                    .multilineTextAlignment(.center)
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.top, 60)
@@ -78,10 +94,10 @@ struct HistoryView: View {
         .task {
             await viewModel.loadData()
         }
-        .alert("Ошибка", isPresented: $viewModel.showError) {
-            Button("OK", role: .cancel) {}
+        .alert(L.Common.error, isPresented: $viewModel.showError) {
+            Button(L.Common.ok, role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage ?? "Произошла ошибка")
+            Text(viewModel.errorMessage ?? L.Common.error)
         }
     }
 
@@ -90,7 +106,7 @@ struct HistoryView: View {
     private var headerSection: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("История")
+                Text(L.History.title)
                     .font(.screenTitle)
                     .foregroundColor(.textPrimary)
 
@@ -107,7 +123,7 @@ struct HistoryView: View {
 
     private func currentDateFormatted() -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.locale = Locale(identifier: LanguageManager.shared.currentLanguage.rawValue)
         formatter.dateFormat = "d MMMM, EEEE"
         return formatter.string(from: Date()).uppercased()
     }
@@ -123,7 +139,7 @@ struct HistoryView: View {
             )
 
             CompactSummaryCard(
-                title: "ЧИСТЫХ ДНЕЙ",
+                title: L.History.cleanDays,
                 value: "\(viewModel.cleanDays)",
                 style: .dark
             )
@@ -132,9 +148,10 @@ struct HistoryView: View {
 
     private func currentMonthName() -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.dateFormat = "'ВСЕГО ЗА' MMMM"
-        return formatter.string(from: Date()).uppercased()
+        formatter.locale = Locale(identifier: LanguageManager.shared.currentLanguage.rawValue)
+        formatter.dateFormat = "MMMM"
+        let monthName = formatter.string(from: Date()).uppercased()
+        return String(format: L.History.totalForMonth, monthName)
     }
 }
 
@@ -151,7 +168,7 @@ struct LogEntryCard: View {
     }
 
     private var triggerName: String {
-        log.trigger?.displayName ?? "Без триггера"
+        log.trigger?.displayName ?? L.Trigger.noTrigger
     }
 
     var body: some View {
@@ -170,12 +187,11 @@ struct LogEntryCard: View {
             // Trigger info
             VStack(alignment: .leading, spacing: 4) {
                 Text(triggerName)
-                    .font(.cardValue)
+                    .font(.system(size: 15, weight: .medium))
                     .foregroundColor(.textPrimary)
 
-                Text("ТРИГГЕР")
-                    .font(.system(size: 11, weight: .semibold))
-                    .kerning(1)
+                Text(L.History.trigger)
+                    .font(.system(size: 11, weight: .medium))
                     .foregroundColor(.textSecondary)
             }
 
@@ -188,7 +204,7 @@ struct LogEntryCard: View {
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(.primaryAccent)
 
-                    Text("ИНТЕРВАЛ")
+                    Text(L.History.interval)
                         .font(.system(size: 11, weight: .semibold))
                         .kerning(1)
                         .foregroundColor(.textSecondary)

@@ -11,10 +11,10 @@ struct MainTabView: View {
 
         var title: String {
             switch self {
-            case .home: return "Главная"
-            case .history: return "История"
-            case .stats: return "Отчёты"
-            case .profile: return "Профиль"
+            case .home: return L.Tab.home
+            case .history: return L.Tab.history
+            case .stats: return L.Tab.stats
+            case .profile: return L.Tab.profile
             }
         }
 

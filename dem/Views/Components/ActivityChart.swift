@@ -22,7 +22,7 @@ struct ActivityChart: View {
         Chart {
             // Limit line (dashed gray) - only if program is active
             if let limit = dailyLimit {
-                RuleMark(y: .value("Лимит", limit))
+                RuleMark(y: .value(L.Stats.limit, limit))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
                     .foregroundStyle(Color(hex: "B5B1AA").opacity(0.7))
             }

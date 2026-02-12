@@ -7,11 +7,11 @@ struct BaselineStep: View {
         VStack(alignment: .leading, spacing: 0) {
             // Title section
             VStack(alignment: .leading, spacing: 12) {
-                Text("Текущий уровень")
+                Text(L.Onboarding.currentLevel)
                     .font(.screenTitle)
                     .foregroundColor(.textPrimary)
 
-                Text("Укажите текущее потребление для персонализации вашего плана.")
+                Text(L.Onboarding.baselineDescription)
                     .font(.bodyText)
                     .foregroundColor(.textSecondary)
                     .lineSpacing(4)
@@ -23,26 +23,26 @@ struct BaselineStep: View {
             VStack(spacing: 16) {
                 // Per day card
                 BaselineInputCard(
-                    title: "СКОЛЬКО В ДЕНЬ?",
+                    title: L.Onboarding.howManyPerDay,
                     value: $viewModel.baselinePerDay,
-                    suffix: "шт.",
+                    suffix: L.Units.pieces,
                     range: 1...60
                 )
 
                 // Pack price card
                 BaselineInputCard(
-                    title: "ЦЕНА ПАЧКИ",
+                    title: L.Onboarding.packPriceLabel,
                     value: $viewModel.packPrice,
-                    suffix: "₸",
+                    suffix: L.Units.tenge,
                     range: 50...5000,
                     step: 50
                 )
 
                 // Sticks in pack card
                 BaselineInputCard(
-                    title: "В ПАЧКЕ",
+                    title: L.Onboarding.inPack,
                     value: $viewModel.sticksInPack,
-                    suffix: "шт.",
+                    suffix: L.Units.pieces,
                     range: 10...40
                 )
             }
@@ -57,7 +57,7 @@ struct BaselineStep: View {
                     Haptics.selection()
                     viewModel.nextStep()
                 } label: {
-                    Text("ПРОДОЛЖИТЬ")
+                    Text(L.Onboarding.continueButton)
                 }
                 .buttonStyle(PrimaryButtonStyle(isEnabled: viewModel.canProceedStep3))
                 .disabled(!viewModel.canProceedStep3)

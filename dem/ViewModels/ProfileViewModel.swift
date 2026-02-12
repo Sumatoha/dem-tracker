@@ -32,7 +32,7 @@ final class ProfileViewModel: ObservableObject {
     }
 
     var userName: String {
-        profile?.name ?? "Пользователь"
+        profile?.name ?? L.Profile.user
     }
 
     // Computed Int values from text
@@ -73,6 +73,22 @@ final class ProfileViewModel: ObservableObject {
         programType = profile.programType ?? "observe"
         programTargetValue = profile.programTargetValue ?? 0
         programDurationMonths = profile.programDurationMonths ?? 3
+
+        // Check actual iOS notification permission
+        Task {
+            await checkNotificationPermission()
+        }
+    }
+
+    /// Проверяет реальный статус разрешения на уведомления в iOS
+    func checkNotificationPermission() async {
+        let status = await NotificationManager.shared.checkPermissionStatus()
+        if status == .denied || status == .notDetermined {
+            // Если разрешение не дано, выключаем в UI
+            if notificationsEnabled {
+                notificationsEnabled = false
+            }
+        }
     }
 
     // MARK: - Program Settings
@@ -101,9 +117,9 @@ final class ProfileViewModel: ObservableObject {
 
     var programTypeDisplayName: String {
         switch programType {
-        case "quit": return "Бросить"
-        case "reduce": return "Снизить"
-        default: return "Наблюдаю"
+        case "quit": return L.Program.quit
+        case "reduce": return L.Program.reduce
+        default: return L.Program.observe
         }
     }
 
@@ -154,6 +170,16 @@ final class ProfileViewModel: ObservableObject {
         }
     }
 
+    var hasUnsavedChanges: Bool {
+        guard let profile = profile else { return false }
+        return productType != (profile.productType ?? .cigarette) ||
+               baselinePerDay != profile.safeBaselinePerDay ||
+               packPrice != profile.safePackPrice ||
+               sticksInPack != profile.safeSticksInPack ||
+               goalType != (profile.goalType ?? .observe) ||
+               goalPerDay != (profile.goalPerDay ?? 5)
+    }
+
     func startEditing() {
         // ЗАЩИТА: не разрешаем редактирование если профиль не загружен
         guard profile != nil else {
@@ -167,6 +193,7 @@ final class ProfileViewModel: ObservableObject {
     }
 
     func cancelEditing() {
+        loadProfileData() // Restore original values
         isEditing = false
         Haptics.selection()
     }
@@ -215,6 +242,23 @@ final class ProfileViewModel: ObservableObject {
         }
     }
 
+    func deleteAccount() async {
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            // Delete user data from Supabase (logs and profile)
+            try await supabase.deleteUserData()
+            // Sign out after deletion
+            try await supabase.signOut()
+            Haptics.success()
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+            Haptics.error()
+        }
+    }
+
     // MARK: - Notification Settings
 
     var notificationTimeString: String {
@@ -258,16 +302,9 @@ final class ProfileViewModel: ObservableObject {
         // Получаем данные для уведомлений
         let cache = CacheManager.shared
         let todayLogs = cache.getCachedTodayLogs() ?? []
-        let weeklyLogs = cache.getCachedWeeklyLogs() ?? []
 
         let todayCount = todayLogs.count
-
-        // Вчерашнее количество
-        let calendar = Calendar.current
-        let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: Date()))!
-        let yesterdayCount = weeklyLogs.filter { log in
-            calendar.isDate(log.createdAt, inSameDayAs: yesterday)
-        }.count
+        let lastLogDate = todayLogs.first?.createdAt
 
         // Текущий лимит программы
         var dailyLimit: Int? = nil
@@ -285,27 +322,13 @@ final class ProfileViewModel: ObservableObject {
             )
         }
 
-        // Планируем все уведомления
-        NotificationManager.shared.scheduleAllDailyNotifications(
-            morningHour: 10,
+        // Планируем вечернее уведомление и milestones
+        NotificationManager.shared.scheduleNotifications(
             eveningHour: timeComponents.hour,
             eveningMinute: timeComponents.minute,
             todayCount: todayCount,
             dailyLimit: dailyLimit,
-            yesterdayCount: yesterdayCount > 0 ? yesterdayCount : nil,
-            streakDays: 0
-        )
-
-        // Еженедельный отчёт
-        let weekTotal = weeklyLogs.count
-        let daysWithLogs = Set(weeklyLogs.map { calendar.startOfDay(for: $0.createdAt) }).count
-        let weekAverage = daysWithLogs > 0 ? Double(weekTotal) / Double(daysWithLogs) : 0
-
-        NotificationManager.shared.scheduleWeeklySummary(
-            weekTotal: weekTotal,
-            weekAverage: weekAverage,
-            previousWeekTotal: nil,
-            moneySaved: nil
+            lastLogDate: lastLogDate
         )
     }
 

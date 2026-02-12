@@ -2,10 +2,16 @@ import SwiftUI
 
 struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
+    @ObservedObject private var languageManager = LanguageManager.shared
     @State private var showProductTypePicker = false
     @State private var showGoalTypePicker = false
     @State private var showPrivacyPolicy = false
     @State private var showTermsOfService = false
+    @State private var showLanguagePicker = false
+    @State private var showPaywall = false
+    @State private var showDiscardChangesAlert = false
+    @State private var showSupportSheet = false
+    @State private var showDeleteAccountAlert = false
     @FocusState private var focusedField: Field?
 
     enum Field {
@@ -37,12 +43,22 @@ struct ProfileView: View {
                         // Notifications Section
                         notificationsSection
 
+                        // Language Section
+                        languageSection
+
+                        // Subscription Section
+                        subscriptionSection
+
                         // About Section (Legal)
                         aboutSection
 
                         // Sign Out Button
                         signOutButton
                             .padding(.top, 16)
+
+                        // Delete Account Button
+                        deleteAccountButton
+                            .padding(.top, 8)
                             .padding(.bottom, 120)
                     }
                     .padding(.horizontal, Layout.horizontalPadding)
@@ -58,16 +74,24 @@ struct ProfileView: View {
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button("Готово") {
+                Button(L.Common.done) {
                     focusedField = nil
                 }
                 .foregroundColor(.primaryAccent)
             }
         }
-        .alert("Ошибка", isPresented: $viewModel.showError) {
-            Button("OK", role: .cancel) {}
+        .alert(L.Common.error, isPresented: $viewModel.showError) {
+            Button(L.Common.ok, role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage ?? "Произошла ошибка")
+            Text(viewModel.errorMessage ?? L.Common.error)
+        }
+        .alert(L.Profile.discardChanges, isPresented: $showDiscardChangesAlert) {
+            Button(L.Common.cancel, role: .cancel) {}
+            Button(L.Profile.discard, role: .destructive) {
+                viewModel.cancelEditing()
+            }
+        } message: {
+            Text(L.Profile.discardChangesMessage)
         }
         .sheet(isPresented: $showProductTypePicker) {
             productTypePickerSheet
@@ -78,34 +102,58 @@ struct ProfileView: View {
         .sheet(isPresented: $viewModel.showProgramSetup) {
             programSetupSheet
         }
+        .sheet(isPresented: $showLanguagePicker) {
+            languagePickerSheet
+        }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView(
+                onSubscribed: { showPaywall = false },
+                onStartTrial: { showPaywall = false }
+            )
+        }
     }
 
     // MARK: - Header
 
     private var headerSection: some View {
         HStack {
-            Text("Профиль")
+            Text(L.Profile.title)
                 .font(.screenTitle)
                 .foregroundColor(.textPrimary)
 
             Spacer()
 
             if viewModel.isEditing {
-                Button {
-                    focusedField = nil
-                    Task {
-                        await viewModel.saveChanges()
+                HStack(spacing: 16) {
+                    Button {
+                        focusedField = nil
+                        if viewModel.hasUnsavedChanges {
+                            showDiscardChangesAlert = true
+                        } else {
+                            viewModel.cancelEditing()
+                        }
+                    } label: {
+                        Text(L.Common.cancel)
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.textSecondary)
                     }
-                } label: {
-                    Text("Сохранить")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.primaryAccent)
+
+                    Button {
+                        focusedField = nil
+                        Task {
+                            await viewModel.saveChanges()
+                        }
+                    } label: {
+                        Text(L.Common.save)
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.primaryAccent)
+                    }
                 }
             } else {
                 Button {
                     viewModel.startEditing()
                 } label: {
-                    Text("Изменить")
+                    Text(L.Profile.editProfile)
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.primaryAccent)
                 }
@@ -134,7 +182,7 @@ struct ProfileView: View {
                     .foregroundColor(.textPrimary)
 
                 if let profile = viewModel.profile {
-                    Text(profile.productType?.displayName ?? "Не указано")
+                    Text(profile.productType?.displayName ?? L.Profile.notSpecified)
                         .font(.bodyText)
                         .foregroundColor(.textSecondary)
                 }
@@ -153,8 +201,8 @@ struct ProfileView: View {
         VStack(spacing: 0) {
             // Product Type
             SettingsRow(
-                title: "Тип продукта",
-                value: viewModel.isEditing ? viewModel.productType.displayName : (viewModel.profile?.productType?.displayName ?? "Не указано"),
+                title: L.Profile.productType,
+                value: viewModel.isEditing ? viewModel.productType.displayName : (viewModel.profile?.productType?.displayName ?? L.Profile.notSpecified),
                 isEditable: viewModel.isEditing
             ) {
                 showProductTypePicker = true
@@ -165,16 +213,16 @@ struct ProfileView: View {
             // Baseline
             if viewModel.isEditing {
                 SettingsInputRow(
-                    title: "В день (обычно)",
+                    title: L.Profile.perDayUsually,
                     text: $viewModel.baselineText,
-                    suffix: "шт.",
+                    suffix: L.Units.pieces,
                     isFocused: focusedField == .baseline
                 )
                 .focused($focusedField, equals: .baseline)
             } else {
                 SettingsRow(
-                    title: "В день (обычно)",
-                    value: "\(viewModel.profile?.safeBaselinePerDay ?? 0) шт.",
+                    title: L.Profile.perDayUsually,
+                    value: "\(viewModel.profile?.safeBaselinePerDay ?? 0) \(L.Units.pieces)",
                     isEditable: false
                 ) {}
             }
@@ -184,16 +232,16 @@ struct ProfileView: View {
             // Pack Price
             if viewModel.isEditing {
                 SettingsInputRow(
-                    title: "Цена пачки",
+                    title: L.Profile.packPrice,
                     text: $viewModel.packPriceText,
-                    suffix: "₸",
+                    suffix: L.Units.tenge,
                     isFocused: focusedField == .packPrice
                 )
                 .focused($focusedField, equals: .packPrice)
             } else {
                 SettingsRow(
-                    title: "Цена пачки",
-                    value: "\(viewModel.profile?.safePackPrice ?? 0) ₸",
+                    title: L.Profile.packPrice,
+                    value: "\(viewModel.profile?.safePackPrice ?? 0) \(L.Units.tenge)",
                     isEditable: false
                 ) {}
             }
@@ -203,16 +251,16 @@ struct ProfileView: View {
             // Sticks in Pack
             if viewModel.isEditing {
                 SettingsInputRow(
-                    title: "Сигарет в пачке",
+                    title: L.Profile.sticksInPack,
                     text: $viewModel.sticksInPackText,
-                    suffix: "шт.",
+                    suffix: L.Units.pieces,
                     isFocused: focusedField == .sticksInPack
                 )
                 .focused($focusedField, equals: .sticksInPack)
             } else {
                 SettingsRow(
-                    title: "Сигарет в пачке",
-                    value: "\(viewModel.profile?.safeSticksInPack ?? 0) шт.",
+                    title: L.Profile.sticksInPack,
+                    value: "\(viewModel.profile?.safeSticksInPack ?? 0) \(L.Units.pieces)",
                     isEditable: false
                 ) {}
             }
@@ -221,8 +269,8 @@ struct ProfileView: View {
 
             // Goal
             SettingsRow(
-                title: "Цель",
-                value: viewModel.isEditing ? viewModel.goalType.displayName : (viewModel.profile?.goalType?.displayName ?? "Не указана"),
+                title: L.Program.goal,
+                value: viewModel.isEditing ? viewModel.goalType.displayName : (viewModel.profile?.goalType?.displayName ?? L.Profile.notSpecified),
                 isEditable: viewModel.isEditing
             ) {
                 showGoalTypePicker = true
@@ -239,19 +287,19 @@ struct ProfileView: View {
         VStack(spacing: 0) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("ПРОГРАММА")
+                    Text(L.Stats.program)
                         .font(.sectionLabel)
                         .kerning(2)
                         .foregroundColor(.textSecondary)
 
                     if viewModel.hasProgramActive {
                         if let limit = viewModel.currentDailyLimit {
-                            Text("Лимит сегодня: \(limit) шт.")
+                            Text(L.Profile.todayLimit(limit))
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(.primaryAccent)
                         }
                     } else {
-                        Text("Не настроена")
+                        Text(L.Profile.notConfigured)
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(.textMuted)
                     }
@@ -262,7 +310,7 @@ struct ProfileView: View {
                 Button {
                     viewModel.startProgramSetup()
                 } label: {
-                    Text(viewModel.hasProgramActive ? "Изменить" : "Настроить")
+                    Text(viewModel.hasProgramActive ? L.Profile.editProfile : L.Profile.setupProgram)
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(.primaryAccent)
                         .padding(.horizontal, 16)
@@ -277,7 +325,7 @@ struct ProfileView: View {
                 Divider().padding(.horizontal, 16)
 
                 HStack {
-                    Text("Цель")
+                    Text(L.Program.goal)
                         .font(.bodyText)
                         .foregroundColor(.textPrimary)
 
@@ -302,15 +350,15 @@ struct ProfileView: View {
             VStack(spacing: 24) {
                 // Program Type Selection
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("ВЫБЕРИТЕ ЦЕЛЬ")
+                    Text(L.Profile.selectGoal)
                         .font(.sectionLabel)
                         .kerning(2)
                         .foregroundColor(.textSecondary)
 
                     VStack(spacing: 8) {
                         ProgramOptionButton(
-                            title: "Бросить",
-                            subtitle: "Постепенно снижать до 0",
+                            title: L.Program.quit,
+                            subtitle: L.Profile.quitDesc,
                             isSelected: viewModel.programType == "quit"
                         ) {
                             viewModel.programType = "quit"
@@ -318,16 +366,16 @@ struct ProfileView: View {
                         }
 
                         ProgramOptionButton(
-                            title: "Снизить",
-                            subtitle: "Установить целевой лимит",
+                            title: L.Program.reduce,
+                            subtitle: L.Profile.reduceDesc,
                             isSelected: viewModel.programType == "reduce"
                         ) {
                             viewModel.programType = "reduce"
                         }
 
                         ProgramOptionButton(
-                            title: "Наблюдать",
-                            subtitle: "Без ограничений",
+                            title: L.Program.observe,
+                            subtitle: L.Profile.observeDesc,
                             isSelected: viewModel.programType == "observe"
                         ) {
                             viewModel.programType = "observe"
@@ -339,7 +387,7 @@ struct ProfileView: View {
                 // Target Value (only for reduce)
                 if viewModel.programType == "reduce" {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("ЦЕЛЕВОЕ КОЛИЧЕСТВО В ДЕНЬ")
+                        Text(L.Profile.targetPerDay)
                             .font(.sectionLabel)
                             .kerning(2)
                             .foregroundColor(.textSecondary)
@@ -376,7 +424,7 @@ struct ProfileView: View {
                 // Duration (only for quit/reduce)
                 if viewModel.programType == "quit" || viewModel.programType == "reduce" {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("СРОК ПРОГРАММЫ")
+                        Text(L.Profile.programDuration)
                             .font(.sectionLabel)
                             .kerning(2)
                             .foregroundColor(.textSecondary)
@@ -404,7 +452,7 @@ struct ProfileView: View {
                         await viewModel.saveProgramSettings()
                     }
                 } label: {
-                    Text("СОХРАНИТЬ")
+                    Text(L.Common.save.uppercased())
                         .font(.system(size: 16, weight: .bold))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -416,11 +464,11 @@ struct ProfileView: View {
                 .padding(.bottom, 20)
             }
             .padding(.top, 24)
-            .navigationTitle("Настройка программы")
+            .navigationTitle(L.Profile.programSetup)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Отмена") {
+                    Button(L.Common.cancel) {
                         viewModel.showProgramSetup = false
                     }
                     .foregroundColor(.primaryAccent)
@@ -437,7 +485,7 @@ struct ProfileView: View {
         VStack(spacing: 0) {
             // Notifications toggle
             HStack {
-                Text("Уведомления")
+                Text(L.Profile.notifications)
                     .font(.bodyText)
                     .foregroundColor(.textPrimary)
 
@@ -459,7 +507,7 @@ struct ProfileView: View {
 
                 // Notification time picker
                 HStack {
-                    Text("Время вечернего отчёта")
+                    Text(L.Profile.eveningReportTime)
                         .font(.bodyText)
                         .foregroundColor(.textPrimary)
 
@@ -491,6 +539,175 @@ struct ProfileView: View {
         .animation(.easeInOut(duration: 0.2), value: viewModel.notificationsEnabled)
     }
 
+    // MARK: - Language Section
+
+    private var languageSection: some View {
+        VStack(spacing: 0) {
+            Button {
+                showLanguagePicker = true
+            } label: {
+                HStack {
+                    Text(L.Profile.language)
+                        .font(.bodyText)
+                        .foregroundColor(.textPrimary)
+
+                    Spacer()
+
+                    HStack(spacing: 6) {
+                        Text(languageManager.currentLanguage.flag)
+                            .font(.system(size: 16))
+                        Text(languageManager.currentLanguage.displayName)
+                            .font(.bodyText)
+                            .foregroundColor(.textSecondary)
+                    }
+
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.textMuted)
+                }
+                .padding(16)
+            }
+        }
+        .background(Color.cardBackground)
+        .cornerRadius(Layout.cardCornerRadius)
+        .shadow(color: .black.opacity(0.06), radius: 8, y: 2)
+    }
+
+    // MARK: - Language Picker Sheet
+
+    private var languagePickerSheet: some View {
+        NavigationStack {
+            List {
+                ForEach(AppLanguage.allCases) { language in
+                    Button {
+                        languageManager.currentLanguage = language
+                        showLanguagePicker = false
+                        Haptics.selection()
+                    } label: {
+                        HStack {
+                            Text(language.flag)
+                                .font(.system(size: 20))
+
+                            Text(language.displayName)
+                                .foregroundColor(.primary)
+
+                            Spacer()
+
+                            if languageManager.currentLanguage == language {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.primaryAccent)
+                                    .fontWeight(.semibold)
+                            }
+                        }
+                    }
+                }
+            }
+            .scrollContentBackground(.visible)
+            .navigationTitle(L.Profile.language)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(L.Common.done) {
+                        showLanguagePicker = false
+                    }
+                    .foregroundColor(.primaryAccent)
+                }
+            }
+        }
+        .presentationDetents([.medium])
+        .presentationBackground(.white)
+    }
+
+    // MARK: - Subscription Section
+
+    private var subscriptionStatusText: String {
+        switch SubscriptionManager.shared.subscriptionState {
+        case .subscribed:
+            return L.Profile.subscriptionActive
+        case .inTrial(let days):
+            return L.Paywall.trialDaysLeft(days)
+        case .trialExpired:
+            return L.Profile.trialExpired
+        case .noSubscription:
+            return L.Profile.subscriptionSubscribe
+        }
+    }
+
+    private var subscriptionStatusColor: Color {
+        switch SubscriptionManager.shared.subscriptionState {
+        case .subscribed:
+            return .success
+        case .inTrial:
+            return .primaryAccent
+        case .trialExpired:
+            return .red
+        case .noSubscription:
+            return .textSecondary
+        }
+    }
+
+    private var subscriptionSection: some View {
+        VStack(spacing: 0) {
+            Button {
+                showPaywall = true
+            } label: {
+                HStack {
+                    Image(systemName: "crown.fill")
+                        .font(.system(size: 16))
+                        .foregroundColor(.primaryAccent)
+                        .frame(width: 24)
+
+                    Text(L.Profile.subscription)
+                        .font(.bodyText)
+                        .foregroundColor(.textPrimary)
+
+                    Spacer()
+
+                    Text(subscriptionStatusText)
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(subscriptionStatusColor)
+
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.textMuted)
+                }
+                .padding(16)
+            }
+
+            if SubscriptionManager.shared.isSubscribed {
+                Divider()
+                    .background(Color.cardFill)
+                    .padding(.horizontal, 16)
+
+                Button {
+                    if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    HStack {
+                        Image(systemName: "gear")
+                            .font(.system(size: 16))
+                            .foregroundColor(.textSecondary)
+                            .frame(width: 24)
+
+                        Text(L.Profile.manageSubscription)
+                            .font(.bodyText)
+                            .foregroundColor(.textPrimary)
+
+                        Spacer()
+
+                        Image(systemName: "arrow.up.forward")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.textMuted)
+                    }
+                    .padding(16)
+                }
+            }
+        }
+        .background(Color.cardBackground)
+        .cornerRadius(Layout.cardCornerRadius)
+    }
+
     // MARK: - About Section
 
     private var aboutSection: some View {
@@ -505,7 +722,7 @@ struct ProfileView: View {
                         .foregroundColor(.textSecondary)
                         .frame(width: 24)
 
-                    Text("Политика конфиденциальности")
+                    Text(L.Profile.privacyPolicy)
                         .font(.bodyText)
                         .foregroundColor(.textPrimary)
 
@@ -530,7 +747,7 @@ struct ProfileView: View {
                         .foregroundColor(.textSecondary)
                         .frame(width: 24)
 
-                    Text("Условия использования")
+                    Text(L.Profile.termsOfService)
                         .font(.bodyText)
                         .foregroundColor(.textPrimary)
 
@@ -545,29 +762,23 @@ struct ProfileView: View {
 
             Divider().padding(.horizontal, 16)
 
-            // Contact Support - Telegram
+            // Support
             Button {
-                if let url = URL(string: "https://t.me/iddlemiddle") {
-                    UIApplication.shared.open(url)
-                }
+                showSupportSheet = true
             } label: {
                 HStack {
-                    Image(systemName: "paperplane.fill")
+                    Image(systemName: "questionmark.circle.fill")
                         .font(.system(size: 16))
                         .foregroundColor(.textSecondary)
                         .frame(width: 24)
 
-                    Text("Написать в Telegram")
+                    Text(L.Profile.support)
                         .font(.bodyText)
                         .foregroundColor(.textPrimary)
 
                     Spacer()
 
-                    Text("@iddlemiddle")
-                        .font(.system(size: 13))
-                        .foregroundColor(.textMuted)
-
-                    Image(systemName: "arrow.up.right")
+                    Image(systemName: "chevron.right")
                         .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.textMuted)
                 }
@@ -583,13 +794,13 @@ struct ProfileView: View {
                     .foregroundColor(.textSecondary)
                     .frame(width: 24)
 
-                Text("Версия")
+                Text(L.Profile.version)
                     .font(.bodyText)
                     .foregroundColor(.textPrimary)
 
                 Spacer()
 
-                Text("1.0.0")
+                Text(Bundle.main.appVersionString)
                     .font(.bodyText)
                     .foregroundColor(.textSecondary)
             }
@@ -600,15 +811,18 @@ struct ProfileView: View {
         .shadow(color: .black.opacity(0.06), radius: 8, y: 2)
         .sheet(isPresented: $showPrivacyPolicy) {
             LegalDocumentView(
-                title: "Политика конфиденциальности",
+                title: L.Profile.privacyPolicy,
                 content: LegalTexts.privacyPolicy
             )
         }
         .sheet(isPresented: $showTermsOfService) {
             LegalDocumentView(
-                title: "Условия использования",
+                title: L.Profile.termsOfService,
                 content: LegalTexts.termsOfService
             )
+        }
+        .sheet(isPresented: $showSupportSheet) {
+            SupportSheetView()
         }
     }
 
@@ -624,7 +838,7 @@ struct ProfileView: View {
                 Image(systemName: "rectangle.portrait.and.arrow.right")
                     .font(.system(size: 16, weight: .medium))
 
-                Text("Выйти из аккаунта")
+                Text(L.Profile.signOut)
                     .font(.bodyText)
             }
             .foregroundColor(.primaryAccent)
@@ -634,6 +848,35 @@ struct ProfileView: View {
             .cornerRadius(Layout.cardCornerRadius)
         }
         .pressEffect()
+    }
+
+    // MARK: - Delete Account Button
+
+    private var deleteAccountButton: some View {
+        Button {
+            showDeleteAccountAlert = true
+        } label: {
+            HStack {
+                Image(systemName: "trash")
+                    .font(.system(size: 16, weight: .medium))
+
+                Text(L.Profile.deleteAccount)
+                    .font(.bodyText)
+            }
+            .foregroundColor(.red)
+            .frame(maxWidth: .infinity)
+            .padding(16)
+        }
+        .alert(L.Profile.deleteAccountTitle, isPresented: $showDeleteAccountAlert) {
+            Button(L.Common.cancel, role: .cancel) {}
+            Button(L.Profile.delete, role: .destructive) {
+                Task {
+                    await viewModel.deleteAccount()
+                }
+            }
+        } message: {
+            Text(L.Profile.deleteAccountMessage)
+        }
     }
 
     // MARK: - Picker Sheets
@@ -653,7 +896,7 @@ struct ProfileView: View {
                             Spacer()
                             if viewModel.productType == type {
                                 Image(systemName: "checkmark")
-                                    .foregroundColor(.orange)
+                                    .foregroundColor(.primaryAccent)
                                     .fontWeight(.semibold)
                             }
                         }
@@ -661,14 +904,14 @@ struct ProfileView: View {
                 }
             }
             .scrollContentBackground(.visible)
-            .navigationTitle("Тип продукта")
+            .navigationTitle(L.Profile.productType)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Готово") {
+                    Button(L.Common.done) {
                         showProductTypePicker = false
                     }
-                    .foregroundColor(.orange)
+                    .foregroundColor(.primaryAccent)
                 }
             }
         }
@@ -696,7 +939,7 @@ struct ProfileView: View {
                             Spacer()
                             if viewModel.goalType == type {
                                 Image(systemName: "checkmark")
-                                    .foregroundColor(.orange)
+                                    .foregroundColor(.primaryAccent)
                                     .fontWeight(.semibold)
                             }
                         }
@@ -704,14 +947,14 @@ struct ProfileView: View {
                 }
             }
             .scrollContentBackground(.visible)
-            .navigationTitle("Цель")
+            .navigationTitle(L.Program.goal)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Готово") {
+                    Button(L.Common.done) {
                         showGoalTypePicker = false
                     }
-                    .foregroundColor(.orange)
+                    .foregroundColor(.primaryAccent)
                 }
             }
         }
@@ -851,12 +1094,7 @@ struct DurationButton: View {
     }
 
     var title: String {
-        switch months {
-        case 1: return "1 мес"
-        case 3: return "3 мес"
-        case 6: return "6 мес"
-        default: return "\(months) мес"
-        }
+        L.Profile.monthsFormat(months)
     }
 
     var body: some View {
@@ -872,6 +1110,141 @@ struct DurationButton: View {
                 .background(isSelected ? Color.primaryAccent : Color.cardFill)
                 .cornerRadius(8)
         }
+    }
+}
+
+// MARK: - Support Sheet View
+
+struct SupportSheetView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                // Header text
+                Text(L.Profile.supportDescription)
+                    .font(.bodyText)
+                    .foregroundColor(.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 24)
+                    .padding(.top, 24)
+                    .padding(.bottom, 32)
+
+                VStack(spacing: 0) {
+                    // Email
+                    Button {
+                        if let url = URL(string: "mailto:kakenov.tokmyrza@gmail.com?subject=dem%20Support") {
+                            UIApplication.shared.open(url)
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "envelope.fill")
+                                .font(.system(size: 20))
+                                .foregroundColor(.primaryAccent)
+                                .frame(width: 32)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Email")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(.textPrimary)
+                                Text("kakenov.tokmyrza@gmail.com")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.textSecondary)
+                            }
+
+                            Spacer()
+
+                            Image(systemName: "arrow.up.right")
+                                .font(.system(size: 14))
+                                .foregroundColor(.textMuted)
+                        }
+                        .padding(16)
+                    }
+
+                    Divider().padding(.leading, 56)
+
+                    // Telegram
+                    Button {
+                        if let url = URL(string: "https://t.me/iddlemiddle") {
+                            UIApplication.shared.open(url)
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "paperplane.fill")
+                                .font(.system(size: 20))
+                                .foregroundColor(.primaryAccent)
+                                .frame(width: 32)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Telegram")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(.textPrimary)
+                                Text("@iddlemiddle")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.textSecondary)
+                            }
+
+                            Spacer()
+
+                            Image(systemName: "arrow.up.right")
+                                .font(.system(size: 14))
+                                .foregroundColor(.textMuted)
+                        }
+                        .padding(16)
+                    }
+
+                    Divider().padding(.leading, 56)
+
+                    // Instagram
+                    Button {
+                        if let url = URL(string: "https://instagram.com/dem.tracker") {
+                            UIApplication.shared.open(url)
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "camera.fill")
+                                .font(.system(size: 20))
+                                .foregroundColor(.primaryAccent)
+                                .frame(width: 32)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Instagram")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(.textPrimary)
+                                Text("@dem.tracker")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.textSecondary)
+                            }
+
+                            Spacer()
+
+                            Image(systemName: "arrow.up.right")
+                                .font(.system(size: 14))
+                                .foregroundColor(.textMuted)
+                        }
+                        .padding(16)
+                    }
+                }
+                .background(Color.cardBackground)
+                .cornerRadius(Layout.cardCornerRadius)
+                .padding(.horizontal, Layout.horizontalPadding)
+
+                Spacer()
+            }
+            .background(Color.appBackground)
+            .navigationTitle(L.Profile.support)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(L.Common.done) {
+                        dismiss()
+                    }
+                    .foregroundColor(.primaryAccent)
+                }
+            }
+        }
+        .presentationDetents([.medium])
+        .presentationBackground(.white)
     }
 }
 

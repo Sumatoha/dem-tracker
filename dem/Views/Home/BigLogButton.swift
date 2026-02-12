@@ -36,7 +36,7 @@ struct BigLogButton: View {
                     }
             )
 
-            Text("Записать")
+            Text(L.Home.logButton)
                 .font(.system(size: 12, weight: .regular))
                 .foregroundColor(.textMuted)
         }

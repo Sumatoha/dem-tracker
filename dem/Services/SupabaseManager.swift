@@ -61,6 +61,29 @@ final class SupabaseManager: ObservableObject {
         currentProfile = nil
     }
 
+    func deleteUserData() async throws {
+        guard let userId = currentUser?.id else {
+            throw DatabaseError.notAuthenticated
+        }
+
+        // Delete all smoking logs for this user
+        try await client
+            .from(TableName.logs)
+            .delete()
+            .eq(ColumnName.Log.userId, value: userId)
+            .execute()
+
+        // Delete profile
+        try await client
+            .from(TableName.profiles)
+            .delete()
+            .eq(ColumnName.Profile.id, value: userId)
+            .execute()
+
+        // Clear local cache
+        CacheManager.shared.clearCache()
+    }
+
     // MARK: - Profile
 
     /// ТОЛЬКО ЧИТАЕТ профиль из базы. НИКОГДА не создаёт и не перезаписывает.

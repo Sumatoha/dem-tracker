@@ -81,6 +81,9 @@ struct OnboardingContainerView: View {
                                 let success = await viewModel.completeOnboarding()
                                 if success {
                                     onComplete()
+                                } else {
+                                    viewModel.showError = true
+                                    viewModel.errorMessage = L.Onboarding.saveError
                                 }
                             }
                         })
@@ -104,10 +107,10 @@ struct OnboardingContainerView: View {
                     .scaleEffect(1.2)
             }
         }
-        .alert("Ошибка", isPresented: $viewModel.showError) {
-            Button("OK", role: .cancel) {}
+        .alert(L.Common.error, isPresented: $viewModel.showError) {
+            Button(L.Common.ok, role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage ?? "Произошла ошибка")
+            Text(viewModel.errorMessage ?? L.Common.error)
         }
     }
 }

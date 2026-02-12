@@ -43,17 +43,17 @@ final class OnboardingViewModel: ObservableObject {
 
         var title: String {
             switch self {
-            case .quit: return "Бросить совсем"
-            case .reduce: return "Снизить потребление"
-            case .observe: return "Просто наблюдаю"
+            case .quit: return L.Onboarding.goalQuit
+            case .reduce: return L.Onboarding.goalReduce
+            case .observe: return L.Onboarding.justObserving
             }
         }
 
         var subtitle: String {
             switch self {
-            case .quit: return "Полный отказ от никотина"
-            case .reduce: return "Установите комфортный уровень"
-            case .observe: return "Отслеживать без ограничений"
+            case .quit: return L.Onboarding.goalQuitDesc
+            case .reduce: return L.Onboarding.setComfortLevel
+            case .observe: return L.Onboarding.goalObserveDesc
             }
         }
     }
@@ -66,19 +66,19 @@ final class OnboardingViewModel: ObservableObject {
 
         var title: String {
             switch self {
-            case .oneMonth: return "1 месяц"
-            case .threeMonths: return "3 месяца"
-            case .sixMonths: return "6 месяцев"
-            case .custom: return "Свой срок"
+            case .oneMonth: return L.Onboarding.duration1Month
+            case .threeMonths: return L.Onboarding.duration3Months
+            case .sixMonths: return L.Onboarding.duration6Months
+            case .custom: return L.Onboarding.durationCustom
             }
         }
 
         var subtitle: String {
             switch self {
-            case .oneMonth: return "Интенсивно"
-            case .threeMonths: return "Оптимально"
-            case .sixMonths: return "Мягко"
-            case .custom: return "Выберите срок"
+            case .oneMonth: return L.Onboarding.intensive
+            case .threeMonths: return L.Onboarding.optimal
+            case .sixMonths: return L.Onboarding.gentle
+            case .custom: return L.Onboarding.chooseDuration
             }
         }
 
@@ -143,7 +143,7 @@ final class OnboardingViewModel: ObservableObject {
         // Если observe - пропускаем шаг 6, показываем 5 из 5
         let effectiveTotal = needsDurationStep ? totalSteps : totalSteps - 1
         let effectiveStep = min(currentStep, effectiveTotal)
-        return "ШАГ \(effectiveStep) ИЗ \(effectiveTotal)"
+        return L.Onboarding.stepOf(effectiveStep, effectiveTotal)
     }
 
     func nextStep() {

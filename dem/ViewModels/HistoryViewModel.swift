@@ -87,17 +87,18 @@ final class HistoryViewModel: ObservableObject {
     func formatDate(_ date: Date) -> String {
         let calendar = Calendar.current
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.locale = Locale(identifier: LanguageManager.shared.currentLanguage.rawValue)
 
         if calendar.isDateInToday(date) {
-            formatter.dateFormat = "'СЕГОДНЯ,' d MMMM"
+            formatter.dateFormat = "d MMMM"
+            return "\(L.History.today), \(formatter.string(from: date))".uppercased()
         } else if calendar.isDateInYesterday(date) {
-            formatter.dateFormat = "'ВЧЕРА,' d MMMM"
+            formatter.dateFormat = "d MMMM"
+            return "\(L.History.yesterday), \(formatter.string(from: date))".uppercased()
         } else {
             formatter.dateFormat = "EEEE, d MMMM"
+            return formatter.string(from: date).uppercased()
         }
-
-        return formatter.string(from: date).uppercased()
     }
 
     func intervalSincePrevious(for log: SmokingLog, in dayLogs: [SmokingLog]) -> String? {
