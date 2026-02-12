@@ -79,6 +79,7 @@
 "stats.weeks_behind" = "Отставание — %d нед.";
 "stats.reach_goal_by" = "Достигнете цели к %@";
 "stats.keep_going" = "Продолжайте в том же духе";
+"stats.share" = "Поделиться прогрессом";
 
 // MARK: - Forecast
 "forecast.title" = "Прогноз";

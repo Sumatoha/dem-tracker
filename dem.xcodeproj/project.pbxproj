@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		47A58F6519D74244A3B8B9F9 /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3037D03ACD475B97D3705E /* ShareCardView.swift */; };
+		242DFF53D32C422FB9F18506 /* ShareManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 195022FA7C794B368F7CF8DD /* ShareManager.swift */; };
 		63C5A4642F3BAD75005F01F9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C5A4632F3BAD75005F01F9 /* StoreKit.framework */; };
 		A10000000000000000000001 /* demApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000101 /* demApp.swift */; };
 		A10000000000000000000002 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000102 /* Profile.swift */; };
@@ -57,6 +59,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7B3037D03ACD475B97D3705E /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
+		195022FA7C794B368F7CF8DD /* ShareManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareManager.swift; sourceTree = "<group>"; };
 		63C5A4632F3BAD75005F01F9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A10000000000000000000100 /* dem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000000000000000000101 /* demApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = demApp.swift; sourceTree = "<group>"; };
@@ -320,6 +324,15 @@
 			path = Paywall;
 			sourceTree = "<group>";
 		};
+		1732C6F9DA1E471095FBD65C /* Share */ = {
+			isa = PBXGroup;
+			children = (
+				7B3037D03ACD475B97D3705E /* ShareCardView.swift */,
+				195022FA7C794B368F7CF8DD /* ShareManager.swift */,
+			);
+			path = Share;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -441,7 +454,8 @@
 				A10000000000000000000044 /* PaywallView.swift in Sources */,
 				A10000000000000000000045 /* TermsView.swift in Sources */,
 				A10000000000000000000046 /* PrivacyPolicyView.swift in Sources */,
-			);
+				47A58F6519D74244A3B8B9F9 /* ShareCardView.swift in Sources */,
+				242DFF53D32C422FB9F18506 /* ShareManager.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
@@ -468,7 +482,7 @@
 				CODE_SIGN_ENTITLEMENTS = dem/dem.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = W87H555UKB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -506,7 +520,7 @@
 				CODE_SIGN_ENTITLEMENTS = dem/dem.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = W87H555UKB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

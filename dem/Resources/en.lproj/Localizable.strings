@@ -79,6 +79,7 @@
 "stats.weeks_behind" = "Behind by %d weeks";
 "stats.reach_goal_by" = "You'll reach goal by %@";
 "stats.keep_going" = "Keep up the good work";
+"stats.share" = "Share progress";
 
 // MARK: - Forecast
 "forecast.title" = "Forecast";

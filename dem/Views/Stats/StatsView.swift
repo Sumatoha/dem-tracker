@@ -5,6 +5,7 @@ struct StatsView: View {
     @StateObject private var viewModel = StatsViewModel()
     @State private var showProgramExplanation = false
     @State private var showForecastExplanation = false
+    @State private var showShareSheet = false
 
     var body: some View {
         ZStack {
@@ -104,8 +105,29 @@ struct StatsView: View {
                 .foregroundColor(.textPrimary)
 
             Spacer()
+
+            Button {
+                Haptics.selection()
+                shareProgress()
+            } label: {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(.primaryAccent)
+                    .frame(width: 44, height: 44)
+            }
         }
         .padding(.horizontal, Layout.horizontalPadding)
+    }
+
+    // MARK: - Share
+
+    private func shareProgress() {
+        let stats = ShareManager.calculateWeeklyStats(
+            logs: viewModel.logs,
+            baseline: viewModel.baseline,
+            pricePerUnit: viewModel.pricePerUnit
+        )
+        ShareManager.shareProgress(stats: stats)
     }
 
     // MARK: - Hourly Activity Card

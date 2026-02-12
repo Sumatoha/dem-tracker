@@ -79,6 +79,7 @@
 "stats.weeks_behind" = "%d апта артта";
 "stats.reach_goal_by" = "Мақсатқа %@ дейін жетесіз";
 "stats.keep_going" = "Осылай жалғастырыңыз";
+"stats.share" = "Прогреспен бөлісу";
 
 // MARK: - Forecast
 "forecast.title" = "Болжам";
