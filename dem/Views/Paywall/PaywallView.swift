@@ -50,8 +50,7 @@ struct PaywallView: View {
 
         // Фильтруем только логи ДО сегодняшнего дня
         let logsBeforeToday = allLogs.filter { log in
-            guard let logDate = log.createdAt else { return false }
-            return logDate < startOfToday
+            return log.createdAt < startOfToday
         }
         return logsBeforeToday.count
     }
