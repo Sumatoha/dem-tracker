@@ -193,6 +193,7 @@ enum L {
         static var keepGoing: String { "stats.keep_going".localized }
         static func weeksAhead(_ weeks: Int) -> String { "stats.weeks_ahead".localized(weeks) }
         static func weeksBehind(_ weeks: Int) -> String { "stats.weeks_behind".localized(weeks) }
+        static var share: String { "stats.share".localized }
     }
 
     // MARK: - Profile

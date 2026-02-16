@@ -1,39 +1,36 @@
 import SwiftUI
 
 struct ShareCardView: View {
-    let weeklyStats: WeeklyShareStats
+    let stats: ShareStats
 
-    // Colors
-    private let bgDark = Color(red: 0.1, green: 0.1, blue: 0.1)
-    private let bgLight = Color(red: 0.18, green: 0.18, blue: 0.18)
-    private let accentOrange = Color(red: 1.0, green: 0.42, blue: 0.21)
+    // Colors - brighter
+    private let bgDark = Color(red: 0.08, green: 0.08, blue: 0.10)
+    private let cardBg = Color(red: 0.16, green: 0.16, blue: 0.18)
+    private let accentOrange = Color(red: 1.0, green: 0.45, blue: 0.25)
 
     var body: some View {
         ZStack {
-            // Background gradient
-            LinearGradient(
-                colors: [bgDark, bgLight],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            bgDark
 
             VStack(spacing: 0) {
-                Spacer()
-                    .frame(height: 80)
+                Spacer().frame(height: 100)
 
-                // Logo and branding
-                brandingSection
+                // Logo
+                logoSection
 
-                Spacer()
-                    .frame(height: 60)
+                Spacer().frame(height: 50)
 
-                // Main stats
-                statsSection
+                // Main stat
+                mainStatSection
 
-                Spacer()
-                    .frame(height: 50)
+                Spacer().frame(height: 40)
 
-                // Weekly chart
+                // Secondary stats
+                secondaryStatsSection
+
+                Spacer().frame(height: 40)
+
+                // Chart - full width
                 weeklyChartSection
 
                 Spacer()
@@ -41,124 +38,197 @@ struct ShareCardView: View {
                 // Footer
                 footerSection
 
-                Spacer()
-                    .frame(height: 60)
+                Spacer().frame(height: 60)
             }
             .padding(.horizontal, 40)
         }
         .frame(width: 1080, height: 1920)
     }
 
-    // MARK: - Branding
+    // MARK: - Logo
 
-    private var brandingSection: some View {
-        VStack(spacing: 16) {
-            // App icon placeholder - circles like the logo
+    private var logoSection: some View {
+        HStack(spacing: 24) {
             ZStack {
                 Circle()
-                    .stroke(Color.white.opacity(0.3), lineWidth: 6)
-                    .frame(width: 120, height: 120)
+                    .stroke(Color.white.opacity(0.2), lineWidth: 5)
+                    .frame(width: 80, height: 80)
 
                 Circle()
-                    .stroke(Color.white.opacity(0.5), lineWidth: 6)
-                    .frame(width: 85, height: 85)
+                    .stroke(Color.white.opacity(0.35), lineWidth: 5)
+                    .frame(width: 56, height: 56)
 
                 Circle()
-                    .stroke(Color.white.opacity(0.7), lineWidth: 6)
-                    .frame(width: 55, height: 55)
+                    .stroke(Color.white.opacity(0.55), lineWidth: 5)
+                    .frame(width: 36, height: 36)
 
                 Circle()
                     .fill(accentOrange)
-                    .frame(width: 30, height: 30)
+                    .frame(width: 18, height: 18)
             }
 
             Text("dem")
-                .font(.system(size: 64, weight: .bold))
+                .font(.system(size: 56, weight: .bold))
                 .foregroundColor(.white)
         }
     }
 
-    // MARK: - Stats
+    // MARK: - Main Stat
 
-    private var statsSection: some View {
-        VStack(spacing: 40) {
-            // Progress percentage - main stat
-            VStack(spacing: 12) {
-                Text(weeklyStats.progressText)
-                    .font(.system(size: 120, weight: .bold))
-                    .foregroundColor(accentOrange)
+    private var mainStatSection: some View {
+        VStack(spacing: 20) {
+            // Today label
+            Text("СЕГОДНЯ")
+                .font(.system(size: 28, weight: .semibold))
+                .tracking(4)
+                .foregroundColor(.white.opacity(0.5))
 
-                Text(weeklyStats.progressDescription)
-                    .font(.system(size: 32, weight: .medium))
-                    .foregroundColor(.white.opacity(0.7))
+            // Count
+            HStack(alignment: .firstTextBaseline, spacing: 20) {
+                Text("\(stats.todaySmoked)")
+                    .font(.system(size: 200, weight: .bold))
+                    .foregroundColor(.white)
+
+                Text(cigaretteWord(stats.todaySmoked))
+                    .font(.system(size: 48, weight: .medium))
+                    .foregroundColor(.white.opacity(0.6))
+                    .offset(y: -20)
             }
 
-            // Secondary stats row
-            HStack(spacing: 60) {
-                statItem(
-                    value: weeklyStats.savedMoneyText,
-                    label: "сэкономлено"
-                )
+            // Comparison badge
+            if stats.percentVsLastMonth != 0 || stats.lastMonthAverage > 0 {
+                HStack(spacing: 14) {
+                    if stats.percentVsLastMonth != 0 {
+                        Image(systemName: stats.percentVsLastMonth < 0 ? "arrow.down" : "arrow.up")
+                            .font(.system(size: 36, weight: .bold))
+                    }
 
-                statItem(
-                    value: "\(weeklyStats.daysInPlan)",
-                    label: weeklyStats.daysInPlan == 1 ? "день в плане" :
-                           weeklyStats.daysInPlan < 5 ? "дня в плане" : "дней в плане"
+                    Text(stats.comparisonText)
+                        .font(.system(size: 36, weight: .semibold))
+                }
+                .foregroundColor(stats.percentVsLastMonth <= 0 ? Color.green : accentOrange)
+                .padding(.horizontal, 36)
+                .padding(.vertical, 18)
+                .background(
+                    RoundedRectangle(cornerRadius: 28)
+                        .fill(stats.percentVsLastMonth <= 0 ? Color.green.opacity(0.18) : accentOrange.opacity(0.18))
                 )
             }
         }
     }
 
-    private func statItem(value: String, label: String) -> some View {
-        VStack(spacing: 8) {
+    private func cigaretteWord(_ count: Int) -> String {
+        let mod10 = count % 10
+        let mod100 = count % 100
+        if mod100 >= 11 && mod100 <= 14 {
+            return "сигарет"
+        }
+        switch mod10 {
+        case 1: return "сигарета"
+        case 2, 3, 4: return "сигареты"
+        default: return "сигарет"
+        }
+    }
+
+    // MARK: - Secondary Stats
+
+    private var secondaryStatsSection: some View {
+        HStack(spacing: 24) {
+            statCard(
+                icon: "clock.fill",
+                value: stats.recordTimeText,
+                label: "рекорд\nбез сигарет"
+            )
+
+            statCard(
+                icon: "calendar",
+                value: "\(stats.daysTracking)",
+                label: daysWord(stats.daysTracking)
+            )
+        }
+    }
+
+    private func daysWord(_ count: Int) -> String {
+        let mod10 = count % 10
+        let mod100 = count % 100
+        if mod100 >= 11 && mod100 <= 14 {
+            return "дней\nв dem"
+        }
+        switch mod10 {
+        case 1: return "день\nв dem"
+        case 2, 3, 4: return "дня\nв dem"
+        default: return "дней\nв dem"
+        }
+    }
+
+    private func statCard(icon: String, value: String, label: String) -> some View {
+        VStack(spacing: 16) {
+            Image(systemName: icon)
+                .font(.system(size: 40))
+                .foregroundColor(accentOrange)
+
             Text(value)
-                .font(.system(size: 48, weight: .bold))
+                .font(.system(size: 52, weight: .bold))
                 .foregroundColor(.white)
 
             Text(label)
-                .font(.system(size: 24, weight: .medium))
-                .foregroundColor(.white.opacity(0.5))
+                .font(.system(size: 26, weight: .medium))
+                .foregroundColor(.white.opacity(0.6))
+                .multilineTextAlignment(.center)
+                .lineSpacing(4)
         }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 36)
+        .background(
+            RoundedRectangle(cornerRadius: 36)
+                .fill(cardBg)
+        )
     }
 
-    // MARK: - Weekly Chart
+    // MARK: - Weekly Chart (full width)
 
     private var weeklyChartSection: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 28) {
             Text("ПОСЛЕДНИЕ 7 ДНЕЙ")
                 .font(.system(size: 24, weight: .semibold))
                 .tracking(3)
                 .foregroundColor(.white.opacity(0.5))
 
-            HStack(alignment: .bottom, spacing: 16) {
+            HStack(alignment: .bottom, spacing: 0) {
                 ForEach(0..<7, id: \.self) { index in
                     chartBar(index: index)
+                        .frame(maxWidth: .infinity)
                 }
             }
             .frame(height: 200)
         }
-        .padding(.vertical, 30)
-        .padding(.horizontal, 20)
-        .background(Color.white.opacity(0.05))
-        .cornerRadius(24)
+        .padding(.vertical, 36)
+        .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 36)
+                .fill(cardBg)
+        )
     }
 
-    // MARK: - Chart Bar
-
     private func chartBar(index: Int) -> some View {
-        let count = weeklyStats.dailyCounts[safe: index] ?? 0
-        let maxCount = max(weeklyStats.dailyCounts.max() ?? 1, 1)
-        let barHeight = CGFloat(count) / CGFloat(maxCount) * 150
+        let count = stats.dailyCounts[safe: index] ?? 0
+        let maxCount = max(stats.dailyCounts.max() ?? 1, 1)
+        let barHeight = max(20, CGFloat(count) / CGFloat(maxCount) * 130)
         let isToday = index == 6
-        let label = weeklyStats.dayLabels[safe: index] ?? ""
+        let label = stats.dayLabels[safe: index] ?? ""
 
-        return VStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(isToday ? accentOrange : Color.white.opacity(0.3))
-                .frame(width: 50, height: max(20, barHeight))
+        return VStack(spacing: 14) {
+            Text("\(count)")
+                .font(.system(size: 28, weight: .bold))
+                .foregroundColor(isToday ? accentOrange : .white.opacity(0.7))
+
+            RoundedRectangle(cornerRadius: 12)
+                .fill(isToday ? accentOrange : Color.white.opacity(0.25))
+                .frame(width: 56, height: barHeight)
 
             Text(label)
-                .font(.system(size: 22, weight: .medium))
+                .font(.system(size: 26, weight: .medium))
                 .foregroundColor(.white.opacity(0.5))
         }
     }
@@ -166,53 +236,57 @@ struct ShareCardView: View {
     // MARK: - Footer
 
     private var footerSection: some View {
-        VStack(spacing: 16) {
-            Text("Отслеживаю прогресс в dem")
-                .font(.system(size: 28, weight: .medium))
-                .foregroundColor(.white.opacity(0.6))
+        VStack(spacing: 12) {
+            Text("Отслеживаю прогресс в")
+                .font(.system(size: 30, weight: .medium))
+                .foregroundColor(.white.opacity(0.5))
 
-            Text("App Store")
-                .font(.system(size: 24, weight: .regular))
-                .foregroundColor(.white.opacity(0.4))
+            Text("dem")
+                .font(.system(size: 38, weight: .bold))
+                .foregroundColor(accentOrange)
         }
     }
 }
 
-// MARK: - Weekly Stats Model
+// MARK: - Share Stats Model
 
-struct WeeklyShareStats {
-    let cigarettesReduced: Int        // На сколько меньше выкурено
-    let percentageReduced: Int        // Процент снижения
-    let savedMoney: Int               // Сэкономлено денег
-    let daysInPlan: Int               // Дней в плане
-    let dailyCounts: [Int]            // Количество по дням [пн, вт, ср, чт, пт, сб, вс]
-    let dayLabels: [String]           // Метки дней
+struct ShareStats {
+    let todaySmoked: Int
+    let lastMonthAverage: Double
+    let percentVsLastMonth: Int
+    let recordHours: Int
+    let recordMinutes: Int
+    let daysTracking: Int
+    let dailyCounts: [Int]
+    let dayLabels: [String]
 
-    var progressText: String {
-        if percentageReduced > 0 {
-            return "-\(percentageReduced)%"
-        } else if percentageReduced < 0 {
-            return "+\(abs(percentageReduced))%"
+    var comparisonText: String {
+        if percentVsLastMonth == 0 {
+            return "как обычно"
+        } else if percentVsLastMonth < 0 {
+            return "\(abs(percentVsLastMonth))% меньше нормы"
         } else {
-            return "0%"
+            return "\(percentVsLastMonth)% больше нормы"
         }
     }
 
-    var progressDescription: String {
-        if percentageReduced > 0 {
-            return "меньше за неделю"
-        } else if percentageReduced < 0 {
-            return "больше за неделю"
+    var recordTimeText: String {
+        if recordHours >= 48 {
+            let days = recordHours / 24
+            return "\(days) дн"
+        } else if recordHours >= 24 {
+            let days = recordHours / 24
+            let hours = recordHours % 24
+            if hours > 0 {
+                return "\(days)д \(hours)ч"
+            }
+            return "1 день"
+        } else if recordHours > 0 {
+            return "\(recordHours) ч"
+        } else if recordMinutes > 0 {
+            return "\(recordMinutes) мин"
         } else {
-            return "без изменений"
-        }
-    }
-
-    var savedMoneyText: String {
-        if savedMoney > 0 {
-            return "+\(savedMoney)₸"
-        } else {
-            return "0₸"
+            return "—"
         }
     }
 }
@@ -227,14 +301,16 @@ extension Array {
 
 // MARK: - Preview
 
-#Preview {
-    ShareCardView(weeklyStats: WeeklyShareStats(
-        cigarettesReduced: 15,
-        percentageReduced: 25,
-        savedMoney: 1500,
-        daysInPlan: 5,
-        dailyCounts: [8, 6, 7, 5, 4, 6, 3],
+#Preview(traits: .fixedLayout(width: 360, height: 640)) {
+    ShareCardView(stats: ShareStats(
+        todaySmoked: 4,
+        lastMonthAverage: 8.5,
+        percentVsLastMonth: -53,
+        recordHours: 14,
+        recordMinutes: 30,
+        daysTracking: 12,
+        dailyCounts: [8, 6, 7, 5, 4, 6, 4],
         dayLabels: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
     ))
-    .previewLayout(.fixed(width: 540, height: 960))
+    .scaleEffect(0.33)
 }

@@ -5,12 +5,12 @@ import UIKit
 class ShareManager {
 
     /// Генерирует изображение карточки и открывает меню шеринга
-    static func shareProgress(stats: WeeklyShareStats, from viewController: UIViewController? = nil) {
-        let cardView = ShareCardView(weeklyStats: stats)
+    static func shareProgress(stats: ShareStats, from viewController: UIViewController? = nil) {
+        let cardView = ShareCardView(stats: stats)
 
         // Рендерим SwiftUI view в изображение
         let renderer = ImageRenderer(content: cardView)
-        renderer.scale = 1.0 // 1x для точного размера 1080x1920
+        renderer.scale = 3.0 // 3x для высокого качества
 
         guard let image = renderer.uiImage else {
             print("Failed to render share card")
@@ -44,11 +44,11 @@ class ShareManager {
     }
 
     /// Сохраняет изображение в галерею
-    static func saveToPhotos(stats: WeeklyShareStats, completion: @escaping (Bool) -> Void) {
-        let cardView = ShareCardView(weeklyStats: stats)
+    static func saveToPhotos(stats: ShareStats, completion: @escaping (Bool) -> Void) {
+        let cardView = ShareCardView(stats: stats)
 
         let renderer = ImageRenderer(content: cardView)
-        renderer.scale = 1.0
+        renderer.scale = 3.0
 
         guard let image = renderer.uiImage else {
             completion(false)
@@ -60,11 +60,11 @@ class ShareManager {
     }
 
     /// Шеринг напрямую в Instagram Stories
-    static func shareToInstagramStories(stats: WeeklyShareStats) {
-        let cardView = ShareCardView(weeklyStats: stats)
+    static func shareToInstagramStories(stats: ShareStats) {
+        let cardView = ShareCardView(stats: stats)
 
         let renderer = ImageRenderer(content: cardView)
-        renderer.scale = 1.0
+        renderer.scale = 3.0
 
         guard let image = renderer.uiImage,
               let imageData = image.pngData() else {
@@ -117,23 +117,67 @@ class ShareManager {
 extension ShareManager {
 
     /// Вычисляет статистику для шеринга на основе логов
-    static func calculateWeeklyStats(
-        logs: [SmokingLog],
-        baseline: Int,
-        pricePerUnit: Double
-    ) -> WeeklyShareStats {
+    static func calculateStats(logs: [SmokingLog]) -> ShareStats {
         let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
+        let now = Date()
+        let today = calendar.startOfDay(for: now)
 
-        // Получаем даты последних 7 дней (без сегодня)
+        // 1. Сегодня выкурено
+        let todayLogs = logs.filter { calendar.isDateInToday($0.createdAt) }
+        let todaySmoked = todayLogs.count
+
+        // 2. Среднее за прошлый месяц (30 дней назад, исключая сегодня)
+        guard let monthAgo = calendar.date(byAdding: .day, value: -30, to: today) else {
+            return defaultStats(todaySmoked: todaySmoked)
+        }
+
+        let lastMonthLogs = logs.filter { log in
+            log.createdAt >= monthAgo && log.createdAt < today
+        }
+
+        let lastMonthAverage: Double
+        if lastMonthLogs.isEmpty {
+            lastMonthAverage = 0
+        } else {
+            // Группируем по дням
+            var dailyCounts: [Date: Int] = [:]
+            for log in lastMonthLogs {
+                let day = calendar.startOfDay(for: log.createdAt)
+                dailyCounts[day, default: 0] += 1
+            }
+            let totalDays = dailyCounts.count
+            lastMonthAverage = totalDays > 0 ? Double(lastMonthLogs.count) / Double(totalDays) : 0
+        }
+
+        // 3. Процент сравнения с прошлым месяцем
+        let percentVsLastMonth: Int
+        if lastMonthAverage > 0 {
+            let diff = Double(todaySmoked) - lastMonthAverage
+            percentVsLastMonth = Int(round(diff / lastMonthAverage * 100))
+        } else {
+            percentVsLastMonth = 0
+        }
+
+        // 4. Рекорд без курения (максимальный промежуток между логами)
+        let (recordHours, recordMinutes) = calculateRecordWithoutSmoking(logs: logs, now: now)
+
+        // 5. Дней отслеживания
+        let daysTracking: Int
+        if let firstLog = logs.min(by: { $0.createdAt < $1.createdAt }) {
+            let components = calendar.dateComponents([.day], from: firstLog.createdAt, to: now)
+            daysTracking = max(1, (components.day ?? 0) + 1)
+        } else {
+            daysTracking = 1
+        }
+
+        // 6. Данные для графика (последние 7 дней включая сегодня)
         var dailyCounts: [Int] = []
         var dayLabels: [String] = []
-        var totalSmoked = 0
 
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ru_RU")
 
-        for daysAgo in (1...7).reversed() {
+        for daysAgo in (0...6).reversed() {
             guard let date = calendar.date(byAdding: .day, value: -daysAgo, to: today) else {
                 dailyCounts.append(0)
                 dayLabels.append("")
@@ -143,44 +187,85 @@ extension ShareManager {
             let startOfDay = calendar.startOfDay(for: date)
             let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? date
 
-            // Считаем логи за этот день
             let count = logs.filter { log in
                 log.createdAt >= startOfDay && log.createdAt < endOfDay
             }.count
 
             dailyCounts.append(count)
-            totalSmoked += count
 
-            // Метка дня (Пн, Вт, ...)
             formatter.dateFormat = "EE"
-            let label = formatter.string(from: date).prefix(2).capitalized
+            let label = String(formatter.string(from: date).prefix(2)).capitalized
             dayLabels.append(label)
         }
 
-        // Ожидаемое количество за 7 дней
-        let expected = baseline * 7
+        return ShareStats(
+            todaySmoked: todaySmoked,
+            lastMonthAverage: lastMonthAverage,
+            percentVsLastMonth: percentVsLastMonth,
+            recordHours: recordHours,
+            recordMinutes: recordMinutes,
+            daysTracking: daysTracking,
+            dailyCounts: dailyCounts,
+            dayLabels: dayLabels
+        )
+    }
 
-        // Процент снижения
-        let percentageReduced: Int
-        if expected > 0 {
-            percentageReduced = Int(round(Double(expected - totalSmoked) / Double(expected) * 100))
-        } else {
-            percentageReduced = 0
+    /// Вычисляет рекордное время без курения
+    private static func calculateRecordWithoutSmoking(logs: [SmokingLog], now: Date) -> (hours: Int, minutes: Int) {
+        guard !logs.isEmpty else {
+            return (0, 0)
         }
 
-        // Сэкономлено денег
-        let cigarettesReduced = max(0, expected - totalSmoked)
-        let savedMoney = Int(Double(cigarettesReduced) * pricePerUnit)
+        // Сортируем логи по дате
+        let sortedLogs = logs.sorted { $0.createdAt < $1.createdAt }
 
-        // Дней в плане (когда выкурил меньше или равно baseline)
-        let daysInPlan = dailyCounts.filter { $0 <= baseline }.count
+        var maxInterval: TimeInterval = 0
 
-        return WeeklyShareStats(
-            cigarettesReduced: cigarettesReduced,
-            percentageReduced: percentageReduced,
-            savedMoney: savedMoney,
-            daysInPlan: daysInPlan,
-            dailyCounts: dailyCounts,
+        // Находим максимальный промежуток между соседними логами
+        for i in 1..<sortedLogs.count {
+            let interval = sortedLogs[i].createdAt.timeIntervalSince(sortedLogs[i-1].createdAt)
+            maxInterval = max(maxInterval, interval)
+        }
+
+        // Проверяем промежуток от последнего лога до сейчас
+        if let lastLog = sortedLogs.last {
+            let intervalToNow = now.timeIntervalSince(lastLog.createdAt)
+            maxInterval = max(maxInterval, intervalToNow)
+        }
+
+        let totalMinutes = Int(maxInterval / 60)
+        let hours = totalMinutes / 60
+        let minutes = totalMinutes % 60
+
+        return (hours, minutes)
+    }
+
+    /// Дефолтная статистика когда нет данных
+    private static func defaultStats(todaySmoked: Int) -> ShareStats {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+
+        var dayLabels: [String] = []
+        for daysAgo in (0...6).reversed() {
+            if let date = calendar.date(byAdding: .day, value: -daysAgo, to: today) {
+                formatter.dateFormat = "EE"
+                let label = String(formatter.string(from: date).prefix(2)).capitalized
+                dayLabels.append(label)
+            } else {
+                dayLabels.append("")
+            }
+        }
+
+        return ShareStats(
+            todaySmoked: todaySmoked,
+            lastMonthAverage: 0,
+            percentVsLastMonth: 0,
+            recordHours: 0,
+            recordMinutes: 0,
+            daysTracking: 1,
+            dailyCounts: [0, 0, 0, 0, 0, 0, todaySmoked],
             dayLabels: dayLabels
         )
     }

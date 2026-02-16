@@ -225,6 +225,7 @@
 				A10000000000000000000414 /* Profile */,
 				A10000000000000000000417 /* Paywall */,
 				A10000000000000000000415 /* Components */,
+				1732C6F9DA1E471095FBD65C /* Share */,
 			);
 			path = Views;
 			sourceTree = "<group>";

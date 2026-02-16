@@ -110,10 +110,13 @@ struct StatsView: View {
                 Haptics.selection()
                 shareProgress()
             } label: {
-                Image(systemName: "square.and.arrow.up")
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundColor(.primaryAccent)
-                    .frame(width: 44, height: 44)
+                Text(L.Stats.share)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color.primaryAccent)
+                    .clipShape(Capsule())
             }
         }
         .padding(.horizontal, Layout.horizontalPadding)
@@ -122,11 +125,7 @@ struct StatsView: View {
     // MARK: - Share
 
     private func shareProgress() {
-        let stats = ShareManager.calculateWeeklyStats(
-            logs: viewModel.logs,
-            baseline: viewModel.baseline,
-            pricePerUnit: viewModel.pricePerUnit
-        )
+        let stats = ShareManager.calculateStats(logs: viewModel.logs)
         ShareManager.shareProgress(stats: stats)
     }
 

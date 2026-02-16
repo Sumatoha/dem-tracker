@@ -142,7 +142,12 @@ enum LegalTexts {
 
     Эти условия регулируются законодательством Республики Казахстан.
 
-    10. КОНТАКТЫ
+    10. ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ (EULA)
+
+    Использование приложения также регулируется стандартным лицензионным соглашением Apple (EULA):
+    https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+
+    11. КОНТАКТЫ
 
     По вопросам использования:
     Email: kakenov.tokmyrza@gmail.com
