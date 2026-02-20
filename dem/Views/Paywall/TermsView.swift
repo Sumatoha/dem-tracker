@@ -53,8 +53,15 @@ struct TermsView: View {
                         sectionTitle("9. Changes to Terms")
                         sectionText("We reserve the right to modify these terms at any time. Continued use of the app after changes constitutes acceptance of the new terms.")
 
-                        sectionTitle("10. Contact")
-                        sectionText("For questions about these Terms, contact us via Telegram or email.")
+                        sectionTitle("10. Apple EULA")
+                        sectionText("Use of this app is also governed by Apple's Standard End User License Agreement (EULA):")
+
+                        Link("View Apple EULA", destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!)
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.primaryAccent)
+
+                        sectionTitle("11. Contact")
+                        sectionText("For questions about these Terms, contact us at kakenov.tokmyrza@gmail.com")
                     }
 
                     Text("Last updated: February 2026")
