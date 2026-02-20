@@ -27,7 +27,11 @@ final class HomeViewModel: ObservableObject {
     }
 
     var lastLogDate: Date? {
-        todayLogs.first?.createdAt
+        // Берём последний лог из всех доступных (не только сегодня)
+        // weeklyLogs содержит логи за 7 дней, отсортированные по дате (новые первые)
+        let allLogs = (todayLogs + weeklyLogs)
+            .sorted { $0.createdAt > $1.createdAt }
+        return allLogs.first?.createdAt
     }
 
     var profile: Profile? {

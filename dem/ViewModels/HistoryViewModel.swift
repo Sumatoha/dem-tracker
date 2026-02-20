@@ -102,12 +102,16 @@ final class HistoryViewModel: ObservableObject {
     }
 
     func intervalSincePrevious(for log: SmokingLog, in dayLogs: [SmokingLog]) -> String? {
-        guard let index = dayLogs.firstIndex(where: { $0.id == log.id }),
-              index < dayLogs.count - 1 else {
+        // Ищем предыдущий лог во ВСЕХ логах, не только в текущем дне
+        // Это исправляет случай: 23:59 вчера → 00:10 сегодня = 11 минут, а не nil
+        let allLogsSorted = logs.sorted { $0.createdAt > $1.createdAt }
+
+        guard let currentIndex = allLogsSorted.firstIndex(where: { $0.id == log.id }),
+              currentIndex < allLogsSorted.count - 1 else {
             return nil
         }
 
-        let previousLog = dayLogs[index + 1]
+        let previousLog = allLogsSorted[currentIndex + 1]
         let interval = log.createdAt.timeIntervalSince(previousLog.createdAt)
 
         let hours = Int(interval) / 3600
