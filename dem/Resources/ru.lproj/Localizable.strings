@@ -352,7 +352,7 @@
 // MARK: - Paywall Onboarding
 "paywall_onboarding.page1_title" = "Один тап — одна сигарета";
 "paywall_onboarding.page1_subtitle" = "Быстро фиксируй каждую сигарету. Никаких сложных форм — просто нажми кнопку.";
-"paywall_onboarding.page2_title" = "Видь свой прогресс";
+"paywall_onboarding.page2_title" = "Следи за прогрессом";
 "paywall_onboarding.page2_subtitle" = "Графики покажут, когда ты куришь больше всего. Знание — первый шаг к переменам.";
 "paywall_onboarding.page3_title" = "Считай экономию";
 "paywall_onboarding.page3_subtitle" = "Каждая сигарета, которую ты не выкурил — это деньги в твоём кармане.";

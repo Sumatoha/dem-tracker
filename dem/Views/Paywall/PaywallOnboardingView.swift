@@ -10,25 +10,25 @@ struct PaywallOnboardingView: View {
                 icon: "hand.tap.fill",
                 title: L.PaywallOnboarding.page1Title,
                 subtitle: L.PaywallOnboarding.page1Subtitle,
-                accentColor: Color.primaryAccent
+                iconStyle: .accent
             ),
             OnboardingPage(
                 icon: "chart.line.uptrend.xyaxis",
                 title: L.PaywallOnboarding.page2Title,
                 subtitle: L.PaywallOnboarding.page2Subtitle,
-                accentColor: Color(red: 0.3, green: 0.7, blue: 0.4)
+                iconStyle: .dark
             ),
             OnboardingPage(
-                icon: "banknote",
+                icon: "banknote.fill",
                 title: L.PaywallOnboarding.page3Title,
                 subtitle: L.PaywallOnboarding.page3Subtitle,
-                accentColor: Color(red: 0.2, green: 0.6, blue: 0.9)
+                iconStyle: .accent
             ),
             OnboardingPage(
-                icon: "heart.circle",
+                icon: "heart.fill",
                 title: L.PaywallOnboarding.page4Title,
                 subtitle: L.PaywallOnboarding.page4Subtitle,
-                accentColor: Color(red: 0.9, green: 0.3, blue: 0.4)
+                iconStyle: .dark
             )
         ]
     }
@@ -103,22 +103,16 @@ struct PaywallOnboardingView: View {
         VStack(spacing: 0) {
             Spacer()
 
-            // Icon with background
+            // Icon with background - app design style
             ZStack {
-                // Outer glow
                 Circle()
-                    .fill(page.accentColor.opacity(0.1))
-                    .frame(width: 180, height: 180)
+                    .fill(page.iconStyle.backgroundColor)
+                    .frame(width: 120, height: 120)
+                    .shadow(color: .black.opacity(0.1), radius: 20, y: 8)
 
-                // Inner circle
-                Circle()
-                    .fill(page.accentColor.opacity(0.15))
-                    .frame(width: 140, height: 140)
-
-                // Icon
                 Image(systemName: page.icon)
-                    .font(.system(size: 56, weight: .medium))
-                    .foregroundColor(page.accentColor)
+                    .font(.system(size: 44, weight: .medium))
+                    .foregroundColor(page.iconStyle.iconColor)
             }
 
             Spacer()
@@ -152,7 +146,23 @@ private struct OnboardingPage {
     let icon: String
     let title: String
     let subtitle: String
-    let accentColor: Color
+    let iconStyle: IconStyle
+
+    enum IconStyle {
+        case accent
+        case dark
+
+        var backgroundColor: Color {
+            switch self {
+            case .accent: return .primaryAccent
+            case .dark: return .buttonBlack
+            }
+        }
+
+        var iconColor: Color {
+            .white
+        }
+    }
 }
 
 // MARK: - Preview

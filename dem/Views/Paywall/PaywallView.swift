@@ -185,11 +185,6 @@ struct PaywallView: View {
                 .cornerRadius(16)
             }
 
-            Text(L.Paywall.trialDisclaimer)
-                .font(.system(size: 12))
-                .foregroundColor(.textMuted)
-                .multilineTextAlignment(.center)
-
             // Divider
             HStack {
                 Rectangle()
@@ -248,7 +243,7 @@ struct PaywallView: View {
                     title: L.Paywall.plan1Year,
                     price: annual.displayPrice,
                     pricePerMonth: subscriptionManager.pricePerMonth(for: annual),
-                    discount: "-30%",
+                    discount: "-17%",
                     isRecommended: false
                 ))
             }
@@ -279,7 +274,7 @@ struct PaywallView: View {
                 title: L.Paywall.plan1Year,
                 price: "$34.99",
                 pricePerMonth: "$2.92",
-                discount: "-30%",
+                discount: "-17%",
                 isRecommended: false
             )
         ]

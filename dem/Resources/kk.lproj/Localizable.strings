@@ -352,7 +352,7 @@
 // MARK: - Paywall Onboarding
 "paywall_onboarding.page1_title" = "Бір түрту — бір темекі";
 "paywall_onboarding.page1_subtitle" = "Әр темекіні тез белгілеңіз. Күрделі формалар жоқ — тек батырманы басыңыз.";
-"paywall_onboarding.page2_title" = "Прогресіңізді көріңіз";
+"paywall_onboarding.page2_title" = "Прогресіңізді бақылаңыз";
 "paywall_onboarding.page2_subtitle" = "Графиктер қашан көп шегетініңізді көрсетеді. Білім — өзгерістің бірінші қадамы.";
 "paywall_onboarding.page3_title" = "Үнемдеуді есептеңіз";
 "paywall_onboarding.page3_subtitle" = "Шекпеген әр темекі — бұл қалтаңыздағы ақша.";

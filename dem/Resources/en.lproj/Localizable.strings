@@ -352,7 +352,7 @@
 // MARK: - Paywall Onboarding
 "paywall_onboarding.page1_title" = "One tap — one cigarette";
 "paywall_onboarding.page1_subtitle" = "Log each cigarette quickly. No complicated forms — just tap the button.";
-"paywall_onboarding.page2_title" = "See your progress";
+"paywall_onboarding.page2_title" = "Track your progress";
 "paywall_onboarding.page2_subtitle" = "Charts will show when you smoke the most. Knowledge is the first step to change.";
 "paywall_onboarding.page3_title" = "Track your savings";
 "paywall_onboarding.page3_subtitle" = "Every cigarette you don't smoke is money in your pocket.";
