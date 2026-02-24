@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		47A58F6519D74244A3B8B9F9 /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3037D03ACD475B97D3705E /* ShareCardView.swift */; };
 		242DFF53D32C422FB9F18506 /* ShareManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 195022FA7C794B368F7CF8DD /* ShareManager.swift */; };
+		47A58F6519D74244A3B8B9F9 /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3037D03ACD475B97D3705E /* ShareCardView.swift */; };
 		63C5A4642F3BAD75005F01F9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C5A4632F3BAD75005F01F9 /* StoreKit.framework */; };
 		A10000000000000000000001 /* demApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000101 /* demApp.swift */; };
 		A10000000000000000000002 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000102 /* Profile.swift */; };
@@ -55,13 +55,14 @@
 		A10000000000000000000043 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000146 /* SubscriptionManager.swift */; };
 		A10000000000000000000044 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000147 /* PaywallView.swift */; };
 		A10000000000000000000045 /* TermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000148 /* TermsView.swift */; };
+		A10000000000000000000047 /* PaywallOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000150 /* PaywallOnboardingView.swift */; };
 		A10000000000000000000046 /* PrivacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000149 /* PrivacyPolicyView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7B3037D03ACD475B97D3705E /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
 		195022FA7C794B368F7CF8DD /* ShareManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareManager.swift; sourceTree = "<group>"; };
 		63C5A4632F3BAD75005F01F9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		7B3037D03ACD475B97D3705E /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
 		A10000000000000000000100 /* dem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000000000000000000101 /* demApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = demApp.swift; sourceTree = "<group>"; };
 		A10000000000000000000102 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
@@ -110,6 +111,7 @@
 		A10000000000000000000146 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
 		A10000000000000000000147 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		A10000000000000000000148 /* TermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsView.swift; sourceTree = "<group>"; };
+		A10000000000000000000150 /* PaywallOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallOnboardingView.swift; sourceTree = "<group>"; };
 		A10000000000000000000149 /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -126,6 +128,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1732C6F9DA1E471095FBD65C /* Share */ = {
+			isa = PBXGroup;
+			children = (
+				7B3037D03ACD475B97D3705E /* ShareCardView.swift */,
+				195022FA7C794B368F7CF8DD /* ShareManager.swift */,
+			);
+			path = Share;
+			sourceTree = "<group>";
+		};
 		63C5A4622F3BAD75005F01F9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -319,19 +330,11 @@
 			isa = PBXGroup;
 			children = (
 				A10000000000000000000147 /* PaywallView.swift */,
+				A10000000000000000000150 /* PaywallOnboardingView.swift */,
 				A10000000000000000000148 /* TermsView.swift */,
 				A10000000000000000000149 /* PrivacyPolicyView.swift */,
 			);
 			path = Paywall;
-			sourceTree = "<group>";
-		};
-		1732C6F9DA1E471095FBD65C /* Share */ = {
-			isa = PBXGroup;
-			children = (
-				7B3037D03ACD475B97D3705E /* ShareCardView.swift */,
-				195022FA7C794B368F7CF8DD /* ShareManager.swift */,
-			);
-			path = Share;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -453,10 +456,12 @@
 				A10000000000000000000041 /* LanguageManager.swift in Sources */,
 				A10000000000000000000043 /* SubscriptionManager.swift in Sources */,
 				A10000000000000000000044 /* PaywallView.swift in Sources */,
+				A10000000000000000000047 /* PaywallOnboardingView.swift in Sources */,
 				A10000000000000000000045 /* TermsView.swift in Sources */,
 				A10000000000000000000046 /* PrivacyPolicyView.swift in Sources */,
 				47A58F6519D74244A3B8B9F9 /* ShareCardView.swift in Sources */,
-				242DFF53D32C422FB9F18506 /* ShareManager.swift in Sources */,);
+				242DFF53D32C422FB9F18506 /* ShareManager.swift in Sources */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
@@ -499,7 +504,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dem-tracker.dem";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -537,7 +542,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dem-tracker.dem";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

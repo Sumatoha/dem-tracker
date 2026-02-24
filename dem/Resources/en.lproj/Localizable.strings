@@ -342,3 +342,9 @@
 "paywall.subscribe" = "Subscribe";
 "paywall.subscribe_now" = "Subscribe now";
 "paywall.products_not_loaded" = "Subscription plans are not available. Please try again later.";
+"paywall.unlock_premium" = "Unlock Premium";
+"paywall.premium_subtitle" = "Get access to all features";
+"paywall.start_trial_title" = "14 days free";
+"paywall.trial_free" = "Full access · No payment";
+"paywall.trial_disclaimer" = "Then auto-renews. Cancel anytime.";
+"paywall.popular" = "Popular";

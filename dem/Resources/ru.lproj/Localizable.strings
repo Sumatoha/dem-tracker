@@ -342,3 +342,9 @@
 "paywall.subscribe" = "Подписаться";
 "paywall.subscribe_now" = "Подписаться сейчас";
 "paywall.products_not_loaded" = "Планы подписки недоступны. Попробуйте позже.";
+"paywall.unlock_premium" = "Открой Premium";
+"paywall.premium_subtitle" = "Получи доступ ко всем функциям";
+"paywall.start_trial_title" = "14 дней бесплатно";
+"paywall.trial_free" = "Полный доступ · Без оплаты";
+"paywall.trial_disclaimer" = "Затем автоматически продлится. Отмена в любое время.";
+"paywall.popular" = "Популярно";

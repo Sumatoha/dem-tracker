@@ -1,17 +1,6 @@
 import SwiftUI
 import StoreKit
 
-// Модель для отображения плана (работает и с реальными продуктами, и с моками)
-struct SubscriptionPlanDisplay: Identifiable {
-    let id: SubscriptionManager.ProductID
-    let title: String
-    let subtitle: String?
-    let price: String
-    let pricePerMonth: String?
-    let discount: String?
-    let isRecommended: Bool
-}
-
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var subscriptionManager = SubscriptionManager.shared
@@ -24,57 +13,18 @@ struct PaywallView: View {
     @State private var showTerms = false
     @State private var showPrivacy = false
 
+    let canDismiss: Bool
     let onSubscribed: () -> Void
     let onStartTrial: () -> Void
 
-    // Stats from cache and profile
-
-    /// Количество полных завершённых дней (сегодня НЕ считается)
-    private var fullCompletedDays: Int {
-        guard let profile = supabaseManager.currentProfile,
-              let createdAt = profile.createdAt else {
-            return 0
-        }
-        let calendar = Calendar.current
-        let startOfCreation = calendar.startOfDay(for: createdAt)
-        let startOfToday = calendar.startOfDay(for: Date())
-        let days = calendar.dateComponents([.day], from: startOfCreation, to: startOfToday).day ?? 0
-        return max(0, days)
-    }
-
-    /// Сколько сигарет выкурено за все полные дни (без сегодня)
-    private var actualSmoked: Int {
-        guard let allLogs = CacheManager.shared.getCachedAllLogs() else { return 0 }
-        let calendar = Calendar.current
-        let startOfToday = calendar.startOfDay(for: Date())
-
-        // Фильтруем только логи ДО сегодняшнего дня
-        let logsBeforeToday = allLogs.filter { log in
-            return log.createdAt < startOfToday
-        }
-        return logsBeforeToday.count
-    }
-
-    /// Сколько сигарет должен был выкурить за полные дни (baseline × дней)
-    private var expectedSmoked: Int {
-        guard let profile = supabaseManager.currentProfile else { return 0 }
-        return profile.safeBaselinePerDay * fullCompletedDays
-    }
-
-    /// На сколько сигарет меньше выкурено (может быть отрицательным, но показываем 0)
-    private var cigarettesReduced: Int {
-        return max(0, expectedSmoked - actualSmoked)
-    }
-
-    /// Сколько денег сэкономлено
-    private var savedMoney: Int {
-        guard let profile = supabaseManager.currentProfile else { return 0 }
-        return Int(Double(cigarettesReduced) * profile.pricePerUnit)
-    }
-
-    /// Для отображения в кружке прогресса
-    private var daysUsingApp: Int {
-        fullCompletedDays
+    init(
+        canDismiss: Bool = true,
+        onSubscribed: @escaping () -> Void,
+        onStartTrial: @escaping () -> Void
+    ) {
+        self.canDismiss = canDismiss
+        self.onSubscribed = onSubscribed
+        self.onStartTrial = onStartTrial
     }
 
     var body: some View {
@@ -82,9 +32,9 @@ struct PaywallView: View {
             Color.appBackground
                 .ignoresSafeArea()
 
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 24) {
-                    // Close button
+            VStack(spacing: 0) {
+                // Header with close button
+                if canDismiss {
                     HStack {
                         Spacer()
                         Button {
@@ -92,33 +42,40 @@ struct PaywallView: View {
                             dismiss()
                         } label: {
                             Image(systemName: "xmark")
-                                .font(.system(size: 16, weight: .semibold))
+                                .font(.system(size: 14, weight: .semibold))
                                 .foregroundColor(.textSecondary)
-                                .frame(width: 32, height: 32)
+                                .frame(width: 28, height: 28)
                                 .background(Color.cardFill)
                                 .clipShape(Circle())
                         }
                     }
-                    .padding(.horizontal, Layout.horizontalPadding)
-
-                    // Motivational block
-                    motivationalBlock
-
-                    // Features
-                    featuresSection
-
-                    // Subscription plans
-                    plansSection
-
-                    // CTA Button
-                    ctaSection
-
-                    // Restore + Legal links
-                    legalSection
-
-                    Spacer(minLength: 40)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 12)
                 }
-                .padding(.top, 16)
+
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 24) {
+                        // Hero section
+                        heroSection
+                            .padding(.top, canDismiss ? 8 : 60)
+
+                        // Trial button (if available)
+                        if subscriptionManager.canStartTrial {
+                            trialSection
+                        }
+
+                        // Plans
+                        plansSection
+
+                        // Subscribe button
+                        subscribeSection
+
+                        // Legal
+                        legalSection
+
+                        Spacer(minLength: 32)
+                    }
+                }
             }
         }
         .alert(L.Paywall.error, isPresented: $showError) {
@@ -128,139 +85,147 @@ struct PaywallView: View {
         }
     }
 
-    // MARK: - Motivational Block
+    // MARK: - Hero Section
 
-    private var motivationalBlock: some View {
+    private var heroSection: some View {
         VStack(spacing: 16) {
-            // Progress ring
+            // App icon style
             ZStack {
                 Circle()
-                    .stroke(Color.cardFill, lineWidth: 8)
-                    .frame(width: 100, height: 100)
+                    .fill(Color.primaryAccent.opacity(0.15))
+                    .frame(width: 80, height: 80)
 
-                Circle()
-                    .trim(from: 0, to: min(CGFloat(daysUsingApp) / 30.0, 1.0))
-                    .stroke(Color.primaryAccent, style: StrokeStyle(lineWidth: 8, lineCap: .round))
-                    .frame(width: 100, height: 100)
-                    .rotationEffect(.degrees(-90))
-
-                VStack(spacing: 2) {
-                    Text("\(daysUsingApp)")
-                        .font(.system(size: 32, weight: .bold))
-                        .foregroundColor(.textPrimary)
-                    Text(L.Paywall.days)
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.textSecondary)
-                }
+                Image(systemName: "flame.fill")
+                    .font(.system(size: 36))
+                    .foregroundColor(.primaryAccent)
             }
 
-            Text(L.Paywall.dontLoseProgress)
-                .font(.system(size: 24, weight: .bold))
+            Text(L.Paywall.unlockPremium)
+                .font(.system(size: 26, weight: .bold))
                 .foregroundColor(.textPrimary)
                 .multilineTextAlignment(.center)
 
-            Text(L.Paywall.subtitle)
-                .font(.bodyText)
+            Text(L.Paywall.premiumSubtitle)
+                .font(.system(size: 15))
                 .foregroundColor(.textSecondary)
                 .multilineTextAlignment(.center)
+                .lineSpacing(4)
                 .padding(.horizontal, 32)
 
-            // Stats widget
-            if savedMoney > 0 || cigarettesReduced > 0 {
-                HStack(spacing: 24) {
-                    if cigarettesReduced > 0 {
-                        VStack(spacing: 4) {
-                            Text("-\(cigarettesReduced)")
-                                .font(.system(size: 20, weight: .bold))
-                                .foregroundColor(.success)
-                            Text(L.Paywall.cigarettesReduced)
-                                .font(.system(size: 11))
-                                .foregroundColor(.textSecondary)
-                        }
-                    }
-
-                    if savedMoney > 0 {
-                        VStack(spacing: 4) {
-                            Text("+\(savedMoney)₸")
-                                .font(.system(size: 20, weight: .bold))
-                                .foregroundColor(.success)
-                            Text(L.Paywall.moneySaved)
-                                .font(.system(size: 11))
-                                .foregroundColor(.textSecondary)
-                        }
-                    }
-                }
-                .padding(.vertical, 12)
-                .padding(.horizontal, 20)
-                .background(Color.cardBackground)
-                .cornerRadius(12)
+            // Features list compact
+            VStack(spacing: 10) {
+                featureRow(icon: "chart.bar.fill", text: L.Paywall.featureStats)
+                featureRow(icon: "bell.badge.fill", text: L.Paywall.featureNotifications)
+                featureRow(icon: "target", text: L.Paywall.featureGoals)
             }
+            .padding(.top, 8)
         }
-        .padding(.horizontal, Layout.horizontalPadding)
-    }
-
-    // MARK: - Features Section
-
-    private var featuresSection: some View {
-        VStack(spacing: 12) {
-            featureRow(icon: "chart.line.uptrend.xyaxis", text: L.Paywall.featureStats)
-            featureRow(icon: "bell.badge", text: L.Paywall.featureNotifications)
-            featureRow(icon: "target", text: L.Paywall.featureGoals)
-            featureRow(icon: "heart.fill", text: L.Paywall.featureHealth)
-        }
-        .padding(.horizontal, Layout.horizontalPadding)
+        .padding(.horizontal, 20)
     }
 
     private func featureRow(icon: String, text: String) -> some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
-                .font(.system(size: 18))
+                .font(.system(size: 16))
                 .foregroundColor(.primaryAccent)
-                .frame(width: 32)
+                .frame(width: 24)
 
             Text(text)
-                .font(.bodyText)
+                .font(.system(size: 15))
                 .foregroundColor(.textPrimary)
 
             Spacer()
+
+            Image(systemName: "checkmark")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundColor(.success)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 10)
         .padding(.horizontal, 16)
         .background(Color.cardBackground)
         .cornerRadius(12)
     }
 
+    // MARK: - Trial Section
+
+    private var trialSection: some View {
+        VStack(spacing: 12) {
+            Button {
+                Haptics.success()
+                onStartTrial()
+                dismiss()
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "gift.fill")
+                        .font(.system(size: 20))
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(L.Paywall.startTrialTitle)
+                            .font(.system(size: 17, weight: .semibold))
+                        Text(L.Paywall.trialFree)
+                            .font(.system(size: 13))
+                            .opacity(0.9)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: "arrow.right")
+                        .font(.system(size: 16, weight: .semibold))
+                }
+                .foregroundColor(.white)
+                .padding(.horizontal, 20)
+                .frame(height: 64)
+                .background(
+                    LinearGradient(
+                        colors: [Color.primaryAccent, Color.primaryAccent.opacity(0.8)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+                .cornerRadius(16)
+            }
+
+            Text(L.Paywall.trialDisclaimer)
+                .font(.system(size: 12))
+                .foregroundColor(.textMuted)
+                .multilineTextAlignment(.center)
+
+            // Divider
+            HStack {
+                Rectangle()
+                    .fill(Color.textMuted.opacity(0.2))
+                    .frame(height: 1)
+                Text(L.Common.or)
+                    .font(.system(size: 12))
+                    .foregroundColor(.textMuted)
+                Rectangle()
+                    .fill(Color.textMuted.opacity(0.2))
+                    .frame(height: 1)
+            }
+            .padding(.top, 8)
+        }
+        .padding(.horizontal, 20)
+    }
+
     // MARK: - Plans Section
 
     private var plansSection: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 10) {
             ForEach(plans) { plan in
                 planCard(plan: plan)
             }
         }
-        .padding(.horizontal, Layout.horizontalPadding)
+        .padding(.horizontal, 20)
     }
 
     private var plans: [SubscriptionPlanDisplay] {
-        // Если продукты загружены из StoreKit — используем их
         if let monthly = subscriptionManager.product(for: .monthly) {
             var result: [SubscriptionPlanDisplay] = []
-
-            result.append(SubscriptionPlanDisplay(
-                id: .monthly,
-                title: L.Paywall.plan1Month,
-                subtitle: nil,
-                price: monthly.displayPrice,
-                pricePerMonth: nil,
-                discount: nil,
-                isRecommended: false
-            ))
 
             if let semiannual = subscriptionManager.product(for: .semiannual) {
                 result.append(SubscriptionPlanDisplay(
                     id: .semiannual,
                     title: L.Paywall.plan6Months,
-                    subtitle: L.Paywall.plan6MonthsSubtitle,
                     price: semiannual.displayPrice,
                     pricePerMonth: subscriptionManager.pricePerMonth(for: semiannual),
                     discount: "-17%",
@@ -268,14 +233,22 @@ struct PaywallView: View {
                 ))
             }
 
+            result.append(SubscriptionPlanDisplay(
+                id: .monthly,
+                title: L.Paywall.plan1Month,
+                price: monthly.displayPrice,
+                pricePerMonth: nil,
+                discount: nil,
+                isRecommended: false
+            ))
+
             if let annual = subscriptionManager.product(for: .annual) {
                 result.append(SubscriptionPlanDisplay(
                     id: .annual,
                     title: L.Paywall.plan1Year,
-                    subtitle: nil,
                     price: annual.displayPrice,
                     pricePerMonth: subscriptionManager.pricePerMonth(for: annual),
-                    discount: nil,
+                    discount: "-30%",
                     isRecommended: false
                 ))
             }
@@ -283,33 +256,30 @@ struct PaywallView: View {
             return result
         }
 
-        // Моковые данные для превью (пока не настроен App Store Connect)
+        // Mock data
         return [
-            SubscriptionPlanDisplay(
-                id: .monthly,
-                title: L.Paywall.plan1Month,
-                subtitle: nil,
-                price: "$4.99",
-                pricePerMonth: nil,
-                discount: nil,
-                isRecommended: false
-            ),
             SubscriptionPlanDisplay(
                 id: .semiannual,
                 title: L.Paywall.plan6Months,
-                subtitle: L.Paywall.plan6MonthsSubtitle,
                 price: "$24.99",
                 pricePerMonth: "$4.17",
                 discount: "-17%",
                 isRecommended: true
             ),
             SubscriptionPlanDisplay(
+                id: .monthly,
+                title: L.Paywall.plan1Month,
+                price: "$4.99",
+                pricePerMonth: nil,
+                discount: nil,
+                isRecommended: false
+            ),
+            SubscriptionPlanDisplay(
                 id: .annual,
                 title: L.Paywall.plan1Year,
-                subtitle: nil,
-                price: "$49.99",
-                pricePerMonth: "$4.17",
-                discount: nil,
+                price: "$34.99",
+                pricePerMonth: "$2.92",
+                discount: "-30%",
                 isRecommended: false
             )
         ]
@@ -323,46 +293,41 @@ struct PaywallView: View {
             selectedPlan = plan.id
         } label: {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
+                // Radio button
+                ZStack {
+                    Circle()
+                        .stroke(isSelected ? Color.primaryAccent : Color.textMuted.opacity(0.3), lineWidth: 2)
+                        .frame(width: 22, height: 22)
+
+                    if isSelected {
+                        Circle()
+                            .fill(Color.primaryAccent)
+                            .frame(width: 12, height: 12)
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 8) {
                         Text(plan.title)
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.system(size: 15, weight: .medium))
                             .foregroundColor(.textPrimary)
 
                         if plan.isRecommended {
-                            Text(L.Paywall.bestChoice)
+                            Text(L.Paywall.popular)
                                 .font(.system(size: 10, weight: .bold))
                                 .foregroundColor(.white)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
                                 .background(Color.primaryAccent)
-                                .cornerRadius(6)
+                                .cornerRadius(4)
                         }
 
                         if let discount = plan.discount {
                             Text(discount)
                                 .font(.system(size: 10, weight: .bold))
                                 .foregroundColor(.success)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 3)
-                                .background(Color.success.opacity(0.15))
-                                .cornerRadius(4)
                         }
                     }
-
-                    if let subtitle = plan.subtitle {
-                        Text(subtitle)
-                            .font(.system(size: 12))
-                            .foregroundColor(.textSecondary)
-                    }
-                }
-
-                Spacer()
-
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(plan.price)
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(.textPrimary)
 
                     if let perMonth = plan.pricePerMonth {
                         Text("\(perMonth)/\(L.Paywall.month)")
@@ -370,54 +335,28 @@ struct PaywallView: View {
                             .foregroundColor(.textSecondary)
                     }
                 }
+
+                Spacer()
+
+                Text(plan.price)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.textPrimary)
             }
-            .padding(16)
+            .padding(14)
             .background(Color.cardBackground)
-            .cornerRadius(Layout.cardCornerRadius)
+            .cornerRadius(12)
             .overlay(
-                RoundedRectangle(cornerRadius: Layout.cardCornerRadius)
+                RoundedRectangle(cornerRadius: 12)
                     .stroke(isSelected ? Color.primaryAccent : Color.clear, lineWidth: 2)
             )
         }
         .buttonStyle(PlainButtonStyle())
     }
 
-    // MARK: - CTA Section
+    // MARK: - Subscribe Section
 
-    private var ctaSection: some View {
-        VStack(spacing: 12) {
-            // Кнопка пробного периода (только если ещё не использован)
-            if subscriptionManager.canStartTrial {
-                Button {
-                    Haptics.success()
-                    onStartTrial()
-                    dismiss()
-                } label: {
-                    Text(L.Paywall.startTrial)
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .background(Color.primaryAccent)
-                        .cornerRadius(16)
-                }
-
-                // Разделитель
-                HStack {
-                    Rectangle()
-                        .fill(Color.textMuted.opacity(0.3))
-                        .frame(height: 1)
-                    Text(L.Common.or)
-                        .font(.system(size: 12))
-                        .foregroundColor(.textMuted)
-                    Rectangle()
-                        .fill(Color.textMuted.opacity(0.3))
-                        .frame(height: 1)
-                }
-                .padding(.vertical, 4)
-            }
-
-            // Кнопка подписки
+    private var subscribeSection: some View {
+        VStack(spacing: 8) {
             Button {
                 Task {
                     await startSubscription()
@@ -426,66 +365,60 @@ struct PaywallView: View {
                 HStack {
                     if isProcessing {
                         ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .progressViewStyle(CircularProgressViewStyle(tint: subscriptionManager.canStartTrial ? .primaryAccent : .white))
                     } else {
-                        Text(subscriptionManager.canStartTrial ? L.Paywall.subscribeNow : L.Paywall.subscribe)
+                        Text(L.Paywall.subscribe)
                             .font(.system(size: 17, weight: .semibold))
                     }
                 }
                 .foregroundColor(subscriptionManager.canStartTrial ? .primaryAccent : .white)
                 .frame(maxWidth: .infinity)
-                .frame(height: 56)
+                .frame(height: 52)
                 .background(subscriptionManager.canStartTrial ? Color.primaryAccent.opacity(0.15) : Color.primaryAccent)
-                .cornerRadius(16)
+                .cornerRadius(14)
             }
             .disabled(isProcessing)
 
-            // Price disclaimer
             let selectedPlanDisplay = plans.first(where: { $0.id == selectedPlan })
             Text(L.Paywall.priceDisclaimer(selectedPlanDisplay?.price ?? "$24.99"))
-                .font(.system(size: 12))
+                .font(.system(size: 11))
                 .foregroundColor(.textMuted)
                 .multilineTextAlignment(.center)
         }
-        .padding(.horizontal, Layout.horizontalPadding)
+        .padding(.horizontal, 20)
     }
 
     // MARK: - Legal Section
 
     private var legalSection: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 12) {
             Button {
                 Task {
                     await restorePurchases()
                 }
             } label: {
                 Text(L.Paywall.restore)
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: 13, weight: .medium))
                     .foregroundColor(.textSecondary)
             }
 
-            HStack(spacing: 16) {
-                Button {
-                    showTerms = true
-                } label: {
+            HStack(spacing: 12) {
+                Button { showTerms = true } label: {
                     Text(L.Paywall.terms)
-                        .font(.system(size: 12))
+                        .font(.system(size: 11))
                         .foregroundColor(.textMuted)
                 }
 
-                Text("·")
-                    .foregroundColor(.textMuted)
+                Text("·").foregroundColor(.textMuted)
 
-                Button {
-                    showPrivacy = true
-                } label: {
+                Button { showPrivacy = true } label: {
                     Text(L.Paywall.privacy)
-                        .font(.system(size: 12))
+                        .font(.system(size: 11))
                         .foregroundColor(.textMuted)
                 }
             }
         }
-        .padding(.horizontal, Layout.horizontalPadding)
+        .padding(.horizontal, 20)
         .sheet(isPresented: $showTerms) {
             TermsView()
         }
@@ -497,9 +430,7 @@ struct PaywallView: View {
     // MARK: - Actions
 
     private func startSubscription() async {
-        // Получаем реальный продукт из StoreKit
         guard let product = subscriptionManager.product(for: selectedPlan) else {
-            // Если продукты не загружены (мок режим) — просто закрываем для превью
             errorMessage = L.Paywall.productsNotLoaded
             showError = true
             Haptics.error()
@@ -513,7 +444,6 @@ struct PaywallView: View {
             let success = try await subscriptionManager.purchase(product)
             if success {
                 Haptics.success()
-                // Update profile in Supabase
                 await updateSubscriptionInProfile(productId: selectedPlan.rawValue)
                 onSubscribed()
                 dismiss()
@@ -536,7 +466,6 @@ struct PaywallView: View {
             onSubscribed()
             dismiss()
         } else {
-            // No purchases found to restore
             errorMessage = L.Paywall.noPurchasesToRestore
             showError = true
             Haptics.error()
@@ -556,10 +485,22 @@ struct PaywallView: View {
     }
 }
 
+// MARK: - Plan Display Model
+
+struct SubscriptionPlanDisplay: Identifiable {
+    let id: SubscriptionManager.ProductID
+    let title: String
+    let price: String
+    let pricePerMonth: String?
+    let discount: String?
+    let isRecommended: Bool
+}
+
 // MARK: - Preview
 
 #Preview {
     PaywallView(
+        canDismiss: true,
         onSubscribed: {},
         onStartTrial: {}
     )

@@ -488,5 +488,11 @@ enum L {
         static var subscribe: String { "paywall.subscribe".localized }
         static var subscribeNow: String { "paywall.subscribe_now".localized }
         static var productsNotLoaded: String { "paywall.products_not_loaded".localized }
+        static var unlockPremium: String { "paywall.unlock_premium".localized }
+        static var premiumSubtitle: String { "paywall.premium_subtitle".localized }
+        static var startTrialTitle: String { "paywall.start_trial_title".localized }
+        static var trialFree: String { "paywall.trial_free".localized }
+        static var trialDisclaimer: String { "paywall.trial_disclaimer".localized }
+        static var popular: String { "paywall.popular".localized }
     }
 }

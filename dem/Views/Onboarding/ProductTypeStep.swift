@@ -21,7 +21,7 @@ struct ProductTypeStep: View {
 
             // Product type cards
             VStack(spacing: 12) {
-                ForEach([ProductType.cigarette, .iqos, .vape], id: \.self) { type in
+                ForEach([ProductType.cigarette, .iqos], id: \.self) { type in
                     ProductTypeCard(
                         type: type,
                         isSelected: viewModel.selectedProductType == type

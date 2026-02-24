@@ -342,3 +342,9 @@
 "paywall.subscribe" = "Жазылу";
 "paywall.subscribe_now" = "Қазір жазылу";
 "paywall.products_not_loaded" = "Жазылым жоспарлары қол жетімді емес. Кейінірек қайталап көріңіз.";
+"paywall.unlock_premium" = "Premium ашу";
+"paywall.premium_subtitle" = "Барлық мүмкіндіктерге қол жеткізіңіз";
+"paywall.start_trial_title" = "14 күн тегін";
+"paywall.trial_free" = "Толық қолжетімділік · Төлемсіз";
+"paywall.trial_disclaimer" = "Содан кейін автоматты түрде ұзартылады. Кез келген уақытта бас тартуға болады.";
+"paywall.popular" = "Танымал";
