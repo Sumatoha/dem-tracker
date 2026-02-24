@@ -23,6 +23,7 @@ struct RootView: View {
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
 
     @State private var isCheckingAuth = true
+    @State private var showPaywallOnboarding = false
     @State private var showPaywall = false
     @State private var hasCheckedPaywallThisSession = false
 
@@ -47,6 +48,11 @@ struct RootView: View {
     /// Проверяет нужно ли показывать paywall
     private var needsPaywall: Bool {
         subscriptionManager.isReady && !subscriptionManager.hasAccess
+    }
+
+    /// Триал истёк и подписка не куплена - блокируем приложение
+    private var shouldBlockApp: Bool {
+        subscriptionManager.isReady && subscriptionManager.trialHasExpired && !subscriptionManager.isSubscribed
     }
 
     var body: some View {
@@ -84,8 +90,22 @@ struct RootView: View {
         .task {
             await checkAuthState()
         }
+        .onChange(of: subscriptionManager.trialHasExpired) { _, hasExpired in
+            // Если триал истёк и нет подписки - блокируем приложение
+            if hasExpired && !subscriptionManager.isSubscribed && !showPaywall {
+                showPaywall = true
+            }
+        }
+        .fullScreenCover(isPresented: $showPaywallOnboarding) {
+            PaywallOnboardingView {
+                showPaywallOnboarding = false
+                // После онбординга показываем paywall
+                showPaywall = true
+            }
+        }
         .fullScreenCover(isPresented: $showPaywall) {
             PaywallView(
+                canDismiss: !shouldBlockApp,
                 onSubscribed: {
                     showPaywall = false
                 },
@@ -94,6 +114,7 @@ struct RootView: View {
                     showPaywall = false
                 }
             )
+            .interactiveDismissDisabled(shouldBlockApp)
         }
     }
 
@@ -103,7 +124,13 @@ struct RootView: View {
         hasCheckedPaywallThisSession = true
 
         if needsPaywall {
-            showPaywall = true
+            // Если приложение заблокировано (триал истёк) - сразу показываем paywall
+            if shouldBlockApp {
+                showPaywall = true
+            } else {
+                // Иначе сначала показываем красивый онбординг, потом paywall
+                showPaywallOnboarding = true
+            }
         }
     }
 
@@ -154,4 +181,5 @@ struct RootView: View {
 #Preview {
     RootView()
         .environmentObject(SupabaseManager.shared)
+        .environmentObject(SubscriptionManager.shared)
 }

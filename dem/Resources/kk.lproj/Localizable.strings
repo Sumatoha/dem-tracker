@@ -348,3 +348,16 @@
 "paywall.trial_free" = "Толық қолжетімділік · Төлемсіз";
 "paywall.trial_disclaimer" = "Содан кейін автоматты түрде ұзартылады. Кез келген уақытта бас тартуға болады.";
 "paywall.popular" = "Танымал";
+
+// MARK: - Paywall Onboarding
+"paywall_onboarding.page1_title" = "Бір түрту — бір темекі";
+"paywall_onboarding.page1_subtitle" = "Әр темекіні тез белгілеңіз. Күрделі формалар жоқ — тек батырманы басыңыз.";
+"paywall_onboarding.page2_title" = "Прогресіңізді көріңіз";
+"paywall_onboarding.page2_subtitle" = "Графиктер қашан көп шегетініңізді көрсетеді. Білім — өзгерістің бірінші қадамы.";
+"paywall_onboarding.page3_title" = "Үнемдеуді есептеңіз";
+"paywall_onboarding.page3_subtitle" = "Шекпеген әр темекі — бұл қалтаңыздағы ақша.";
+"paywall_onboarding.page4_title" = "Денеңіз рахмет айтады";
+"paywall_onboarding.page4_subtitle" = "Темекісіз 20 минуттан кейін организм қалпына келе бастайды.";
+"paywall_onboarding.next" = "Келесі";
+"paywall_onboarding.continue" = "Жалғастыру";
+"paywall_onboarding.skip" = "Өткізу";

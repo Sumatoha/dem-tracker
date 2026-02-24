@@ -4,32 +4,34 @@ struct PaywallOnboardingView: View {
     @State private var currentPage = 0
     let onComplete: () -> Void
 
-    private let pages: [OnboardingPage] = [
-        OnboardingPage(
-            icon: "chart.line.uptrend.xyaxis.circle.fill",
-            title: "Отслеживай каждую сигарету",
-            subtitle: "Простой трекинг в одно касание. Узнай, когда и почему ты куришь больше всего.",
-            color: .blue
-        ),
-        OnboardingPage(
-            icon: "banknote.fill",
-            title: "Видь свою экономию",
-            subtitle: "Посмотри, сколько денег ты сэкономишь, когда сократишь потребление.",
-            color: .green
-        ),
-        OnboardingPage(
-            icon: "heart.circle.fill",
-            title: "Следи за здоровьем",
-            subtitle: "Твоё тело восстанавливается каждую минуту без сигареты. Мы покажем прогресс.",
-            color: .red
-        ),
-        OnboardingPage(
-            icon: "target",
-            title: "Персональная программа",
-            subtitle: "Умный алгоритм поможет снизить потребление постепенно, без стресса.",
-            color: .purple
-        )
-    ]
+    private var pages: [OnboardingPage] {
+        [
+            OnboardingPage(
+                icon: "hand.tap.fill",
+                title: L.PaywallOnboarding.page1Title,
+                subtitle: L.PaywallOnboarding.page1Subtitle,
+                accentColor: Color.primaryAccent
+            ),
+            OnboardingPage(
+                icon: "chart.line.uptrend.xyaxis",
+                title: L.PaywallOnboarding.page2Title,
+                subtitle: L.PaywallOnboarding.page2Subtitle,
+                accentColor: Color(red: 0.3, green: 0.7, blue: 0.4)
+            ),
+            OnboardingPage(
+                icon: "banknote",
+                title: L.PaywallOnboarding.page3Title,
+                subtitle: L.PaywallOnboarding.page3Subtitle,
+                accentColor: Color(red: 0.2, green: 0.6, blue: 0.9)
+            ),
+            OnboardingPage(
+                icon: "heart.circle",
+                title: L.PaywallOnboarding.page4Title,
+                subtitle: L.PaywallOnboarding.page4Subtitle,
+                accentColor: Color(red: 0.9, green: 0.3, blue: 0.4)
+            )
+        ]
+    }
 
     var body: some View {
         ZStack {
@@ -37,22 +39,16 @@ struct PaywallOnboardingView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // Skip button
-                HStack {
-                    Spacer()
-                    Button {
-                        Haptics.selection()
-                        onComplete()
-                    } label: {
-                        Text("Пропустить")
-                            .font(.system(size: 15, weight: .medium))
-                            .foregroundColor(.textSecondary)
+                // Progress dots at top
+                HStack(spacing: 8) {
+                    ForEach(0..<pages.count, id: \.self) { index in
+                        Capsule()
+                            .fill(index <= currentPage ? Color.primaryAccent : Color.cardFill)
+                            .frame(width: index == currentPage ? 24 : 8, height: 8)
+                            .animation(.spring(response: 0.3), value: currentPage)
                     }
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 16)
-
-                Spacer()
+                .padding(.top, 20)
 
                 // Page content
                 TabView(selection: $currentPage) {
@@ -63,58 +59,72 @@ struct PaywallOnboardingView: View {
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
 
-                // Page indicators
-                HStack(spacing: 8) {
-                    ForEach(0..<pages.count, id: \.self) { index in
-                        Circle()
-                            .fill(index == currentPage ? Color.primaryAccent : Color.textMuted.opacity(0.3))
-                            .frame(width: 8, height: 8)
-                            .animation(.easeInOut(duration: 0.2), value: currentPage)
-                    }
-                }
-                .padding(.bottom, 32)
-
-                // Continue button
-                Button {
-                    Haptics.selection()
-                    if currentPage < pages.count - 1 {
-                        withAnimation {
-                            currentPage += 1
+                // Bottom section
+                VStack(spacing: 16) {
+                    // Continue button
+                    Button {
+                        Haptics.selection()
+                        if currentPage < pages.count - 1 {
+                            withAnimation(.spring(response: 0.4)) {
+                                currentPage += 1
+                            }
+                        } else {
+                            onComplete()
                         }
-                    } else {
-                        onComplete()
+                    } label: {
+                        Text(currentPage < pages.count - 1 ? L.PaywallOnboarding.next : L.PaywallOnboarding.continueButton)
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 56)
+                            .background(Color.primaryAccent)
+                            .cornerRadius(16)
                     }
-                } label: {
-                    Text(currentPage < pages.count - 1 ? "Далее" : "Начать")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .background(Color.primaryAccent)
-                        .cornerRadius(16)
+
+                    // Skip button (except last page)
+                    if currentPage < pages.count - 1 {
+                        Button {
+                            Haptics.selection()
+                            onComplete()
+                        } label: {
+                            Text(L.PaywallOnboarding.skip)
+                                .font(.system(size: 15, weight: .medium))
+                                .foregroundColor(.textMuted)
+                        }
+                    }
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 32)
+                .padding(.bottom, 40)
             }
         }
     }
 
     private func pageView(_ page: OnboardingPage) -> some View {
-        VStack(spacing: 32) {
+        VStack(spacing: 0) {
             Spacer()
 
-            // Icon
+            // Icon with background
             ZStack {
+                // Outer glow
                 Circle()
-                    .fill(page.color.opacity(0.15))
+                    .fill(page.accentColor.opacity(0.1))
+                    .frame(width: 180, height: 180)
+
+                // Inner circle
+                Circle()
+                    .fill(page.accentColor.opacity(0.15))
                     .frame(width: 140, height: 140)
 
+                // Icon
                 Image(systemName: page.icon)
-                    .font(.system(size: 64))
-                    .foregroundColor(page.color)
+                    .font(.system(size: 56, weight: .medium))
+                    .foregroundColor(page.accentColor)
             }
 
-            // Text
+            Spacer()
+                .frame(height: 48)
+
+            // Text content
             VStack(spacing: 16) {
                 Text(page.title)
                     .font(.system(size: 28, weight: .bold))
@@ -125,7 +135,8 @@ struct PaywallOnboardingView: View {
                     .font(.system(size: 17))
                     .foregroundColor(.textSecondary)
                     .multilineTextAlignment(.center)
-                    .lineSpacing(4)
+                    .lineSpacing(6)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.horizontal, 32)
 
@@ -135,12 +146,16 @@ struct PaywallOnboardingView: View {
     }
 }
 
-struct OnboardingPage {
+// MARK: - Model
+
+private struct OnboardingPage {
     let icon: String
     let title: String
     let subtitle: String
-    let color: Color
+    let accentColor: Color
 }
+
+// MARK: - Preview
 
 #Preview {
     PaywallOnboardingView(onComplete: {})

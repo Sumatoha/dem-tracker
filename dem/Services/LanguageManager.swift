@@ -495,4 +495,19 @@ enum L {
         static var trialDisclaimer: String { "paywall.trial_disclaimer".localized }
         static var popular: String { "paywall.popular".localized }
     }
+
+    // MARK: - Paywall Onboarding
+    enum PaywallOnboarding {
+        static var page1Title: String { "paywall_onboarding.page1_title".localized }
+        static var page1Subtitle: String { "paywall_onboarding.page1_subtitle".localized }
+        static var page2Title: String { "paywall_onboarding.page2_title".localized }
+        static var page2Subtitle: String { "paywall_onboarding.page2_subtitle".localized }
+        static var page3Title: String { "paywall_onboarding.page3_title".localized }
+        static var page3Subtitle: String { "paywall_onboarding.page3_subtitle".localized }
+        static var page4Title: String { "paywall_onboarding.page4_title".localized }
+        static var page4Subtitle: String { "paywall_onboarding.page4_subtitle".localized }
+        static var next: String { "paywall_onboarding.next".localized }
+        static var continueButton: String { "paywall_onboarding.continue".localized }
+        static var skip: String { "paywall_onboarding.skip".localized }
+    }
 }
