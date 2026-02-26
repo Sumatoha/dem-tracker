@@ -296,7 +296,7 @@ final class ProfileViewModel: ObservableObject {
     }
 
     /// Планирует уведомления с текущими данными
-    private func scheduleNotificationsNow() async {
+    func scheduleNotificationsNow() async {
         let timeComponents = NotificationManager.shared.parseTime(notificationTimeString)
 
         // Получаем данные для уведомлений
