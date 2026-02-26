@@ -133,7 +133,7 @@ struct HistoryView: View {
     private var summaryCards: some View {
         HStack(spacing: 12) {
             CompactSummaryCard(
-                title: currentMonthName(),
+                title: L.History.last30Days,
                 value: "\(viewModel.monthlyCount)",
                 style: .orange
             )
@@ -144,14 +144,6 @@ struct HistoryView: View {
                 style: .dark
             )
         }
-    }
-
-    private func currentMonthName() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: LanguageManager.shared.currentLanguage.rawValue)
-        formatter.dateFormat = "MMMM"
-        let monthName = formatter.string(from: Date()).uppercased()
-        return String(format: L.History.totalForMonth, monthName)
     }
 }
 

@@ -583,6 +583,12 @@ struct ProfileView: View {
                         languageManager.currentLanguage = language
                         showLanguagePicker = false
                         Haptics.selection()
+                        // Перепланируем уведомления с новым языком
+                        if viewModel.notificationsEnabled {
+                            Task {
+                                await viewModel.scheduleNotificationsNow()
+                            }
+                        }
                     } label: {
                         HStack {
                             Text(language.flag)

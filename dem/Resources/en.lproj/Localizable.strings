@@ -46,6 +46,7 @@
 "history.clean_days" = "Clean days";
 "history.interval" = "Interval";
 "history.total_for_month" = "Total for %@";
+"history.last_30_days" = "Last 30 days";
 "history.trigger" = "Trigger";
 "history.today" = "TODAY";
 "history.yesterday" = "YESTERDAY";

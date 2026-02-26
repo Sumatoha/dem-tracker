@@ -46,6 +46,7 @@
 "history.clean_days" = "Чистых дней";
 "history.interval" = "Интервал";
 "history.total_for_month" = "Всего за %@";
+"history.last_30_days" = "За 30 дней";
 "history.trigger" = "Триггер";
 "history.today" = "СЕГОДНЯ";
 "history.yesterday" = "ВЧЕРА";
