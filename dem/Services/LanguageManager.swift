@@ -158,6 +158,7 @@ enum L {
         static var today: String { "history.today".localized }
         static var yesterday: String { "history.yesterday".localized }
         static var noDataHint: String { "history.no_data_hint".localized }
+        static var last30Days: String { "history.last_30_days".localized }
     }
 
     // MARK: - Stats

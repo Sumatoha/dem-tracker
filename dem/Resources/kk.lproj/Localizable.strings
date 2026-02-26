@@ -46,6 +46,7 @@
 "history.clean_days" = "Таза күндер";
 "history.interval" = "Аралық";
 "history.total_for_month" = "%@ үшін барлығы";
+"history.last_30_days" = "Соңғы 30 күн";
 "history.trigger" = "Себеп";
 "history.today" = "БҮГІН";
 "history.yesterday" = "КЕШЕ";

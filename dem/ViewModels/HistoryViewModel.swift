@@ -6,7 +6,6 @@ final class HistoryViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var showError = false
-    @Published var selectedDate: Date = Date()
 
     private let supabase = SupabaseManager.shared
     private let cache = CacheManager.shared
@@ -29,43 +28,31 @@ final class HistoryViewModel: ObservableObject {
             .sorted { $0.date > $1.date }
     }
 
-    var monthlyCount: Int {
-        let calendar = Calendar.current
-        let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: Date())) ?? Date()
+    private var last30DaysStart: Date {
+        Calendar.current.date(byAdding: .day, value: -29, to: Calendar.current.startOfDay(for: Date())) ?? Date()
+    }
 
-        return logs.filter { $0.createdAt >= startOfMonth }.count
+    var monthlyCount: Int {
+        return logs.filter { $0.createdAt >= last30DaysStart }.count
     }
 
     var cleanDays: Int {
         let calendar = Calendar.current
-        let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: Date())) ?? Date()
         let today = calendar.startOfDay(for: Date())
 
-        guard let daysInMonth = calendar.dateComponents([.day], from: startOfMonth, to: today).day else {
-            return 0
-        }
-
         let daysWithLogs = Set(logs.compactMap { log -> Date? in
-            guard log.createdAt >= startOfMonth else { return nil }
+            guard log.createdAt >= last30DaysStart else { return nil }
             return calendar.startOfDay(for: log.createdAt)
         })
 
-        return max(0, daysInMonth + 1 - daysWithLogs.count)
+        return max(0, 30 - daysWithLogs.count)
     }
 
     func loadData() async {
-        // Fetch fresh data from server
+        // Fetch fresh data from server — last 30 days
         do {
-            let calendar = Calendar.current
-            let startOfMonth = calendar.date(
-                from: calendar.dateComponents([.year, .month], from: selectedDate)
-            ) ?? selectedDate
-
-            guard let endOfMonth = calendar.date(byAdding: .month, value: 1, to: startOfMonth) else {
-                return
-            }
-
-            let freshLogs = try await supabase.fetchLogsForDateRange(from: startOfMonth, to: endOfMonth)
+            let now = Date()
+            let freshLogs = try await supabase.fetchLogsForDateRange(from: last30DaysStart, to: now)
             logs = freshLogs
 
             // Update cache in background
