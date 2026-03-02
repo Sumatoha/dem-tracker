@@ -11,6 +11,7 @@ final class HomeViewModel: ObservableObject {
 
     private let supabase = SupabaseManager.shared
     private let cache = CacheManager.shared
+    private let widgetData = WidgetDataManager.shared
 
     init() {
         // Load cache synchronously on init - no flash
@@ -181,6 +182,9 @@ final class HomeViewModel: ObservableObject {
     }
 
     func loadData() async {
+        // First sync any pending logs from widget
+        await syncWidgetPendingLogs()
+
         // Fetch fresh data from server
         do {
             async let todayTask = supabase.fetchTodayLogs()
@@ -193,12 +197,39 @@ final class HomeViewModel: ObservableObject {
             // Update cache
             cache.cacheTodayLogs(today)
             cache.cacheWeeklyLogs(weekly)
+
+            // Sync widget data
+            updateWidgetData()
         } catch {
             if todayLogs.isEmpty && weeklyLogs.isEmpty {
                 errorMessage = error.localizedDescription
                 showError = true
             }
         }
+    }
+
+    /// Sync pending logs created from widget to server
+    private func syncWidgetPendingLogs() async {
+        let pendingLogs = widgetData.getPendingLogs()
+        guard !pendingLogs.isEmpty else { return }
+
+        for pendingLog in pendingLogs {
+            do {
+                try await supabase.createLogWithDate(trigger: nil, createdAt: pendingLog.timestamp)
+            } catch {
+                print("Failed to sync widget log: \(error)")
+            }
+        }
+
+        // Clear pending logs after sync
+        widgetData.clearPendingLogs()
+    }
+
+    /// Update widget with current data
+    func updateWidgetData() {
+        widgetData.setTodayCount(todayCount)
+        widgetData.setUserId(supabase.currentUser?.id)
+        widgetData.setProductType(profile?.productType)
     }
 
     func onLogButtonTapped() {
@@ -231,6 +262,9 @@ final class HomeViewModel: ObservableObject {
 
             // Update cache with new log
             cache.addLogToCache(newLog)
+
+            // Update widget
+            updateWidgetData()
 
             Haptics.success()
             showTriggerSelection = false

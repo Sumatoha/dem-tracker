@@ -354,6 +354,46 @@ final class SupabaseManager: ObservableObject {
             .execute()
     }
 
+    /// Create log with specific timestamp (for syncing widget logs)
+    func createLogWithDate(trigger: TriggerType?, createdAt: Date) async throws {
+        guard let userId = currentUser?.id else {
+            throw DatabaseError.notAuthenticated
+        }
+
+        let profile = currentProfile ?? Profile(
+            id: userId,
+            name: nil,
+            productType: .cigarette,
+            baselinePerDay: 10,
+            packPrice: 250,
+            sticksInPack: 20,
+            goalType: nil,
+            goalPerDay: nil,
+            goalDate: nil,
+            onboardingDone: false,
+            createdAt: Date(),
+            updatedAt: Date()
+        )
+
+        let productType = profile.productType ?? .cigarette
+        let price = Int(profile.pricePerUnit)
+        let nicotine = profile.nicotinePerUnit
+
+        let log: [String: AnyEncodable] = [
+            ColumnName.Log.userId: AnyEncodable(userId),
+            ColumnName.Log.productType: AnyEncodable(productType.rawValue),
+            ColumnName.Log.trigger: AnyEncodable(trigger?.rawValue),
+            ColumnName.Log.price: AnyEncodable(price),
+            ColumnName.Log.nicotineMg: AnyEncodable(nicotine),
+            ColumnName.Log.createdAt: AnyEncodable(createdAt)
+        ]
+
+        try await client
+            .from(TableName.logs)
+            .insert(log)
+            .execute()
+    }
+
     func fetchTodayLogs() async throws -> [SmokingLog] {
         guard let userId = currentUser?.id else {
             throw DatabaseError.notAuthenticated

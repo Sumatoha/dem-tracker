@@ -510,4 +510,15 @@ enum L {
         static var continueButton: String { "paywall_onboarding.continue".localized }
         static var skip: String { "paywall_onboarding.skip".localized }
     }
+
+    // MARK: - Widget
+    enum Widget {
+        static var today: String { "widget.today".localized }
+        static var tutorialTitle: String { "widget.tutorial_title".localized }
+        static var tutorialSubtitle: String { "widget.tutorial_subtitle".localized }
+        static var step1: String { "widget.step1".localized }
+        static var step2: String { "widget.step2".localized }
+        static var step3: String { "widget.step3".localized }
+        static var gotIt: String { "widget.got_it".localized }
+    }
 }

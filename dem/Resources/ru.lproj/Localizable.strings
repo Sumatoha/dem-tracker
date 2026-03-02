@@ -361,3 +361,12 @@
 "paywall_onboarding.next" = "Далее";
 "paywall_onboarding.continue" = "Продолжить";
 "paywall_onboarding.skip" = "Пропустить";
+
+// MARK: - Widget
+"widget.today" = "сегодня";
+"widget.tutorial_title" = "Добавь виджет";
+"widget.tutorial_subtitle" = "Записывай сигареты одним тапом прямо с домашнего экрана";
+"widget.step1" = "Зажми пустое место на экране";
+"widget.step2" = "Нажми + в левом верхнем углу";
+"widget.step3" = "Найди dem и добавь виджет";
+"widget.got_it" = "Понятно";

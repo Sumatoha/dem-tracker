@@ -361,3 +361,12 @@
 "paywall_onboarding.next" = "Next";
 "paywall_onboarding.continue" = "Continue";
 "paywall_onboarding.skip" = "Skip";
+
+// MARK: - Widget
+"widget.today" = "today";
+"widget.tutorial_title" = "Add Widget";
+"widget.tutorial_subtitle" = "Log cigarettes with one tap right from your home screen";
+"widget.step1" = "Long press on empty space";
+"widget.step2" = "Tap + in the top left corner";
+"widget.step3" = "Find dem and add the widget";
+"widget.got_it" = "Got it";

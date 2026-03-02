@@ -361,3 +361,12 @@
 "paywall_onboarding.next" = "Келесі";
 "paywall_onboarding.continue" = "Жалғастыру";
 "paywall_onboarding.skip" = "Өткізу";
+
+// MARK: - Widget
+"widget.today" = "бүгін";
+"widget.tutorial_title" = "Виджет қосу";
+"widget.tutorial_subtitle" = "Негізгі экраннан бір түртумен темекіні белгілеңіз";
+"widget.step1" = "Экрандағы бос жерді басып тұрыңыз";
+"widget.step2" = "Жоғарғы сол жақтағы + түймесін басыңыз";
+"widget.step3" = "dem тауып, виджетті қосыңыз";
+"widget.got_it" = "Түсіндім";

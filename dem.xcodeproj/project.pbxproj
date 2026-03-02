@@ -57,6 +57,8 @@
 		A10000000000000000000045 /* TermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000148 /* TermsView.swift */; };
 		A10000000000000000000047 /* PaywallOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000150 /* PaywallOnboardingView.swift */; };
 		A10000000000000000000046 /* PrivacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000149 /* PrivacyPolicyView.swift */; };
+		A10000000000000000000048 /* WidgetDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000151 /* WidgetDataManager.swift */; };
+		A10000000000000000000049 /* WidgetTutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000152 /* WidgetTutorialView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -113,6 +115,8 @@
 		A10000000000000000000148 /* TermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsView.swift; sourceTree = "<group>"; };
 		A10000000000000000000150 /* PaywallOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallOnboardingView.swift; sourceTree = "<group>"; };
 		A10000000000000000000149 /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
+		A10000000000000000000151 /* WidgetDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataManager.swift; sourceTree = "<group>"; };
+		A10000000000000000000152 /* WidgetTutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTutorialView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +203,7 @@
 				A10000000000000000000137 /* ProgramCalculator.swift */,
 				A10000000000000000000141 /* LanguageManager.swift */,
 				A10000000000000000000146 /* SubscriptionManager.swift */,
+				A10000000000000000000151 /* WidgetDataManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -314,6 +319,7 @@
 				A10000000000000000000130 /* ActivityChart.swift */,
 				A10000000000000000000131 /* MainTabView.swift */,
 				A10000000000000000000140 /* LegalDocumentView.swift */,
+				A10000000000000000000152 /* WidgetTutorialView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -461,6 +467,8 @@
 				A10000000000000000000046 /* PrivacyPolicyView.swift in Sources */,
 				47A58F6519D74244A3B8B9F9 /* ShareCardView.swift in Sources */,
 				242DFF53D32C422FB9F18506 /* ShareManager.swift in Sources */,
+				A10000000000000000000048 /* WidgetDataManager.swift in Sources */,
+				A10000000000000000000049 /* WidgetTutorialView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
