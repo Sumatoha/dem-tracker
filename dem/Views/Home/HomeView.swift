@@ -7,6 +7,8 @@ struct HomeView: View {
 
     @State private var showHealthExplanation = false
     @State private var showSavingsExplanation = false
+    @State private var showWidgetTutorial = false
+    @AppStorage("hasSeenWidgetTutorial") private var hasSeenWidgetTutorial = false
 
     var body: some View {
         ZStack {
@@ -64,6 +66,12 @@ struct HomeView: View {
         .task {
             await viewModel.loadData()
             await viewModel.setupInitialNotifications()
+
+            // Show widget tutorial after a short delay if user hasn't seen it
+            if !hasSeenWidgetTutorial {
+                try? await Task.sleep(for: .seconds(1.5))
+                showWidgetTutorial = true
+            }
         }
         .fullScreenCover(isPresented: $viewModel.showTriggerSelection) {
             TriggerSelectionView { trigger in
@@ -94,6 +102,11 @@ struct HomeView: View {
             )
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $showWidgetTutorial) {
+            WidgetTutorialView()
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
         }
     }
 

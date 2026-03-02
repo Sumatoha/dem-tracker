@@ -520,5 +520,6 @@ enum L {
         static var step2: String { "widget.step2".localized }
         static var step3: String { "widget.step3".localized }
         static var gotIt: String { "widget.got_it".localized }
+        static var tap: String { "widget.tap".localized }
     }
 }
